@@ -154,7 +154,7 @@
       flex-direction: column;
       justify-content: flex-start;
       padding-top: 189px;
-      padding-bottom: 126px;
+      padding-bottom: 0;
     }
     .hero-label {
       font-family: var(--mono);
@@ -196,7 +196,7 @@
       font-size: 17px;
       line-height: 1.7;
       color: var(--dim);
-      max-width: 480px;
+      max-width: 640px;
     }
     .hero-stats {
       display: flex;
@@ -254,16 +254,10 @@
       100% { transform: translateX(100%); }
     }
 
-    /* ── ABOUT ──────────────────────────────────── */
-    #about {
-      border-bottom: 1px solid var(--border);
-    }
-    #about .col {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-    .about-left {
-      padding: 96px 0;
+    /* ── ABOUT (merged into hero) ───────────────── */
+    .hero-about {
+      margin-top: 80px;
+      padding-bottom: 96px;
     }
     #skills {
       border-bottom: 1px solid var(--border);
@@ -737,7 +731,7 @@
       .hero-scroll-hint { display: none; }
 
       /* About */
-      .about-left { padding: 56px 0; }
+      .hero-about { margin-top: 56px; padding-bottom: 56px; }
       .about-text { font-size: 18px; line-height: 1.65; }
       .about-clients { margin-top: 36px !important; }
       .clients-list { gap: 8px; }
@@ -772,8 +766,7 @@
       .hero-stats { gap: 20px; }
       #work-strip .proj-grid { grid-template-columns: 1fr; }
       .section-grid { padding: 48px 0; }
-      .about-left { padding: 48px 0; }
-      .about-right { padding: 48px 0; }
+      .hero-about { margin-top: 48px; padding-bottom: 48px; }
     }
   </style>
 </head>
@@ -816,7 +809,10 @@
         <div class="hero-label">Product Designer — Lagos / Remote</div>
         <h1>Designing for the<br /><em>impossible.</em></h1>
         <div class="hero-sub">
-          <p class="hero-desc">I design impactful, immersive experiences for startups — specializing in Web3, AI, and vibe-coded products. 4 years of breaking design boundaries across the globe.</p>
+          <p class="hero-desc">Hey, I'm <strong>Triumph</strong>. A product designer who thrives at the intersection of <strong>craft and code</strong>. I've spent 4 years building digital products for early-stage startups across Web3, Fintech, and AI — turning complex problems into interfaces people actually want to use.
+            <br /><br />
+            I also vibe code — using AI-assisted development to bring my designs to life end-to-end. I care about <strong>positive team vibes</strong>, new ideas, and pushing design past its comfortable edges.
+          </p>
           <div class="hero-stats">
             <div class="stat">
               <span class="stat-num">4+</span>
@@ -832,24 +828,8 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="hero-scroll-hint">
-        <div class="scroll-line"></div>
-        scroll to explore
-      </div>
-    </section>
-
-    <!-- ── ABOUT ── -->
-    <section id="about">
-      <div class="col">
-        <div class="about-left">
-          <div class="section-label">About me</div>
-          <p class="about-text">
-            Hey, I'm <strong>Triumph</strong>. A product designer who thrives at the intersection of <strong>craft and code</strong>. I've spent 4 years building digital products for early-stage startups across Web3, Fintech, and AI — turning complex problems into interfaces people actually want to use.
-            <br /><br />
-            I also vibe code — using AI-assisted development to bring my designs to life end-to-end. I care about <strong>positive team vibes</strong>, new ideas, and pushing design past its comfortable edges.
-          </p>
-          <div class="about-clients" style="margin-top:48px;">
+        <div class="hero-about">
+          <div class="about-clients">
             <div class="clients-label">Worked with</div>
             <div class="clients-list">
               <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/DGG4u8MZXCH5PJPoboIil9VWQA.png" alt="" /><span class="client-name">Silk</span></div>
@@ -865,6 +845,10 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="hero-scroll-hint">
+        <div class="scroll-line"></div>
+        scroll to explore
       </div>
     </section>
 
