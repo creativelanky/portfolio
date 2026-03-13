@@ -579,6 +579,85 @@
     @media (max-width: 1100px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px) { .proj-grid { grid-template-columns: 1fr; } #work-strip .proj-grid { grid-template-columns: 1fr; } }
 
+    /* ── LIFE / POLAROID CANVAS ─────────────────── */
+    #life { padding: 80px 0 0; }
+    #life .col { margin-bottom: 32px; }
+    .polaroid-wrap {
+      margin: 0 213px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+    .polaroid-canvas {
+      position: relative;
+      width: 100%;
+      height: 560px;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #e8d5f5;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, #ffd6e0 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 30%, #c5e8ff 0%, transparent 50%),
+        radial-gradient(ellipse at 55% 80%, #d4f5d0 0%, transparent 45%);
+    }
+    .polaroid-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0.18;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      mix-blend-mode: overlay;
+    }
+    .polaroid-canvas:active { cursor: grabbing; }
+    .trail-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .polaroid {
+      position: absolute;
+      background: #fff;
+      padding: 7px 7px 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.05);
+      width: 202px;
+      border-radius: 12px;
+      transition: box-shadow .2s, transform .15s;
+      touch-action: none;
+      z-index: 1;
+    }
+    .polaroid:hover {
+      box-shadow: 0 8px 28px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06);
+      z-index: 100;
+    }
+    .polaroid.dragging {
+      box-shadow: 0 16px 48px rgba(0,0,0,.20);
+      z-index: 999;
+      transition: box-shadow .2s;
+    }
+    .polaroid img {
+      width: 100%;
+      height: 202px;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .polaroid-wrap { margin: 0 24px; border-radius: 16px; }
+      .polaroid-canvas { height: 420px; }
+      .polaroid { width: 120px; border-radius: 10px; padding: 5px 5px 24px; }
+      .polaroid img { height: 120px; border-radius: 6px; }
+      #life { padding: 60px 0 0; }
+    }
+    @media (max-width: 480px) {
+      .polaroid-wrap { margin: 0 20px; }
+    }
+
     /* ── CONTACT ────────────────────────────────── */
     #contact {
       border-bottom: 1px solid var(--border);
@@ -861,7 +940,7 @@
         <div class="proj-grid">
 
           <a href="terrace.html" class="proj-card">
-            <div class="proj-thumb"><img src="terrace.jpg" alt="Terrace" /></div>
+            <div class="proj-thumb"><img src="terrace-thumb.jpg" alt="Terrace" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">Campaign</span></div>
@@ -874,7 +953,7 @@
           </a>
 
           <a href="lumoswap.html" class="proj-card">
-            <div class="proj-thumb"><img src="Lumoswap.jpg" alt="Lumoswap" /></div>
+            <div class="proj-thumb"><img src="lumoswap.jpg" alt="Lumoswap" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">DeFi</span></div>
@@ -887,7 +966,7 @@
           </a>
 
           <a href="space-and-time.html" class="proj-card">
-            <div class="proj-thumb"><img src="Dreamspace.jpg" alt="Dreamspace" /></div>
+            <div class="proj-thumb"><img src="dreamspace.jpg" alt="Dreamspace" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">AI</span></div>
@@ -900,7 +979,7 @@
           </a>
 
           <div class="proj-card-locked">
-            <div class="proj-thumb"><img src="Glitch markets.jpg" alt="Glitch Market" /></div>
+            <div class="proj-thumb"><img src="glitch-markets.jpg" alt="Glitch Market" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">AI</span><span class="proj-tag">Web3</span></div>
@@ -924,34 +1003,73 @@
         <div class="proj-grid">
 
           <a href="terrace.html" class="proj-card">
-            <div class="proj-thumb"><img src="7.jpg" alt="Terrace" /></div>
+            <div class="proj-thumb"><img src="terrace-grid.jpg" alt="Terrace" /></div>
           </a>
 
           <a href="lumoswap.html" class="proj-card">
-            <div class="proj-thumb"><img src="6.jpg" alt="Lumoswap" /></div>
+            <div class="proj-thumb"><img src="lumoswap-grid.jpg" alt="Lumoswap" /></div>
           </a>
 
           <a href="space-and-time.html" class="proj-card">
-            <div class="proj-thumb"><img src="5.jpg" alt="Dreamspace" /></div>
+            <div class="proj-thumb"><img src="dreamspace-grid.jpg" alt="Dreamspace" /></div>
           </a>
 
           <div class="proj-card">
-            <div class="proj-thumb"><img src="4.jpg" alt="Crest Wallet" /></div>
+            <div class="proj-thumb"><img src="crest-grid.jpg" alt="Crest Wallet" /></div>
           </div>
 
           <div class="proj-card">
-            <div class="proj-thumb"><img src="3.jpg" alt="Supersocial" /></div>
+            <div class="proj-thumb"><img src="supersocial-grid.jpg" alt="Supersocial" /></div>
           </div>
 
           <div class="proj-card">
-            <div class="proj-thumb"><img src="2.jpg" alt="Agentic AI" /></div>
+            <div class="proj-thumb"><img src="agentic-grid.jpg" alt="Agentic AI" /></div>
           </div>
 
           <div class="proj-card">
-            <div class="proj-thumb"><img src="1.jpg" alt="Feedpay" /></div>
+            <div class="proj-thumb"><img src="feedpay-grid.jpg" alt="Feedpay" /></div>
           </div>
 
         </div>
+      </div>
+    </section>
+
+    <!-- ── LIFE ── -->
+    <section id="life">
+      <div class="col">
+        <div class="section-label">Life outside the screen</div>
+      </div>
+      <div class="polaroid-wrap">
+      <div class="polaroid-canvas" id="polaroid-canvas">
+        <canvas class="trail-canvas" id="trail-canvas"></canvas>
+        <div class="polaroid" data-rot="-4">
+          <img src="photo-1.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="3">
+          <img src="photo-2.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="-2">
+          <img src="photo-3.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="5">
+          <img src="photo-4.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="-6">
+          <img src="photo-5.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="2">
+          <img src="photo-6.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="-3">
+          <img src="photo-7.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="6">
+          <img src="photo-8.jpg" alt="" draggable="false" />
+        </div>
+        <div class="polaroid" data-rot="-5">
+          <img src="photo-9.jpg" alt="" draggable="false" />
+        </div>
+      </div>
       </div>
     </section>
 
@@ -1154,6 +1272,125 @@
     mobileMenu.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', closeMenu);
     });
+
+    // ── POLAROID CANVAS ──
+    (function () {
+      const container = document.getElementById('polaroid-canvas');
+      if (!container) return;
+      const cards = Array.from(container.querySelectorAll('.polaroid'));
+      const trailEl = document.getElementById('trail-canvas');
+      const ctx = trailEl.getContext('2d');
+
+      // Size trail canvas to match container
+      function resizeTrail() {
+        trailEl.width = container.offsetWidth;
+        trailEl.height = container.offsetHeight;
+      }
+      resizeTrail();
+      window.addEventListener('resize', resizeTrail);
+
+      // White trail segments
+      const segments = [];
+
+      function addSegment(x, y) {
+        segments.push({ x, y, alpha: 0.45, r: 18 });
+      }
+
+      function renderTrail() {
+        ctx.clearRect(0, 0, trailEl.width, trailEl.height);
+        for (let i = segments.length - 1; i >= 0; i--) {
+          const s = segments[i];
+          s.alpha -= 0.003;
+          s.r += 0.15;
+          if (s.alpha <= 0) { segments.splice(i, 1); continue; }
+          const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+          grad.addColorStop(0, `rgba(255,255,255,${s.alpha})`);
+          grad.addColorStop(1, `rgba(255,255,255,0)`);
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        requestAnimationFrame(renderTrail);
+      }
+      renderTrail();
+
+      // Scatter photos — grid-guided with natural offset
+      const cw = container.offsetWidth, ch = container.offsetHeight;
+      const CARD_W = 202, CARD_H = 202;
+      const cols = 5, rows = Math.ceil(cards.length / cols);
+      const cellW = cw / cols, cellH = ch / rows;
+      cards.forEach((card, i) => {
+        const col = i % cols, row = Math.floor(i / cols);
+        const cx = col * cellW + cellW / 2 - CARD_W / 2;
+        const cy = row * cellH + cellH / 2 - CARD_H / 2;
+        // nudge by up to 35% of cell size for natural feel
+        const x = cx + (Math.random() - 0.5) * cellW * 0.35;
+        const y = cy + (Math.random() - 0.5) * cellH * 0.35;
+        const rot = parseFloat(card.dataset.rot) || 0;
+        card.style.left = Math.max(4, Math.min(x, cw - CARD_W - 4)) + 'px';
+        card.style.top  = Math.max(4, Math.min(y, ch - CARD_H - 4)) + 'px';
+        card.style.transform = `rotate(${rot}deg)`;
+        card.style.zIndex = i + 1;
+      });
+
+      let zTop = cards.length + 1;
+
+      function makeDraggable(card) {
+        let startX, startY, origL, origT, dragging = false;
+        let lastSegX = 0, lastSegY = 0;
+
+        function getCanvasPos(clientX, clientY) {
+          const rect = container.getBoundingClientRect();
+          return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function onStart(e) {
+          dragging = true;
+          card.classList.add('dragging');
+          card.style.zIndex = ++zTop;
+          const touch = e.touches ? e.touches[0] : e;
+          startX = touch.clientX;
+          startY = touch.clientY;
+          origL = parseFloat(card.style.left) || 0;
+          origT = parseFloat(card.style.top) || 0;
+          const pos = getCanvasPos(touch.clientX, touch.clientY);
+          lastSegX = pos.x; lastSegY = pos.y;
+          e.preventDefault();
+        }
+
+        function onMove(e) {
+          if (!dragging) return;
+          const touch = e.touches ? e.touches[0] : e;
+          const dx = touch.clientX - startX;
+          const dy = touch.clientY - startY;
+          card.style.left = (origL + dx) + 'px';
+          card.style.top  = (origT + dy) + 'px';
+
+          // Add white trail every ~12px of movement
+          const pos = getCanvasPos(touch.clientX, touch.clientY);
+          const dist = Math.hypot(pos.x - lastSegX, pos.y - lastSegY);
+          if (dist > 12) {
+            addSegment(pos.x, pos.y);
+            lastSegX = pos.x; lastSegY = pos.y;
+          }
+        }
+
+        function onEnd() {
+          dragging = false;
+          card.classList.remove('dragging');
+        }
+
+        card.addEventListener('mousedown', onStart);
+        card.addEventListener('touchstart', onStart, { passive: false });
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('mouseup', onEnd);
+        window.addEventListener('touchend', onEnd);
+      }
+
+      cards.forEach(card => makeDraggable(card));
+    })();
   </script>
 </body>
 </html>
