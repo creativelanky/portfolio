@@ -30,12 +30,8 @@
     main { position: relative; z-index: 1; }
 
     /* ── PROJECT HERO ── */
-    .project-hero { min-height: 40vh; display: flex; flex-direction: column; justify-content: flex-end; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-    .project-hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #dce8f7 0%, #c5d5f0 40%, #a8c4e8 100%); z-index: 0; }
-    .project-hero-deco { position: absolute; inset: 0; z-index: 1; overflow: hidden; opacity: .12; }
-    .deco-circle { position: absolute; border-radius: 50%; border: 1px solid #6af0ff; }
-    .project-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(245,245,243,1) 0%, rgba(245,245,243,.5) 60%, transparent 100%); z-index: 2; }
-    .project-hero .col { position: relative; z-index: 3; padding-bottom: 64px; padding-top: 36px; }
+    .project-hero { min-height: 40vh; display: flex; flex-direction: column; justify-content: flex-end; border-bottom: 1px solid var(--border); }
+    .project-hero .col { padding-bottom: 64px; padding-top: 36px; }
     .project-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
     .project-tag { font-family: var(--mono); font-size: 12px; padding: 5px 12px; border: 1px solid var(--border-hover); border-radius: 100px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
     .project-year { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .1em; }
@@ -66,12 +62,6 @@
     .screen-card img { width: 100%; height: auto; display: block; }
     .screen-label { position: absolute; bottom: 16px; left: 16px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
 
-    /* Screen gradients */
-    .screen-1 .screen-card-bg { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
-    .screen-2 .screen-card-bg { background: linear-gradient(135deg, #0f3460, #16213e); }
-    .screen-3 .screen-card-bg { background: linear-gradient(135deg, #16213e, #1a1a2e); }
-    .screen-4 .screen-card-bg { background: linear-gradient(135deg, #0d1b3e, #0f3460); }
-
     /* ── NEXT PROJECT ── */
     .next-project { border-top: 1px solid var(--border); }
     .next-project .col { display: flex; align-items: center; justify-content: space-between; padding: 48px 0; }
@@ -87,10 +77,21 @@
     .footer-left, .footer-right { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 
     @media (max-width: 768px) {
+      .col { padding: 0 24px; }
+      #cursor, #cursor-ring { display: none; }
+      body { cursor: auto; }
+      .project-hero .col { padding-top: 84px; padding-bottom: 40px; }
+      .project-title { font-size: clamp(36px, 10vw, 56px); }
+      .project-subtitle { font-size: 16px; }
+      .project-meta { flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+      .project-body { padding: 56px 0; }
       .project-body .col { grid-template-columns: 1fr; gap: 48px; }
+      .body-text { font-size: 16px; }
+      .screens-section { padding: 0 0 56px; }
       .screens-grid { grid-template-columns: 1fr; }
-      .screen-card.full { grid-column: 1; }
-      .next-project .col { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .next-project .col { flex-direction: column; align-items: flex-start; gap: 16px; padding: 40px 24px; }
+      .next-title { font-size: 20px; }
+      footer .col { flex-direction: column; gap: 6px; align-items: flex-start; padding-top: 20px; padding-bottom: 20px; }
     }
   </style>
 </head>
@@ -110,12 +111,6 @@
 
   <main>
     <section class="project-hero">
-      <div class="project-hero-bg"></div>
-      <div class="project-hero-deco">
-        <div class="deco-circle" style="width:600px;height:600px;top:-200px;right:-100px;"></div>
-        <div class="deco-circle" style="width:300px;height:300px;bottom:-50px;left:10%;border-color:#a3ff6a;"></div>
-      </div>
-      <div class="project-hero-overlay"></div>
       <div class="col">
         <div class="project-meta">
           <span class="project-tag">Web3</span>
@@ -155,15 +150,15 @@
         <div class="screens-label">Screens</div>
         <div class="screens-grid">
           <div class="screen-card screen-1">
-            <img src="https://framerusercontent.com/images/1po9r9c4d6gtzPE4PCWrfPR8Ec.jpg" alt="Campaign Landing" style="width:100%;height:auto;display:block;" />
+            <img src="Terrace 1.jpg" alt="Campaign Landing" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Campaign Landing</span>
           </div>
           <div class="screen-card screen-2">
-            <img src="https://framerusercontent.com/images/t1uUutmRrKltKdROyNaAZNkkzhA.jpg" alt="Loot Box Opening" style="width:100%;height:auto;display:block;" />
+            <img src="Terrace 2.jpg" alt="Loot Box Opening" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Loot Box Opening</span>
           </div>
           <div class="screen-card screen-3">
-            <img src="https://framerusercontent.com/images/yPmkFQ1P26o7IsUo2OFDvAwoms.jpg" alt="Rewards Dashboard" style="width:100%;height:auto;display:block;" />
+            <img src="Terrace 3.jpg" alt="Rewards Dashboard" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Rewards Dashboard</span>
           </div>
         </div>

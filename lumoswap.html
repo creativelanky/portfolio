@@ -28,12 +28,8 @@
     .nav-back { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color .2s; letter-spacing: .06em; }
     .nav-back:hover { color: var(--text); }
     main { position: relative; z-index: 1; }
-    .project-hero { min-height: 40vh; display: flex; flex-direction: column; justify-content: flex-end; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-    .project-hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #cceee8 0%, #a8ddd5 40%, #7fccc0 100%); z-index: 0; }
-    .project-hero-deco { position: absolute; inset: 0; z-index: 1; overflow: hidden; opacity: .12; }
-    .deco-circle { position: absolute; border-radius: 50%; border: 1px solid #a3ff6a; }
-    .project-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(245,245,243,1) 0%, rgba(245,245,243,.5) 60%, transparent 100%); z-index: 2; }
-    .project-hero .col { position: relative; z-index: 3; padding-bottom: 64px; padding-top: 36px; }
+    .project-hero { min-height: 40vh; display: flex; flex-direction: column; justify-content: flex-end; border-bottom: 1px solid var(--border); }
+    .project-hero .col { padding-bottom: 64px; padding-top: 36px; }
     .project-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
     .project-tag { font-family: var(--mono); font-size: 12px; padding: 5px 12px; border: 1px solid var(--border-hover); border-radius: 100px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
     .project-year { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .1em; }
@@ -58,10 +54,6 @@
     .screen-card:hover { border-color: var(--border-hover); }
     .screen-card img { width: 100%; height: auto; display: block; }
     .screen-label { position: absolute; bottom: 16px; left: 16px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-    .screen-1 .screen-card-bg { background: linear-gradient(135deg, #001a1a, #006655); }
-    .screen-2 .screen-card-bg { background: linear-gradient(135deg, #003333, #001a1a); }
-    .screen-3 .screen-card-bg { background: linear-gradient(135deg, #001f1a, #004433); }
-    .screen-4 .screen-card-bg { background: linear-gradient(135deg, #002222, #005544); }
     .next-project { border-top: 1px solid var(--border); }
     .next-project .col { display: flex; align-items: center; justify-content: space-between; padding: 48px 0; }
     .next-label { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
@@ -72,10 +64,21 @@
     footer .col { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; padding-bottom: 24px; }
     .footer-left, .footer-right { font-family: var(--mono); font-size: 12px; color: var(--muted); }
     @media (max-width: 768px) {
+      .col { padding: 0 24px; }
+      #cursor, #cursor-ring { display: none; }
+      body { cursor: auto; }
+      .project-hero .col { padding-top: 84px; padding-bottom: 40px; }
+      .project-title { font-size: clamp(36px, 10vw, 56px); }
+      .project-subtitle { font-size: 16px; }
+      .project-meta { flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+      .project-body { padding: 56px 0; }
       .project-body .col { grid-template-columns: 1fr; gap: 48px; }
+      .body-text { font-size: 16px; }
+      .screens-section { padding: 0 0 56px; }
       .screens-grid { grid-template-columns: 1fr; }
-      .screen-card.full { grid-column: 1; }
-      .next-project .col { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .next-project .col { flex-direction: column; align-items: flex-start; gap: 16px; padding: 40px 24px; }
+      .next-title { font-size: 20px; }
+      footer .col { flex-direction: column; gap: 6px; align-items: flex-start; padding-top: 20px; padding-bottom: 20px; }
     }
   </style>
 </head>
@@ -93,12 +96,6 @@
   </nav>
   <main>
     <section class="project-hero">
-      <div class="project-hero-bg"></div>
-      <div class="project-hero-deco">
-        <div class="deco-circle" style="width:700px;height:700px;top:-300px;right:-200px;"></div>
-        <div class="deco-circle" style="width:400px;height:400px;bottom:-100px;left:5%;border-color:#6af0ff;"></div>
-      </div>
-      <div class="project-hero-overlay"></div>
       <div class="col">
         <div class="project-meta">
           <span class="project-tag">Web3</span>
@@ -136,19 +133,19 @@
         <div class="screens-label">Screens</div>
         <div class="screens-grid">
           <div class="screen-card screen-1">
-            <img src="https://framerusercontent.com/images/8r0S7crtSLZEYVcRGNgWg1QHDQk.jpg" alt="Swap Interface" style="width:100%;height:auto;display:block;" />
+            <img src="Lumoswap 1.jpg" alt="Swap Interface" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Swap Interface</span>
           </div>
           <div class="screen-card screen-2">
-            <img src="https://framerusercontent.com/images/4KFbdXzW5ncKACpPdB97XZ9Ce4.jpg" alt="Liquidity Pool" style="width:100%;height:auto;display:block;" />
+            <img src="Lumoswap 2.jpg" alt="Liquidity Pool" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Liquidity Pool</span>
           </div>
           <div class="screen-card screen-3">
-            <img src="https://framerusercontent.com/images/szupIXBkkSxkOIuph3xc0RqvA.jpg" alt="Portfolio View" style="width:100%;height:auto;display:block;" />
+            <img src="Lumoswap 3.jpg" alt="Portfolio View" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Portfolio View</span>
           </div>
           <div class="screen-card screen-4">
-            <img src="https://framerusercontent.com/images/JThQUtT0I7tmC4me51ARNC7VU8.jpg" alt="Transaction History" style="width:100%;height:auto;display:block;" />
+            <img src="Lumoswap 4.jpg" alt="Transaction History" style="width:100%;height:auto;display:block;" />
             <span class="screen-label">Transaction History</span>
           </div>
         </div>

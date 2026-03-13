@@ -175,7 +175,7 @@
     }
     h1 {
       font-size: clamp(52px, 8vw, 120px);
-      font-weight: 500;
+      font-weight: 400;
       line-height: .95;
       letter-spacing: -.03em;
       white-space: nowrap;
@@ -431,7 +431,7 @@
     }
     .section-grid-header h2 {
       font-size: clamp(32px, 4vw, 56px);
-      font-weight: 700;
+      font-weight: 400;
       letter-spacing: -.03em;
     }
     .section-grid-header a {
@@ -698,6 +698,19 @@
       50% { opacity: .4; transform: scale(.7); }
     }
 
+    /* Mobile menu */
+    .nav-burger { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+    .nav-burger svg { display: block; }
+    .nav-burger .icon-open { display: block; }
+    .nav-burger .icon-close { display: none; }
+    .nav-burger.open .icon-open { display: none; }
+    .nav-burger.open .icon-close { display: block; }
+    .mobile-menu { position: fixed; inset: 64px 0 0 0; background: var(--bg); z-index: 9000; flex-direction: column; padding: 40px 24px; transform: translateX(100%); transition: transform .3s ease; display: flex; pointer-events: none; }
+    .mobile-menu.open { transform: translateX(0); pointer-events: auto; }
+    .mobile-menu a { font-family: var(--sans); font-size: 24px; font-weight: 500; color: var(--text); text-decoration: none; padding: 22px 0; border-bottom: 1px solid var(--border); letter-spacing: -.02em; transition: opacity .2s; }
+    .mobile-menu a:first-child { border-top: 1px solid var(--border); }
+    .mobile-menu .mob-cta { margin-top: 36px; font-size: 15px; font-weight: 400; background: var(--text); color: var(--bg) !important; border: none; border-radius: 100px; padding: 16px 28px; text-align: center; display: block; letter-spacing: 0; }
+
     /* ── MOBILE ─────────────────────────────────── */
     @media (max-width: 768px) {
       /* Base layout */
@@ -709,7 +722,8 @@
 
       /* Nav */
       .nav-links { display: none; }
-      .nav-cta { font-size: 12px; padding: 7px 14px; }
+      .nav-cta { display: none; }
+      .nav-burger { display: flex; }
 
       /* Hero */
       #hero .col { padding-top: 112px; padding-bottom: 56px; }
@@ -741,7 +755,7 @@
       .section-grid-header { margin-bottom: 36px; }
       .proj-grid { grid-template-columns: 1fr; gap: 40px; }
       #work-strip .proj-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      #selected-works .proj-thumb { aspect-ratio: 4/3; }
+      #selected-works .proj-thumb { aspect-ratio: 1/1; }
 
       /* Contact */
       #contact .col { grid-template-columns: 1fr; gap: 48px; padding-top: 64px; padding-bottom: 64px; }
@@ -754,7 +768,6 @@
     @media (max-width: 480px) {
       .col { padding: 0 20px; }
       h1 { font-size: clamp(32px, 12vw, 44px); }
-      .nav-cta { display: none; }
       .hero-stats { gap: 20px; }
       #work-strip .proj-grid { grid-template-columns: 1fr; }
       .section-grid { padding: 48px 0; }
@@ -773,12 +786,22 @@
       <div class="nav-logo">triumph<span>.design</span></div>
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
-        <li><a href="#works">Works</a></li>
+        <li><a href="#work-strip">Works</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <a href="https://calendly.com/triumphohwojeheri/30min" target="_blank" class="nav-cta">Book a call<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 10L10 1M10 1H3M10 1V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <button class="nav-burger" id="nav-burger" aria-label="Menu">
+        <svg class="icon-open" width="22" height="16" viewBox="0 0 22 16" fill="none"><rect y="0" width="22" height="2" rx="1" fill="#0a0a0a"/><rect y="7" width="22" height="2" rx="1" fill="#0a0a0a"/><rect y="14" width="22" height="2" rx="1" fill="#0a0a0a"/></svg>
+        <svg class="icon-close" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M1 1L17 17M17 1L1 17" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
     </div>
   </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#about">About</a>
+    <a href="#work-strip">Works</a>
+    <a href="#contact">Contact</a>
+    <a href="https://calendly.com/triumphohwojeheri/30min" target="_blank" class="mob-cta">Book a call</a>
+  </div>
 
   <main>
 
@@ -1079,6 +1102,11 @@
         wrap.style.cssText = 'position:fixed;top:0;left:0;width:100%;will-change:transform;backface-visibility:hidden;';
         while (document.body.firstChild) wrap.appendChild(document.body.firstChild);
         document.body.appendChild(wrap);
+        // Move cursor + mobile-menu back outside the transformed wrapper
+        // (fixed elements inside a transformed parent lose true fixed positioning)
+        document.body.appendChild(document.getElementById('cursor'));
+        document.body.appendChild(document.getElementById('cursor-ring'));
+        document.body.appendChild(document.getElementById('mobile-menu'));
 
         let target = 0, current = 0, limit = 0;
         const EASE = 0.09;
@@ -1126,6 +1154,21 @@
         if (nav) nav.style.background = window.scrollY > 40 ? 'rgba(245,245,243,.97)' : 'rgba(245,245,243,.9)';
       }, { passive: true });
     }
+
+    // Mobile menu toggle
+    const burger = document.getElementById('nav-burger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    function closeMenu() {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', closeMenu);
+    });
   </script>
 </body>
 </html>
