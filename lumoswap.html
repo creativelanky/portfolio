@@ -20,7 +20,7 @@
     .col { width: 100%; margin: 0 auto; padding: 0 304px; }
     #cursor { position: fixed; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .2s, height .2s; }
     #cursor-ring { position: fixed; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(22,163,74,0.35); pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: transform .08s linear, width .3s, height .3s; }
-    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 80px 80px; pointer-events: none; z-index: 0; opacity: .4; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 80px 80px; pointer-events: none; z-index: 0; opacity: .2; }
     nav { position: fixed; inset: 0 0 auto 0; z-index: 800; height: 64px; border-bottom: 1px solid var(--border); background: rgba(245,245,243,.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
     nav .col { height: 100%; display: flex; align-items: center; justify-content: space-between; }
     .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: .04em; text-decoration: none; }
