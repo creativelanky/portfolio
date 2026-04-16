@@ -46,7 +46,6 @@
       background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
-      cursor: none;
     }
 
     /* ── COLUMN CONSTRAINT ───────────────────────── */
@@ -55,29 +54,6 @@
       margin: 0 auto;
       padding: 0 304px;
     }
-
-    /* ── CURSOR ─────────────────────────────────── */
-    #cursor {
-      position: fixed;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: transform .15s, width .2s, height .2s, background .2s;
-    }
-    #cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid rgba(22,163,74,0.35);
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: transform .08s linear, width .3s, height .3s, opacity .3s;
-    }
-    body:hover #cursor { opacity: 1; }
 
     /* ── GRID BACKGROUND ────────────────────────── */
     body::before {
@@ -169,6 +145,23 @@
       padding-top: 189px;
       padding-bottom: 0;
     }
+    .hero-avatar {
+      width: 104px; height: 104px; border-radius: 20px; object-fit: cover;
+      object-position: center top; margin-bottom: 24px; display: block;
+      border: 1.5px solid rgba(0,0,0,0.08);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
+      filter: grayscale(100%);
+      transition: filter .4s ease, box-shadow .4s ease;
+    }
+    .hero-avatar:hover {
+      filter: grayscale(0%);
+      animation: electric .6s ease infinite alternate;
+    }
+    @keyframes electric {
+      0%   { box-shadow: 0 0 0 3px var(--accent), 0 0 12px rgba(22,163,74,0.4), 0 0 32px rgba(22,163,74,0.15); }
+      50%  { box-shadow: 0 0 0 3px var(--accent), 0 0 20px rgba(22,163,74,0.6), 0 0 52px rgba(22,163,74,0.25); }
+      100% { box-shadow: 0 0 0 3px var(--accent), 0 0 10px rgba(22,163,74,0.3), 0 0 28px rgba(22,163,74,0.1); }
+    }
     .hero-label {
       font-family: var(--mono);
       font-size: 12px;
@@ -188,7 +181,7 @@
       background: var(--muted);
     }
     h1 {
-      font-size: clamp(52px, 8vw, 120px);
+      font-size: clamp(36px, 4.5vw, 72px);
       font-weight: 400;
       line-height: .95;
       letter-spacing: -.03em;
@@ -212,27 +205,68 @@
       max-width: 640px;
     }
     .hero-stats {
-      display: flex;
-      gap: 48px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
       flex-shrink: 0;
+      background: linear-gradient(160deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.3) 100%);
+      backdrop-filter: blur(24px) saturate(2) brightness(1.08);
+      -webkit-backdrop-filter: blur(24px) saturate(2) brightness(1.08);
+      border-radius: 22px;
+      padding: 20px 28px;
+      border-top: 1px solid rgba(255,255,255,0.95);
+      border-left: 1px solid rgba(255,255,255,0.7);
+      border-right: 1px solid rgba(255,255,255,0.2);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.08),
+        0 24px 48px rgba(0,0,0,0.06),
+        inset 0 1px 0 rgba(255,255,255,1),
+        inset 0 -1px 0 rgba(0,0,0,0.04),
+        inset 1px 0 0 rgba(255,255,255,0.6),
+        inset -1px 0 0 rgba(0,0,0,0.02);
+      position: relative;
     }
     .stat {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
+      align-items: center;
+      gap: 6px;
     }
     .stat-num {
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: -.03em;
+      font-family: var(--mono);
+      font-size: 38px;
+      font-weight: 500;
+      letter-spacing: -.02em;
       line-height: 1;
+      color: var(--text);
     }
     .stat-label {
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 10px;
       color: var(--muted);
-      letter-spacing: .06em;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .hero-stats::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.08) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-stats > * { position: relative; z-index: 1; }
+    .stat-sep {
+      font-family: var(--mono);
+      font-size: 32px;
+      color: var(--accent);
+      margin: 0 20px;
+      line-height: 1;
+      margin-bottom: 18px;
+      opacity: 0.8;
     }
     .hero-scroll-hint {
       position: absolute;
@@ -386,41 +420,65 @@
     .client-tag {
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 8px 16px;
+      gap: 9px;
+      padding: 7px 14px 7px 8px;
       border: 1px solid var(--border);
-      border-radius: 0;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
       position: relative;
-      overflow: hidden;
-      transition: border-color .3s, transform .3s, box-shadow .3s, background .3s;
-    }
-    .client-tag::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 60%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(22,163,74,0.15), transparent);
-      transition: left .5s ease;
+      overflow: visible;
+      transition: border-color .25s, transform .25s, box-shadow .25s, background .25s;
+      cursor: default;
     }
     .client-tag:hover {
       border-color: var(--accent);
       transform: translateY(-2px);
-      box-shadow: 0 0 14px rgba(22,163,74,0.15), 0 6px 20px rgba(0,0,0,0.1);
-      background: rgba(22,163,74,0.05);
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.08), 0 8px 24px rgba(0,0,0,0.08);
+      background: #fff;
     }
-    .client-tag:hover::after { left: 160%; }
     .client-tag:hover .client-name { color: var(--text); }
+    .client-tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--mono);
+      font-size: 11px;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 6px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s ease, transform .2s ease;
+      letter-spacing: .04em;
+      z-index: 10;
+    }
+    .client-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: var(--text);
+    }
+    .client-tag:hover .client-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
     .client-logo {
-      height: 22px;
+      height: 20px;
       width: auto;
       display: block;
-      opacity: 0.9;
-      transition: transform .3s;
+      opacity: 0.85;
+      transition: transform .25s, opacity .25s;
     }
-    .client-tag:hover .client-logo { transform: scale(1.1); }
+    .client-tag:hover .client-logo { transform: scale(1.08); opacity: 1; }
     .client-name {
       font-family: var(--mono);
-      font-size: 16px;
+      font-size: 13px;
       color: var(--muted);
       letter-spacing: .06em;
       transition: color .3s;
@@ -438,7 +496,7 @@
       margin-bottom: 56px;
     }
     .section-grid-header h2 {
-      font-size: clamp(32px, 4vw, 56px);
+      font-size: clamp(26px, 3vw, 42px);
       font-weight: 400;
       letter-spacing: -.03em;
     }
@@ -462,7 +520,6 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
-      cursor: none;
     }
     .proj-thumb {
       aspect-ratio: 3/2;
@@ -683,7 +740,7 @@
       gap: 96px;
     }
     .contact-left h2 {
-      font-size: clamp(36px, 5vw, 72px);
+      font-size: clamp(28px, 3.5vw, 52px);
       font-weight: 400;
       letter-spacing: -.03em;
       line-height: 1;
@@ -819,7 +876,9 @@
       .hero-sub { flex-direction: column; align-items: flex-start; gap: 28px; margin-top: 28px; }
       .hero-stats { flex-direction: row; gap: 28px; }
       .stat { align-items: flex-start; }
+      .hero-stats { padding: 16px 20px; }
       .stat-num { font-size: 28px; }
+      .stat-sep { font-size: 24px; margin: 0 12px; margin-bottom: 14px; }
       .hero-scroll-hint { display: none; }
 
       /* About */
@@ -863,8 +922,6 @@
   </style>
 </head>
 <body>
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
 
   <!-- ── NAV ── -->
   <nav>
@@ -894,11 +951,8 @@
     <!-- ── HERO ── -->
     <section id="hero">
       <div class="col">
-        <div class="avail-badge">
-          <span class="avail-dot"></span>
-          Available for projects
-        </div>
         <div class="hero-label">Product Designer — Lagos / Remote</div>
+        <img src="photo-3.jpg" alt="Triumph Ohwojeheri" class="hero-avatar" />
         <h1>Designing for the<br /><em>impossible.</em></h1>
         <div class="hero-sub">
           <p class="hero-desc">Hey, I'm <strong>Triumph</strong>. A product designer who thrives at the intersection of <strong>craft and code</strong>. I've spent 4 years building digital products for early-stage startups across Web3, Fintech, and AI — turning complex problems into interfaces people actually want to use.
@@ -910,30 +964,36 @@
               <span class="stat-num">4+</span>
               <span class="stat-label">Years</span>
             </div>
+            <span class="stat-sep">:</span>
             <div class="stat">
               <span class="stat-num">20+</span>
               <span class="stat-label">Projects</span>
             </div>
+            <span class="stat-sep">:</span>
             <div class="stat">
               <span class="stat-num">3</span>
               <span class="stat-label">Sectors</span>
             </div>
           </div>
         </div>
+        <div class="avail-badge" style="margin-top: 32px;">
+          <span class="avail-dot"></span>
+          Available for projects
+        </div>
         <div class="hero-about">
           <div class="about-clients">
             <div class="clients-label">Worked with</div>
             <div class="clients-list">
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/DGG4u8MZXCH5PJPoboIil9VWQA.png" alt="" /><span class="client-name">Silk</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/kE55RDzRJ0Kk2KRRvnzRSziuLSw.png" alt="" /><span class="client-name">Bitazza</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/65MXir6w4pi4QFBHSSIdFLhIFY.png" alt="" /><span class="client-name">Kryptos</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/DGG4u8MZXCH5PJPoboIil9VWQA.png" alt="" /><span class="client-name">Silk</span><span class="client-tooltip">2024–2025 · Visual Designer</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/kE55RDzRJ0Kk2KRRvnzRSziuLSw.png" alt="" /><span class="client-name">Bitazza</span><span class="client-tooltip">2023 · UI/UX Designer</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/65MXir6w4pi4QFBHSSIdFLhIFY.png" alt="" /><span class="client-name">Kryptos</span><span class="client-tooltip">2023 · UI/UX Designer</span></div>
               <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/Uth3cmx317e493TqWqbHP3FYMA.png" alt="" /><span class="client-name">Xircus</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/Ni0Ev9Yhg1VGp0b0ge7bg8JBM.png" alt="" /><span class="client-name">Lumoswap</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/SEkUjFCLqWmRjL6l3zKDpVjPqf4.png" alt="" /><span class="client-name">Nerfbot</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/44FLO0RSzpjvbKHebPn73dxW8AY.png" alt="" /><span class="client-name">Feedpay</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/Ix3rx58T4uvPbm4vNXwvprqdlbY.png" alt="" /><span class="client-name">Get 10101</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/BmDntypIr7NKWqck7FqjXKF5kc.png" alt="" /><span class="client-name">Dreamspace</span></div>
-              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/sC3GSUGIFGTJjRWwEvR0hrpp8sk.png" alt="" /><span class="client-name">Human Tech</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/Ni0Ev9Yhg1VGp0b0ge7bg8JBM.png" alt="" /><span class="client-name">Lumoswap</span><span class="client-tooltip">2025</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/SEkUjFCLqWmRjL6l3zKDpVjPqf4.png" alt="" /><span class="client-name">Nerfbot</span><span class="client-tooltip">2023 · UI/UX Designer</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/44FLO0RSzpjvbKHebPn73dxW8AY.png" alt="" /><span class="client-name">Feedpay</span><span class="client-tooltip">2023 · UI/UX Designer</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/Ix3rx58T4uvPbm4vNXwvprqdlbY.png" alt="" /><span class="client-name">Get 10101</span><span class="client-tooltip">2023 · UI/UX Designer</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/BmDntypIr7NKWqck7FqjXKF5kc.png" alt="" /><span class="client-name">Dreamspace</span><span class="client-tooltip">2024 · Product Designer</span></div>
+              <div class="client-tag"><img class="client-logo" src="https://framerusercontent.com/images/sC3GSUGIFGTJjRWwEvR0hrpp8sk.png" alt="" /><span class="client-name">Human Tech</span><span class="client-tooltip">2024–2025 · Visual Designer</span></div>
             </div>
           </div>
         </div>
@@ -943,6 +1003,7 @@
         scroll to explore
       </div>
     </section>
+
 
     <!-- ── SELECTED WORKS ── -->
     <section class="section-grid" id="selected-works">
@@ -1174,35 +1235,35 @@
   </footer>
 
   <script>
-    // ── CURSOR ──
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursor-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    function animateCursor() {
-      cursor.style.left = mx + 'px';
-      cursor.style.top = my + 'px';
-      rx += (mx - rx) * .12;
-      ry += (my - ry) * .12;
-      ring.style.left = rx + 'px';
-      ring.style.top = ry + 'px';
-      requestAnimationFrame(animateCursor);
+    // ── STAT COUNT-UP ──
+    const stats = [
+      { el: document.querySelectorAll('.stat-num')[0], target: 4, suffix: '+' },
+      { el: document.querySelectorAll('.stat-num')[1], target: 20, suffix: '+' },
+      { el: document.querySelectorAll('.stat-num')[2], target: 3, suffix: '' },
+    ];
+    let counted = false;
+    function countUp() {
+      if (counted) return;
+      counted = true;
+      stats.forEach(({ el, target, suffix }) => {
+        let start = 0;
+        const duration = 1200;
+        const step = timestamp => {
+          if (!start) start = timestamp;
+          const progress = Math.min((timestamp - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(ease * target) + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = target + suffix;
+        };
+        requestAnimationFrame(step);
+      });
     }
-    animateCursor();
-    document.querySelectorAll('a, button, .work-card').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.width = '18px';
-        cursor.style.height = '18px';
-        ring.style.width = '56px';
-        ring.style.height = '56px';
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.style.width = '10px';
-        cursor.style.height = '10px';
-        ring.style.width = '36px';
-        ring.style.height = '36px';
-      });
-    });
+    const statObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { countUp(); statObserver.disconnect(); }
+    }, { threshold: 0.5 });
+    const statsEl = document.querySelector('.hero-stats');
+    if (statsEl) statObserver.observe(statsEl);
 
     // ── SMOOTH SCROLL (desktop only — transform-based) ──
     const isMobile = window.matchMedia('(max-width: 768px)').matches || ('ontouchstart' in window && window.innerWidth <= 768);
@@ -1218,10 +1279,8 @@
         wrap.style.cssText = 'position:fixed;top:0;left:0;width:100%;will-change:transform;backface-visibility:hidden;';
         while (document.body.firstChild) wrap.appendChild(document.body.firstChild);
         document.body.appendChild(wrap);
-        // Move cursor + mobile-menu back outside the transformed wrapper
+        // Move mobile-menu back outside the transformed wrapper
         // (fixed elements inside a transformed parent lose true fixed positioning)
-        document.body.appendChild(document.getElementById('cursor'));
-        document.body.appendChild(document.getElementById('cursor-ring'));
         document.body.appendChild(document.getElementById('mobile-menu'));
 
         let target = 0, current = 0, limit = 0;
