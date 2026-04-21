@@ -192,16 +192,17 @@
       color: var(--muted);
     }
     .hero-sub {
-      margin-top: 48px;
+      margin-top: 16px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
       gap: 40px;
     }
     .hero-desc {
-      font-size: 17px;
+      font-size: 16px;
+      font-weight: 400;
       line-height: 1.7;
-      color: var(--dim);
+      color: var(--muted);
       max-width: 640px;
     }
     .hero-stats {
@@ -302,7 +303,7 @@
 
     /* ── ABOUT (merged into hero) ───────────────── */
     .hero-about {
-      margin-top: 80px;
+      margin-top: 12px;
       padding-bottom: 96px;
     }
     #skills {
@@ -401,7 +402,7 @@
     }
     .skill-item:hover .skill-dot { transform: scale(1.5); }
     .about-clients {
-      margin-top: 40px;
+      margin-top: 16px;
     }
     .clients-label {
       font-family: var(--mono);
@@ -627,10 +628,12 @@
     .proj-card-locked:hover .proj-thumb { border-radius: 20px; }
 
     /* Thumbnail backgrounds — Selected Works */
-    .bg-terrace { background: linear-gradient(135deg, #dce8f7 0%, #c5d5f0 40%, #a8c4e8 100%); }
-    .bg-lumo    { background: linear-gradient(135deg, #cceee8 0%, #a8ddd5 40%, #7fccc0 100%); }
-    .bg-sat     { background: linear-gradient(135deg, #2a1545 0%, #3d1f6b 40%, #1a0d30 100%); }
-    .bg-glitch  { background: linear-gradient(135deg, #ede8f8 0%, #ddd0f5 40%, #ccb8ee 100%); }
+    .bg-terrace   { background: linear-gradient(135deg, #dce8f7 0%, #c5d5f0 40%, #a8c4e8 100%); }
+    .bg-lumo      { background: linear-gradient(135deg, #cceee8 0%, #a8ddd5 40%, #7fccc0 100%); }
+    .bg-sat       { background: linear-gradient(135deg, #2a1545 0%, #3d1f6b 40%, #1a0d30 100%); }
+    .bg-glitch    { background: linear-gradient(135deg, #ede8f8 0%, #ddd0f5 40%, #ccb8ee 100%); }
+    .bg-washpadi  { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 40%, #7dd3fc 100%); }
+    .bg-oaksjet   { background: linear-gradient(135deg, #1c1917 0%, #292524 40%, #1c1917 100%); }
     /* Thumbnail backgrounds — All Works */
     .bg-crest   { background: linear-gradient(135deg, #ebe0f5 0%, #d8c8f0 40%, #c4b0e8 100%); }
     .bg-super   { background: linear-gradient(135deg, #f5ece0 0%, #f0d8c0 40%, #e8c4a0 100%); }
@@ -644,7 +647,7 @@
     .bg-silk    { background: linear-gradient(135deg, #f0f0f0 0%, #e4e4e4 40%, #d4d4d4 100%); }
     .bg-humantech { background: linear-gradient(135deg, #e4f5e4 0%, #cceacc 40%, #b4e0b4 100%); }
 
-    #work-strip .proj-grid { grid-template-columns: repeat(2, 1fr); }
+    #work-strip .proj-grid { grid-template-columns: repeat(2, 1fr); gap: 16px 40px; }
     @media (max-width: 1100px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px) { .proj-grid { grid-template-columns: 1fr; } #work-strip .proj-grid { grid-template-columns: 1fr; } }
 
@@ -814,6 +817,43 @@
       color: var(--muted);
     }
 
+    /* ── LIGHTBOX MODAL ─────────────────────────── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .lightbox.active { opacity: 1; pointer-events: all; }
+    .lightbox-inner {
+      position: relative;
+      max-width: min(90vw, 1100px);
+      max-height: 90vh;
+      display: flex; align-items: center; justify-content: center;
+      transform: scale(.96); transition: transform .25s ease;
+    }
+    .lightbox.active .lightbox-inner { transform: scale(1); }
+    .lightbox-inner img {
+      max-width: 100%; max-height: 90vh;
+      border-radius: 10px;
+      display: block;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: fixed; top: 24px; right: 28px;
+      width: 40px; height: 40px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: #fff; font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      cursor: none; transition: background .2s, border-color .2s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.4); }
+    #work-strip .proj-card { cursor: pointer; }
+
     /* ── AVAILABILITY BADGE ─────────────────────── */
     .avail-badge {
       display: inline-flex;
@@ -954,10 +994,7 @@
         <img src="photo-3.jpg" alt="Triumph Ohwojeheri" class="hero-avatar" />
         <h1>Designing for the<br /><em>impossible.</em></h1>
         <div class="hero-sub">
-          <p class="hero-desc">Hey, I'm <strong>Triumph</strong>. A product designer who thrives at the intersection of <strong>craft and code</strong>. I've spent 4 years building digital products for early-stage startups across Web3, Fintech, and AI — turning complex problems into interfaces people actually want to use.
-            <br /><br />
-            I also vibe code — using AI-assisted development to bring my designs to life end-to-end. I care about <strong>positive team vibes</strong>, new ideas, and pushing design past its comfortable edges.
-          </p>
+          <p class="hero-desc">Hey, I'm <strong>Triumph</strong>. A product designer with 4 years building across Web3, Fintech, and AI. I turn complex problems into interfaces people actually want to use — and vibe code to bring them to life end-to-end.</p>
           <div class="hero-stats">
             <div class="stat">
               <span class="stat-num">4+</span>
@@ -975,7 +1012,7 @@
             </div>
           </div>
         </div>
-        <div class="avail-badge" style="margin-top: 32px;">
+        <div class="avail-badge" style="margin-top: 16px;">
           <span class="avail-dot"></span>
           Available for projects
         </div>
@@ -1013,7 +1050,7 @@
         <div class="proj-grid">
 
           <a href="terrace.html" class="proj-card">
-            <div class="proj-thumb"><img src="terrace-thumb.jpg" alt="Terrace" /></div>
+            <div class="proj-thumb"><img src="terrace cover.jpg" alt="Terrace" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">Campaign</span></div>
@@ -1025,8 +1062,21 @@
             </div>
           </a>
 
+          <a href="oaksjet.html" class="proj-card">
+            <div class="proj-thumb"><img src="Oakjets cover.jpg" alt="Oaksjet" /></div>
+            <div class="proj-body">
+              <div class="proj-meta">
+                <div class="proj-tags"><span class="proj-tag">Travel</span><span class="proj-tag">Luxury</span></div>
+                <span class="proj-year">2025</span>
+              </div>
+              <h3 class="proj-title">Oaksjet</h3>
+              <p class="proj-desc">A private jet booking platform for the Nigerian market, designed for both mobile and desktop with a dedicated operator profile experience.</p>
+              <span class="proj-link">View case study →</span>
+            </div>
+          </a>
+
           <a href="lumoswap.html" class="proj-card">
-            <div class="proj-thumb"><img src="lumoswap.jpg" alt="Lumoswap" /></div>
+            <div class="proj-thumb"><img src="Lumoswap cover.jpg" alt="Lumoswap" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">DeFi</span></div>
@@ -1039,7 +1089,7 @@
           </a>
 
           <a href="space-and-time.html" class="proj-card">
-            <div class="proj-thumb"><img src="dreamspace.jpg" alt="Dreamspace" /></div>
+            <div class="proj-thumb"><img src="Dreamspace cover.jpg" alt="Dreamspace" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">AI</span></div>
@@ -1051,8 +1101,21 @@
             </div>
           </a>
 
+          <a href="washpadi.html" class="proj-card">
+            <div class="proj-thumb"><img src="Washpadi cover.jpg" alt="Washpadi" /></div>
+            <div class="proj-body">
+              <div class="proj-meta">
+                <div class="proj-tags"><span class="proj-tag">Mobile App</span><span class="proj-tag">Consumer</span></div>
+                <span class="proj-year">2025</span>
+              </div>
+              <h3 class="proj-title">Washpadi</h3>
+              <p class="proj-desc">A laundry ordering service designed across three surfaces — customer mobile app, vendor management app, and internal admin platform.</p>
+              <span class="proj-link">View case study →</span>
+            </div>
+          </a>
+
           <div class="proj-card-locked">
-            <div class="proj-thumb"><img src="glitch-markets.jpg" alt="Glitch Market" /></div>
+            <div class="proj-thumb"><img src="Glitch markets cover.jpg" alt="Glitch Market" /></div>
             <div class="proj-body">
               <div class="proj-meta">
                 <div class="proj-tags"><span class="proj-tag">AI</span><span class="proj-tag">Web3</span></div>
@@ -1076,11 +1139,87 @@
         <div class="proj-grid">
 
           <div class="proj-card">
+            <div class="proj-thumb"><img src="oaks1.jpg" alt="Oaksjet" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="oaks2.jpg" alt="Oaksjet" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="oaks3.jpg" alt="Oaksjet" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="oaks4.jpg" alt="Oaksjet" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Frame 253.jpg" alt="" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Frame 254.jpg" alt="" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="01 Free iPhone 16 Pro Mockup Holding By Hand.jpg" alt="" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="User 1.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="oaks5.jpg" alt="Oaksjet" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Admin 1.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="02 Free iPhone 16 Pro Mockup PSD On Wood.jpg" alt="" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Vendor 1.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="oaks6.jpg" alt="Oaksjet" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="User 2.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Scene-16.jpg" alt="" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Admin 2.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
             <div class="proj-thumb"><img src="terrace-grid.jpg" alt="Terrace" /></div>
           </div>
 
           <div class="proj-card">
+            <div class="proj-thumb"><img src="Vendor 2.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Admin 3.jpg" alt="Washpadi" /></div>
+          </div>
+
+          <div class="proj-card">
             <div class="proj-thumb"><img src="lumoswap-grid.jpg" alt="Lumoswap" /></div>
+          </div>
+
+          <div class="proj-card">
+            <div class="proj-thumb"><img src="Admin 4.jpg" alt="Washpadi" /></div>
           </div>
 
           <div class="proj-card">
@@ -1092,11 +1231,11 @@
           </div>
 
           <div class="proj-card">
-            <div class="proj-thumb"><img src="supersocial-grid.jpg" alt="Supersocial" /></div>
+            <div class="proj-thumb"><img src="agentic-grid.jpg" alt="Agentic AI" /></div>
           </div>
 
           <div class="proj-card">
-            <div class="proj-thumb"><img src="agentic-grid.jpg" alt="Agentic AI" /></div>
+            <div class="proj-thumb"><img src="supersocial-grid.jpg" alt="Supersocial" /></div>
           </div>
 
           <div class="proj-card">
@@ -1462,6 +1601,39 @@
 
       cards.forEach(card => makeDraggable(card));
     })();
+
+    // ── LIGHTBOX ──
+    document.addEventListener('DOMContentLoaded', () => {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxClose = document.getElementById('lightbox-close');
+
+      function openLightbox(src) {
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+      }
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+      }
+
+      document.querySelectorAll('#work-strip .proj-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const img = card.querySelector('img');
+          if (img) openLightbox(img.src);
+        });
+      });
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    });
   </script>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-inner">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+    <button class="lightbox-close" id="lightbox-close">✕</button>
+  </div>
 </body>
 </html>

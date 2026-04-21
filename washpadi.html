@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terrace — Triumph Ohwojeheri</title>
+  <title>Washpadi — Triumph Ohwojeheri</title>
   <link rel="icon" type="image/avif" href="Favicon.avif" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,7 +54,6 @@
 
     /* ── MOCK SCREENS ── */
     .screens-section { padding: 0 0 96px; }
-    .screens-section .col { }
     .screens-label { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
     .screens-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--muted); }
     .screens-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
@@ -68,8 +67,6 @@
     .next-project .col { display: flex; align-items: center; justify-content: space-between; padding-top: 48px; padding-bottom: 48px; }
     .next-label { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
     .next-title { font-size: 24px; font-weight: 600; letter-spacing: -.02em; }
-    .next-arrow { width: 48px; height: 48px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--text); transition: border-color .2s, background .2s, transform .2s; }
-    .next-arrow:hover { border-color: var(--border-hover); background: rgba(255,255,255,.05); transform: translateX(4px); }
     .next-project a.next-row { text-decoration: none; color: inherit; transition: opacity .2s; }
     .next-project a.next-row:hover { opacity: .7; }
 
@@ -114,12 +111,12 @@
     <section class="project-hero">
       <div class="col">
         <div class="project-meta">
-          <span class="project-tag">Web3</span>
-          <span class="project-tag">Campaign</span>
+          <span class="project-tag">Mobile App</span>
+          <span class="project-tag">Consumer</span>
           <span class="project-year">2025</span>
         </div>
-        <h1 class="project-title">Terrace</h1>
-        <p class="project-subtitle">A Web3 loot box campaign experience designed to drive engagement and onboard new users into a gamified on-chain rewards ecosystem.</p>
+        <h1 class="project-title">Washpadi</h1>
+        <p class="project-subtitle">A laundry ordering service designed across three surfaces — a customer-facing mobile app, a vendor management app, and an internal admin platform.</p>
       </div>
     </section>
 
@@ -128,9 +125,9 @@
         <div>
           <div class="section-label">Overview</div>
           <div class="body-text">
-            <p>Terrace is a Web3 campaign platform built around the concept of loot boxes — randomized reward drops that incentivize on-chain participation. The challenge was designing an experience that felt exciting and gamified while remaining accessible to users new to Web3.</p>
-            <p>The design system centered on tension and reveal — every interaction built anticipation toward the unboxing moment. Animations, micro-interactions, and progressive disclosure were all carefully choreographed to maximize that dopamine hit.</p>
-            <p>I handled the full product design scope: user flows, component system, campaign dashboard for operators, and the end-user claim experience.</p>
+            <p>Washpadi is an on-demand laundry service that connects customers with local laundry vendors. The product spans three distinct user types — customers placing orders, vendors fulfilling them, and admins overseeing the entire operation. Each surface had its own logic, goals, and constraints.</p>
+            <p>The customer app needed to feel as frictionless as ordering food — quick pickup scheduling, live order tracking, and a history of past orders. The vendor app was a different problem entirely: a lightweight operations tool vendors could use on any Android device to accept jobs, update statuses, and manage pickups without needing technical expertise.</p>
+            <p>The admin platform tied everything together — giving the Washpadi team visibility into orders, vendor performance, disputes, and platform health. Designing across all three surfaces required a shared design language while maintaining the right cognitive load for each audience.</p>
           </div>
         </div>
         <div>
@@ -138,9 +135,9 @@
           <ul class="detail-list">
             <li><span class="detail-key">Year</span><span class="detail-val">2025</span></li>
             <li><span class="detail-key">Role</span><span class="detail-val">Lead Product Designer</span></li>
-            <li><span class="detail-key">Sector</span><span class="detail-val">Web3 / Gaming</span></li>
+            <li><span class="detail-key">Sector</span><span class="detail-val">Consumer / On-Demand Services</span></li>
             <li><span class="detail-key">Deliverables</span><span class="detail-val">UX, UI, Design System</span></li>
-            <li><span class="detail-key">Duration</span><span class="detail-val">6 weeks</span></li>
+            <li><span class="detail-key">Surfaces</span><span class="detail-val">Customer App, Vendor App, Admin</span></li>
           </ul>
         </div>
       </div>
@@ -151,16 +148,31 @@
         <div class="screens-label">Screens</div>
         <div class="screens-grid">
           <div class="screen-card screen-1">
-            <img src="terrace-1.jpg" alt="Campaign Landing" style="width:100%;height:auto;display:block;" />
-            <span class="screen-label">Campaign Landing</span>
+            <img src="User 1.jpg" alt="Customer App" style="width:100%;height:auto;display:block;" />
+            <span class="screen-label">Customer App</span>
           </div>
           <div class="screen-card screen-2">
-            <img src="terrace-2.jpg" alt="Loot Box Opening" style="width:100%;height:auto;display:block;" />
-            <span class="screen-label">Loot Box Opening</span>
+            <img src="User 2.jpg" alt="Customer App" style="width:100%;height:auto;display:block;" />
           </div>
           <div class="screen-card screen-3">
-            <img src="terrace-3.jpg" alt="Rewards Dashboard" style="width:100%;height:auto;display:block;" />
-            <span class="screen-label">Rewards Dashboard</span>
+            <img src="Vendor 1.jpg" alt="Vendor App" style="width:100%;height:auto;display:block;" />
+            <span class="screen-label">Vendor App</span>
+          </div>
+          <div class="screen-card screen-4">
+            <img src="Vendor 2.jpg" alt="Vendor App" style="width:100%;height:auto;display:block;" />
+          </div>
+          <div class="screen-card screen-5">
+            <img src="Admin 1.jpg" alt="Admin Platform" style="width:100%;height:auto;display:block;" />
+            <span class="screen-label">Admin Platform</span>
+          </div>
+          <div class="screen-card screen-6">
+            <img src="Admin 2.jpg" alt="Admin Platform" style="width:100%;height:auto;display:block;" />
+          </div>
+          <div class="screen-card screen-7">
+            <img src="Admin 3.jpg" alt="Admin Platform" style="width:100%;height:auto;display:block;" />
+          </div>
+          <div class="screen-card screen-8">
+            <img src="Admin 4.jpg" alt="Admin Platform" style="width:100%;height:auto;display:block;" />
           </div>
         </div>
       </div>
@@ -168,9 +180,9 @@
 
     <div class="next-project">
       <div class="col">
-        <a href="lumoswap.html" class="next-row">
+        <a href="oaksjet.html" class="next-row">
           <div class="next-label">Next Project</div>
-          <div class="next-title">Lumoswap →</div>
+          <div class="next-title">Oaksjet →</div>
         </a>
       </div>
     </div>
