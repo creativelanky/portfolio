@@ -75,11 +75,12 @@ a.accent,
   align-items: center;
   gap: 4px;
 }
-.chev {
+.arr {
   flex-shrink: 0;
   transition: transform 0.15s ease;
 }
-a:hover > .chev { transform: translateX(2px); }
+a:hover > .arr { transform: translateX(2px); }
+a:hover > .arr-ne { transform: translate(2px, -2px); }
 
 /* ── Header ─────────────────────────────────────────────── */
 .top-row {
