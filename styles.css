@@ -119,20 +119,41 @@ a:hover > .arr-ne { transform: translate(2px, -2px); }
 .avatar-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .photo-hint {
+  position: relative;
   white-space: nowrap;
-  padding: 5px 14px;
-  border-radius: 999px;
-  color: #b45309;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.20), rgba(217, 119, 6, 0.07));
-  border: 1px solid rgba(217, 119, 6, 0.20);
+  padding: 5px 11px;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(95deg, #fb923c, #ea580c);
+  border-radius: 15px;
   pointer-events: none;
   opacity: 0;
   animation: hintIn 0.5s ease 0.9s forwards, hintBob 2.8s ease-in-out 1.4s infinite;
 }
-[data-theme="dark"] .photo-hint {
-  color: #f2a65a;
-  background: linear-gradient(135deg, rgba(242, 166, 90, 0.18), rgba(242, 166, 90, 0.05));
-  border-color: rgba(242, 166, 90, 0.22);
+/* iMessage-style tail, pointing back at the avatar */
+.photo-hint::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  bottom: 0;
+  left: -6px;
+  width: 15px;
+  height: 15px;
+  background: #fb923c;
+  border-bottom-right-radius: 13px;
+}
+.photo-hint::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: -9px;
+  width: 9px;
+  height: 15px;
+  background: var(--bg);
+  border-bottom-right-radius: 9px;
 }
 .photo-hint.hide { animation: none; opacity: 0; transition: opacity 0.3s ease; }
 
@@ -167,8 +188,8 @@ a:hover > .arr-ne { transform: translate(2px, -2px); }
 .photos-modal.open { opacity: 1; pointer-events: auto; }
 
 .photos-panel {
-  width: min(640px, 100%);
-  max-height: 100%;
+  width: min(400px, 100%);
+  max-height: min(620px, 100%);
   display: flex;
   flex-direction: column;
   background: var(--bg);
