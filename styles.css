@@ -67,7 +67,19 @@ a.quiet {
 }
 a.quiet:hover { color: var(--text); }
 
-.arrow { display: inline-block; font-size: 0.85em; }
+/* Chevron icon on standalone links */
+a.accent,
+.view-link,
+.link-item .link-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.chev {
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+a:hover > .chev { transform: translateX(2px); }
 
 /* ── Header ─────────────────────────────────────────────── */
 .top-row {
@@ -175,7 +187,9 @@ a.quiet:hover { color: var(--text); }
 .work-name a:hover { text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--faint); text-underline-offset: 4px; }
 .work-card .work-desc { margin: 0; line-height: 1.6; }
 .view-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 12px;
   color: var(--muted);
 }
