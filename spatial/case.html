@@ -5,136 +5,129 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Case study — Triumph Ohwojeheri</title>
 <link rel="icon" href="../Favicon.avif">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <link rel="stylesheet" href="space.css">
 <link rel="stylesheet" href="case.css">
 <script src="cases.js"></script>
 </head>
 <body class="case">
 <header class="topbar">
-  <a class="brand" href="index.html#work"><span class="mono">t.</span><span>Back to<br>the room</span></a>
-  <span class="tb-title" id="tbTitle"></span>
-  <a class="tb-next" id="tbNext"></a>
+  <a class="home" href="index.html#work"><span class="mono">t.</span>Triumph Ohwojeheri</a>
+  <div class="tb-right">
+    <a class="tb-next" id="tbNext"></a>
+    <button class="theme" id="theme" aria-label="Switch light or dark mode">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
 </header>
 <main id="main"></main>
 <nav class="orn" id="orn" aria-label="Sections"></nav>
-<div class="lightbox" id="lb"><img id="lbImg" alt=""><p id="lbCap"></p><button class="close" aria-label="Close">✕</button></div>
+<div class="lightbox" id="lb"><img id="lbImg" alt=""><p id="lbCap"></p></div>
 
 <script>
 (function(){
 "use strict";
 function src(f){ return '../' + encodeURI(f); }
+function web(f){ return 'img/' + encodeURI(f); }
+function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 var q = new URLSearchParams(location.search).get('p');
 var idx = Math.max(0, CASES.findIndex(function(c){ return c.slug === q; }));
-var c = CASES[idx], next = CASES[(idx + 1) % CASES.length], num = String(idx + 1).padStart(2, '0');
+var c = CASES[idx], next = CASES[(idx + 1) % CASES.length];
 document.title = c.name + ' — Triumph Ohwojeheri';
-document.getElementById('tbTitle').textContent = c.name;
-var tbNext = document.getElementById('tbNext'); tbNext.href = 'case.html?p=' + next.slug; tbNext.innerHTML = 'Next: ' + next.name + ' <span>→</span>';
+var tbNext = document.getElementById('tbNext'); tbNext.href = 'case.html?p=' + next.slug; tbNext.textContent = 'Next: ' + next.name;
 
 function fig(img, cap, cls){
-  return '<figure class="frame rv ' + (cls || '') + '" data-cap="' + (cap || '').replace(/"/g, '&quot;') + '"><div class="fwin"><img src="' + src(img) + '" alt="' + (cap || c.name).replace(/"/g, '&quot;') + '" loading="lazy"></div></figure>';
+  return '<figure class="fig rv ' + (cls || '') + '"><div class="fwin"><img src="' + web(img) + '" data-full="' + src(img) + '" alt="' + esc(cap || c.name) + '" loading="lazy"></div>' +
+    (cap ? '<figcaption>' + cap + '</figcaption>' : '') + '</figure>';
 }
-function sec(id, label, body){ return '<section class="sec" id="' + id + '"><div class="sl rv"><span>' + label + '</span></div><div class="sb">' + body + '</div></section>'; }
+function paras(list, cls){ return list.map(function(p){ return '<p class="' + (cls || 'body') + ' rv">' + p + '</p>'; }).join(''); }
+var n = 0;
+function sec(id, name, body){ n++; return '<section class="sec" id="' + id + '"><h2 class="sname rv"><span>' + String(n).padStart(2, '0') + '</span>' + name + '</h2><div class="sbody">' + body + '</div></section>'; }
 
-/* the hero shows the project's wide overview shot (or its first screen); the gallery doesn't repeat it */
-var heroItem = c.screens.items.filter(function(s){ return s.wide; })[0] || c.screens.items[0];
-var gallery = c.screens.items.filter(function(s){ return s !== heroItem; });
-var heroIsCover = heroItem.img === c.cover;
+/* images used in the hero or decisions aren't repeated in the gallery */
+var used = [c.hero].concat(c.decisions.map(function(d){ return d.img; }));
+var rest = c.screens.filter(function(s){ return used.indexOf(s.img) < 0; });
 
-var H = '';
-/* hero */
-H += '<section class="hero"><div class="kick rv">Case study ' + num + ' · ' + c.category + ' · ' + c.year + '</div>' +
-     '<h1 class="rv">' + c.name + '</h1><p class="statement rv">' + c.statement + '</p>' +
-     '<div class="hero-grid"><p class="intro rv">' + c.intro + '</p>' +
-     '<dl class="mgrid rv">' + c.meta.map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl></div>' +
-     fig(heroItem.img, heroItem.t, 'hero-img' + (heroIsCover ? ' contain' : '')) + '</section>';
+var H = '<header class="head">' +
+  '<p class="eyebrow rv">Case study · ' + c.category + ' · ' + c.year + '</p>' +
+  '<h1 class="rv">' + c.name + '</h1>' +
+  '<div class="head-grid"><p class="summary rv">' + c.summary + '</p>' +
+  '<dl class="facts rv">' + c.meta.map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl></div></header>' +
+  '<div class="hero-wrap"><div class="hero' + (c.heroContain ? ' contain' : '') + '" id="hero">' + fig(c.hero, '') + '</div></div>';
 
-/* overview */
-H += sec('overview', 'Overview', '<h2 class="rv">' + c.overview.title + '</h2>' + c.overview.paras.map(function(p){ return '<p class="body rv">' + p + '</p>'; }).join(''));
+H += '<article class="article">';
+H += sec('context', 'Context', paras(c.context));
+H += sec('problem', 'The problem', paras(c.problem) +
+  '<div class="before rv"><p class="mini">How it worked before</p><ol>' + c.before.map(function(b){ return '<li>' + b + '</li>'; }).join('') + '</ol></div>');
+H += sec('role', 'My role', paras(c.role));
+H += sec('findings', 'What I found', '<ul class="points">' + c.findings.map(function(f){ return '<li class="rv"><strong>' + f[0] + '</strong> ' + f[1] + '</li>'; }).join('') + '</ul>');
+H += sec('process', 'Process', '<ol class="steps">' + c.process.map(function(s, i){ return '<li class="rv"><span>' + String(i + 1).padStart(2, '0') + '</span><b>' + s[0] + '</b><p>' + s[1] + '</p></li>'; }).join('') + '</ol>');
+H += sec('decisions', 'Decisions', c.decisions.map(function(d){
+  return '<div class="decision"><h3 class="rv">' + d.t + '</h3><p class="body rv">' + d.d + '</p><p class="trade rv"><span>Trade-off.</span> ' + d.tradeoff + '</p>' +
+    (d.img ? fig(d.img, d.cap, 'wide') : '') + '</div>'; }).join(''));
+if (rest.length || c.confidential) H += sec('screens', 'More screens', (c.confidential ? '<p class="body rv">' + c.confidential + '</p>' : '') +
+  '<div class="gallery' + (rest.length === 1 ? ' one' : '') + '">' + rest.map(function(s){ return fig(s.img, '<b>' + s.t + '.</b> ' + s.d); }).join('') + '</div>');
+H += sec('outcome', 'Outcome', '<ul class="points">' + c.outcome.map(function(o){ return '<li class="rv"><strong>' + o[0] + '</strong> ' + o[1] + '</li>'; }).join('') + '</ul>');
+H += sec('reflection', 'Looking back', paras(c.reflection));
+H += '</article>';
 
-/* problem */
-H += sec('problem', 'The problem', '<h2 class="rv">' + c.problem.title + '</h2>' + c.problem.paras.map(function(p){ return '<p class="body rv">' + p + '</p>'; }).join('') +
-  '<div class="journey rv"><div class="jlabel">Before · the journey as it was</div><ol>' + c.problem.journey.map(function(j, i){
-    return '<li><span class="jn">' + String(i + 1).padStart(2, '0') + '</span><h4>' + j.t + '</h4><p>' + j.d + '</p></li>'; }).join('') + '</ol></div>');
-
-/* role */
-H += sec('role', 'My role', '<h2 class="rv">What I owned, and what I had to work within</h2><div class="cards c2">' + c.role.map(function(r){
-  return '<div class="card rv"><span class="clabel">' + r.label + '</span><h4>' + r.t + '</h4><p>' + r.d + '</p></div>'; }).join('') + '</div>');
-
-/* discovery */
-H += sec('discovery', 'Discovery', '<h2 class="rv">' + c.research.title + '</h2><p class="body rv">' + c.research.intro + '</p><div class="cards c3">' + c.research.insights.map(function(r){
-  return '<div class="card rv"><span class="clabel">' + r.label + '</span><h4>' + r.t + '</h4><p>' + r.d + '</p></div>'; }).join('') + '</div>' +
-  '<blockquote class="insight rv"><span>The insight</span>' + c.research.insight + '</blockquote>');
-
-/* process */
-H += sec('process', 'Process', '<h2 class="rv">How it came together</h2><ol class="steps">' + c.process.map(function(s, i){
-  return '<li class="rv"><span class="jn">' + String(i + 1).padStart(2, '0') + '</span><h4>' + s.t + '</h4><p>' + s.d + '</p></li>'; }).join('') + '</ol>');
-
-/* decisions */
-H += sec('decisions', 'Key decisions', '<h2 class="rv">' + (c.decisions.length === 3 ? 'Three' : c.decisions.length === 4 ? 'Four' : '') + ' calls that shaped ' + c.name + '</h2>' + c.decisions.map(function(d, i){
-  return '<article class="decision"><div class="dn rv">Decision ' + String(i + 1).padStart(2, '0') + '</div><h3 class="rv">' + d.t + '</h3>' +
-    '<div class="dcols"><div class="rv"><h5>The call</h5><p>' + d.call + '</p></div><div class="rv"><h5>The trade-off</h5><p>' + d.tradeoff + '</p></div></div>' +
-    (d.img ? fig(d.img, d.t) : '') + '</article>'; }).join(''));
-
-/* screens */
-H += sec('screens', 'The product', '<h2 class="rv">' + c.screens.title + '</h2><p class="body rv">' + c.screens.intro + '</p>' +
-  (c.confidential ? '<p class="note rv">' + c.confidential + '</p>' : '') +
-  '<div class="gallery">' + gallery.map(function(s){
-    return '<div class="gitem ' + (s.wide ? 'wide' : '') + '">' + fig(s.img, s.t) + '<div class="gcap rv"><h4>' + s.t + '</h4><p>' + s.d + '</p></div></div>'; }).join('') + '</div>');
-
-/* outcome */
-H += sec('outcome', 'Outcome', '<h2 class="rv">' + c.outcome.title + '</h2><div class="stats">' + c.outcome.items.map(function(o){
-  return '<div class="stat rv"><h4>' + o.t + '</h4><p>' + o.d + '</p></div>'; }).join('') + '</div>');
-
-/* reflection */
-H += sec('reflection', 'Reflection', '<blockquote class="quote rv">' + c.reflection.quote + '</blockquote><p class="body rv">' + c.reflection.text + '</p>');
-
-/* next */
-H += '<a class="next rv" href="case.html?p=' + next.slug + '"><div class="nimg"><img src="' + src(next.cover) + '" alt="' + next.name + '" loading="lazy"></div>' +
-     '<div class="ntext"><span class="kick">Next case study</span><h2>' + next.name + '</h2><p>' + next.tagline + '</p><span class="btn pri">Read it →</span></div></a>' +
-     '<footer class="cfoot"><span>© 2026 Triumph Ohwojeheri</span><a href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com ↗</a><a href="index.html#work">Back to the room ↗</a></footer>';
+H += '<a class="next rv" href="case.html?p=' + next.slug + '"><div class="next-text"><p class="eyebrow">Next project</p><h2>' + next.name + '</h2><p>' + next.tagline + '</p></div>' +
+  '<div class="next-img"><img src="thumbs/' + encodeURI(next.thumb) + '" alt="' + esc(next.name) + '" loading="lazy"></div></a>' +
+  '<footer class="cfoot"><span>© 2026 Triumph Ohwojeheri</span><a href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a><a href="index.html#work">Back to the room</a></footer>';
 document.getElementById('main').innerHTML = H;
 
-/* ---------- section ornament with scroll-spy ---------- */
-var NAV = [['overview', 'Overview'], ['problem', 'Problem'], ['discovery', 'Discovery'], ['process', 'Process'], ['decisions', 'Decisions'], ['screens', 'Screens'], ['outcome', 'Outcome']];
-var orn = document.getElementById('orn');
-orn.innerHTML = '<a href="index.html#work" class="back">← Room</a>' + NAV.map(function(n){ return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join('');
-var links = [].slice.call(orn.querySelectorAll('a[href^="#"]'));
-function spy(){
-  var y = innerHeight * .35, on = null;
-  NAV.forEach(function(n, i){ var s = document.getElementById(n[0]); if (s && s.getBoundingClientRect().top < y) on = i; });
-  links.forEach(function(l, i){ l.classList.toggle('on', i === on); });
-  orn.classList.toggle('show', scrollY > innerHeight * .5);
-}
-addEventListener('scroll', spy, { passive: true }); spy();
+/* ---------- theme ---------- */
+document.getElementById('theme').addEventListener('click', function(){
+  var t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (er) {}
+});
 
-/* ---------- things arrive as you reach them: quick, from a little depth ---------- */
-var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+/* ---------- section menu with scroll-spy ---------- */
+var NAV = [['context', 'Context'], ['problem', 'Problem'], ['findings', 'Findings'], ['process', 'Process'], ['decisions', 'Decisions'], ['outcome', 'Outcome']];
+var orn = document.getElementById('orn');
+orn.innerHTML = '<a href="index.html#work" class="back">Room</a>' + NAV.map(function(x){ return '<a href="#' + x[0] + '">' + x[1] + '</a>'; }).join('');
+var links = [].slice.call(orn.querySelectorAll('a[href^="#"]'));
+
+/* ---------- the hero screen settles in front of you as you scroll ---------- */
+var hero = document.getElementById('hero');
+function onScroll(){
+  var y = innerHeight * .35, on = null;
+  NAV.forEach(function(x, i){ var s = document.getElementById(x[0]); if (s && s.getBoundingClientRect().top < y) on = i; });
+  links.forEach(function(l, i){ l.classList.toggle('on', i === on); });
+  orn.classList.toggle('show', scrollY > innerHeight * .6);
+  var r = hero.getBoundingClientRect(), k = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight * .9)));
+  hero.style.transform = 'rotateX(' + ((1 - k) * 16).toFixed(2) + 'deg) scale(' + (.92 + k * .08).toFixed(3) + ')';
+}
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+/* ---------- things fade up as you reach them ---------- */
+var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -6% 0px' });
 [].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
 
-/* ---------- images are windows: they tilt toward the cursor, and open close up ---------- */
+/* ---------- screens tilt slightly toward the cursor, and open full size ---------- */
 var FINE = matchMedia('(pointer:fine)').matches;
-[].forEach.call(document.querySelectorAll('.frame'), function(f){
+[].forEach.call(document.querySelectorAll('.article .fig, .hero .fig'), function(f){
   var w = f.querySelector('.fwin');
-  if (FINE) {
+  if (FINE && !f.closest('.hero')) {
     f.addEventListener('pointermove', function(e){
-      var r = f.getBoundingClientRect(), u = (e.clientX - r.left) / r.width - .5, v = (e.clientY - r.top) / r.height - .5;
-      w.style.transform = 'rotateX(' + (-v * 4) + 'deg) rotateY(' + (u * 5) + 'deg) translateZ(14px)';
-      w.style.setProperty('--mx', (u + .5) * 100 + '%'); w.style.setProperty('--my', (v + .5) * 100 + '%');
+      var r = w.getBoundingClientRect(), u = (e.clientX - r.left) / r.width - .5, v = (e.clientY - r.top) / r.height - .5;
+      w.style.transform = 'rotateX(' + (-v * 3).toFixed(2) + 'deg) rotateY(' + (u * 4).toFixed(2) + 'deg)';
     });
     f.addEventListener('pointerleave', function(){ w.style.transform = ''; });
   }
-  f.addEventListener('click', function(){ zoom(f); });
+  w.addEventListener('click', function(){ zoom(f); });
 });
 var lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap'), from = null;
 function zoom(f){
   var im = f.querySelector('img'); from = im;
-  lbImg.src = im.src; lbCap.textContent = f.getAttribute('data-cap') || '';
+  lbImg.src = im.src; var full = im.getAttribute('data-full');
+  if (full) { var hi = new Image(); hi.onload = function(){ if (from === im) lbImg.src = full; }; hi.src = full; }
+  lbCap.innerHTML = f.querySelector('figcaption') ? f.querySelector('figcaption').innerHTML : '';
   lb.classList.add('open'); document.body.classList.add('lb-open');
   var go = function(){
     var a = im.getBoundingClientRect(), b = lbImg.getBoundingClientRect();
-    lbImg.animate([{ transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')', borderRadius: '24px' }, { transform: 'none', borderRadius: '14px' }], { duration: 340, easing: 'cubic-bezier(.2,.9,.1,1)' });
+    lbImg.animate([{ transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')' }, { transform: 'none' }], { duration: 340, easing: 'cubic-bezier(.2,.9,.1,1)' });
   };
   lbImg.complete ? go() : lbImg.onload = go;
 }

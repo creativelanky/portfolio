@@ -7,23 +7,25 @@
 <meta name="description" content="Independent product designer turning complex ideas into thoughtful digital experiences. Selected work across Web3, fintech, and AI.">
 <meta property="og:title" content="Triumph Ohwojeheri — Product Designer"><meta property="og:description" content="Complex ideas. Thoughtfully simple experiences."><meta property="og:image" content="https://thetriumph.xyz/social-thumbnail.png"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../Favicon.avif">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <link rel="stylesheet" href="space.css">
 <script src="cases.js"></script>
 </head>
 <body class="room">
-<canvas id="env"></canvas>
 <div class="stage" id="stage"><div class="world" id="world"></div></div>
 
-<div class="hint" id="hint">Drag to look around · Click a window, or pinch on your trackpad, to pull it closer</div>
-<a class="brand" href="#" data-go="0" aria-label="Triumph Ohwojeheri, home"><span class="mono">t.</span><span>Triumph<br>Ohwojeheri</span></a>
+<div class="hint" id="hint">Drag to look around. Click a window, or pinch on a trackpad, to bring it closer.</div>
+<a class="brand" href="#" aria-label="Triumph Ohwojeheri, home"><span class="mono">t.</span><span>Triumph<br>Ohwojeheri</span></a>
+<button class="theme" id="theme" aria-label="Switch light or dark mode">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
 <nav class="orn" id="orn" aria-label="Rooms">
-  <button data-go="-112">Contact</button>
+  <button data-go="-114">Contact</button>
   <button data-go="-58">About</button>
   <button data-go="0" class="on">Home</button>
-  <button data-go="60">Work</button>
-  <button data-go="138">Playground</button>
+  <button data-go="62">Work</button>
+  <button data-go="152">Playground</button>
 </nav>
 
 <div class="detail" id="detail" role="dialog" aria-modal="true"><div class="dwin" id="dwin"></div></div>
@@ -33,85 +35,95 @@
 (function(){
 "use strict";
 function src(f){ return '../' + encodeURI(f); }
-function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function th(f){ return 'thumbs/' + encodeURI(f); }
+function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+
+/* ---------- the room's dimensions (px, the viewer's eye is at 0,0,0) ---------- */
+var R = 1000, FLOOR = 520, CEIL = -760, RW = 2100, RP = 1420;
 
 /* ---------- what hangs where. ang: degrees around you (negative = left); y: height; z: nearer (+) or further (-) ---------- */
 var PANELS = [
-  { ang: 0, y: -10, w: 640, h: 420, d: .1, kind: 'hero',
-    html: '<div class="in"><div class="row-top"><span class="kicker">Independent product designer · Lagos</span><span class="avail"><i></i>Available for select projects</span></div>' +
-          '<div class="h1">Complex ideas.<br><span class="soft">Thoughtfully</span> simple<span class="acc">.</span></div>' +
+  { ang: 0, y: -20, w: 660, h: 420, d: .1, kind: 'hero',
+    html: '<div class="in"><div class="top"><span class="small">Independent product designer, Lagos</span><span class="avail"><i></i>Available for select projects</span></div>' +
+          '<div class="h1">Complex ideas.<br><em>Thoughtfully</em> simple.</div>' +
           '<div class="p">I’m Triumph. I turn complex problems into digital experiences that feel right. From Web3 to the everyday.</div>' +
-          '<div class="row"><span class="btn pri" data-go="60">Explore selected work →</span><span class="btn" data-go="-112">Let’s talk</span></div></div>' }
+          '<div class="row"><span class="btn pri" data-go="62">View selected work</span><span class="btn" data-go="-114">Get in touch</span></div></div>' }
 ];
-
-/* the work wall: three columns, two rows, a little depth between them */
-var COLS = [36, 60, 84], ROWS = [-212, 212], DEPTH = [20, -30, 10, -10, 30, -20];
+var COLS = [32, 62, 92], ROWS = [-185, 185], DEPTH = [20, -20, 10, -10, 25, -15];
 CASES.forEach(function(c, i){
-  PANELS.push({ ang: COLS[i % 3], y: ROWS[Math.floor(i / 3)], z: DEPTH[i], w: 300, h: 400, d: .2 + i * .05, kind: 'case', ci: i,
-    html: '<div class="in"><div class="cover"><img src="' + src(c.cover) + '" alt="' + esc(c.name) + '" draggable="false"></div>' +
-          '<div class="cap"><span class="num">' + String(i + 1).padStart(2, '0') + '</span><span class="cat">' + c.category + '</span></div>' +
-          '<div class="h2">' + c.name + '</div><div class="p sm">' + c.tagline + '</div></div>' });
+  PANELS.push({ ang: COLS[i % 3], y: ROWS[Math.floor(i / 3)], z: DEPTH[i], w: 480, h: 330, d: .2 + i * .05, kind: 'case', ci: i,
+    html: '<div class="in"><div class="shot-img"><img src="' + th(c.thumb) + '" alt="' + esc(c.name) + '" draggable="false"></div>' +
+          '<div class="bar"><div><b>' + c.name + '</b><br><span>' + c.tagline + '</span></div><span class="meta">' + c.category + ' · ' + c.year + '</span></div></div>' });
 });
-
-/* the playground: shots outside the case studies */
-SHOTS.slice(0, 6).forEach(function(s, i){
-  PANELS.push({ ang: [116, 138, 160][i % 3], y: i < 3 ? -125 : 125, z: i % 2 ? -20 : 10, w: 300, h: 215, d: .5 + i * .04, kind: 'shot', shot: s,
-    html: '<div class="shot"><img src="' + src(s) + '" alt="UI shot" loading="lazy" draggable="false"></div>' });
+SHOTS.forEach(function(s, i){
+  PANELS.push({ ang: [130, 152, 174][i % 3], y: i < 3 ? -125 : 125, z: i % 2 ? -20 : 10, w: 320, h: 225, d: .5 + i * .04, kind: 'shot', shot: s,
+    html: '<div class="shot"><img src="' + th(s) + '" alt="UI shot" draggable="false"></div>' });
 });
-
-/* about */
 PANELS.push(
-  { ang: -42, y: -10, w: 300, h: 430, d: .3, z: -20, kind: 'about',
-    html: '<div class="in"><div class="portrait"><img src="' + src('photo-3.jpg') + '" alt="Triumph Ohwojeheri" draggable="false"></div><div class="h2" style="margin-top:16px">Triumph Ohwojeheri</div><div class="p sm" style="margin-top:2px">Product designer · Lagos, NG</div></div>' },
-  { ang: -70, y: -145, w: 430, h: 260, d: .35, kind: 'about',
-    html: '<div class="in"><div class="kicker">A little about me</div><div class="h2 lg" style="margin-top:12px">Curious by nature.<br>Intentional by design.</div>' +
-          '<div class="p sm">I work at the intersection of clarity, utility, and a little unexpected delight.</div></div>' },
-  { ang: -70, y: 150, w: 430, h: 300, d: .4, kind: 'about',
-    html: '<div class="in"><div class="kicker">Track record</div><ul class="list">' +
-          '<li><span>Designing products</span><span>4 years</span></li><li><span>Projects shipped</span><span>20+</span></li>' +
-          '<li><span>Worked with</span><span>Silk, Bitazza, Kryptos, Dreamspace, Human Tech</span></li><li><span>Focus</span><span>Web3 · Fintech · AI</span></li></ul>' +
-          '<div class="p sm" style="margin-top:auto">On the side, I vibe-code my designs to life, end to end.</div></div>' }
+  { ang: -42, y: -10, w: 320, h: 440, d: .3, z: -10, kind: 'about',
+    html: '<div class="portrait"><img src="' + th('photo-3.jpg') + '" alt="Triumph Ohwojeheri" draggable="false"><div class="cap"><b>Triumph Ohwojeheri</b><span>Product designer, Lagos</span></div></div>' },
+  { ang: -72, y: -135, w: 440, h: 250, d: .35, kind: 'about',
+    html: '<div class="in"><span class="small">About</span><div class="h2" style="margin-top:12px;font-size:28px">Curious by nature.<br>Intentional by design.</div>' +
+          '<div class="p" style="font-size:14px">I’m a product designer in Lagos, working at the intersection of clarity, utility and a little unexpected delight.</div></div>' },
+  { ang: -72, y: 150, w: 440, h: 290, d: .4, kind: 'about',
+    html: '<div class="in"><span class="small">Background</span><dl class="facts">' +
+          '<div><dt>Designing products</dt><dd>4 years</dd></div><div><dt>Projects</dt><dd>20+</dd></div>' +
+          '<div><dt>Worked with</dt><dd>Silk, Bitazza, Kryptos, Dreamspace, Human Tech</dd></div><div><dt>Focus</dt><dd>Web3, fintech, AI</dd></div></dl>' +
+          '<div class="p" style="font-size:13px;margin-top:auto">On the side, I vibe-code my designs to life, end to end.</div></div>' },
+  { ang: -114, y: -10, w: 480, h: 380, d: .45, kind: 'contact',
+    html: '<div class="in"><span class="small">Have something in mind?</span><div class="h1 md">Let’s make it<br>something good.</div>' +
+          '<a class="mail" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a>' +
+          '<div class="row"><a class="btn pri" href="mailto:triumphohwojeheri@gmail.com">Email me</a><a class="btn" href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call</a></div>' +
+          '<div class="socials"><a href="https://twitter.com/amazinglanky" target="_blank" rel="noopener">X</a><a href="https://instagram.com/amazinglanky" target="_blank" rel="noopener">Instagram</a><a href="https://dribbble.com/amazinglanky" target="_blank" rel="noopener">Dribbble</a><a href="https://linkedin.com/in/triumph-ohwojeheri" target="_blank" rel="noopener">LinkedIn</a><span class="clock" id="clock"></span></div></div>' }
 );
-
-/* contact */
-PANELS.push({ ang: -112, y: -10, w: 470, h: 380, d: .45, kind: 'contact',
-  html: '<div class="in"><div class="kicker">Have something in mind?</div><div class="h1 md">Let’s make it<br><span class="soft">something good.</span></div>' +
-        '<a class="mail" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com ↗</a>' +
-        '<div class="row"><a class="btn pri" href="mailto:triumphohwojeheri@gmail.com">Email me</a><a class="btn" href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call ↗</a></div>' +
-        '<div class="socials"><a href="https://twitter.com/amazinglanky" target="_blank" rel="noopener">X</a><a href="https://instagram.com/amazinglanky" target="_blank" rel="noopener">Instagram</a><a href="https://dribbble.com/amazinglanky" target="_blank" rel="noopener">Dribbble</a><a href="https://linkedin.com/in/triumph-ohwojeheri" target="_blank" rel="noopener">LinkedIn</a><span class="clock" id="clock"></span></div></div>' });
-
-var LABELS = [{ t: 'Selected work (01—06)', ang: 60, y: -485 }, { t: 'Outside the case studies', ang: 138, y: -300 }, { t: 'A little about me', ang: -56, y: -320 }, { t: 'Let’s talk', ang: -112, y: -240 }];
+var LABELS = [{ t: 'Selected work', ang: 62, y: -400 }, { t: 'Playground', ang: 152, y: -290 }, { t: 'About', ang: -58, y: -320 }, { t: 'Contact', ang: -114, y: -250 }];
 
 /* ---------- build ---------- */
 var stage = document.getElementById('stage'), world = document.getElementById('world');
-var R = 1000, P = 900, YMIN = -130, YMAX = 165;
+function put(cls, w, h, transform, html){
+  var e = document.createElement('div'); e.className = cls;
+  e.style.width = w + 'px'; e.style.height = h + 'px'; e.style.left = -w / 2 + 'px'; e.style.top = -h / 2 + 'px';
+  e.style.transform = transform; if (html) e.innerHTML = html;
+  world.appendChild(e); return e;
+}
+/* floor, ceiling with a ring light, a curved gallery wall, pillars between the rooms */
+put('floor', 7000, 7000, 'translateY(' + FLOOR + 'px) rotateX(90deg)');
+var ceil = put('ceiling', 5600, 5600, 'translateY(' + CEIL + 'px) rotateX(-90deg)');
+ceil.innerHTML = '<div class="ring" style="width:3000px;height:3000px;left:1300px;top:1300px"></div>';
+var N = 48, SEG = 2 * RW * Math.tan(Math.PI / N) + 2, WH = FLOOR - CEIL;
+for (var k = 0; k < N; k++) put('wall', SEG, WH, 'rotateY(' + (k * 360 / N) + 'deg) translate3d(0,' + (CEIL + WH / 2) + 'px,' + (-RW) + 'px)');
+[-88, -27, 113].forEach(function(a){ put('pillar', 90, WH, 'rotateY(' + (-a) + 'deg) translate3d(0,' + (CEIL + WH / 2) + 'px,' + (-RP) + 'px)'); });
+/* light falling on the floor in front of each wall */
+[[0, 1500, 900], [62, 2000, 1000], [152, 1500, 800], [-58, 1400, 800], [-114, 1100, 700]].forEach(function(p){
+  put('pool', p[1], p[2], 'rotateY(' + (-p[0]) + 'deg) translate3d(0,' + (FLOOR - 1) + 'px,' + (-R) + 'px) rotateX(90deg)');
+});
+
 var els = PANELS.map(function(p, i){
-  var e = document.createElement('div'); e.className = 'panel k-' + p.kind;
-  e.style.width = p.w + 'px'; e.style.height = p.h + 'px'; e.style.left = -p.w / 2 + 'px'; e.style.top = -p.h / 2 + 'px';
-  e.style.transform = 'rotateY(' + (-p.ang) + 'deg) translate3d(0,' + p.y + 'px,' + (-(R - (p.z || 0))) + 'px)';
-  e.innerHTML = '<div class="glass" style="--d:' + p.d.toFixed(2) + 's">' + p.html + '</div><div class="grab"></div>';
-  e._i = i; world.appendChild(e); return e;
+  var e = put('panel k-' + p.kind, p.w, p.h, 'rotateY(' + (-p.ang) + 'deg) translate3d(0,' + p.y + 'px,' + (-(R - (p.z || 0))) + 'px)',
+    '<div class="lift" style="--d:' + p.d.toFixed(2) + 's"><div class="back"></div><div class="face">' + p.html + '</div></div><div class="grab"></div>');
+  e._i = i;
+  /* each window casts a soft shadow on the floor below it */
+  put('fshadow', p.w * 1.05, 160, 'rotateY(' + (-p.ang) + 'deg) translate3d(0,' + (FLOOR - 2) + 'px,' + (-(R - (p.z || 0)) + 40) + 'px) rotateX(90deg)').style.opacity = Math.max(.25, 1 - (FLOOR - (p.y + p.h / 2)) / 900);
+  return e;
 });
 LABELS.forEach(function(l){
-  var e = document.createElement('div'); e.className = 'section-label'; e.textContent = l.t;
+  var e = document.createElement('div'); e.className = 'label'; e.textContent = l.t;
   e.style.transform = 'rotateY(' + (-l.ang) + 'deg) translate3d(-50%,' + l.y + 'px,' + (-R) + 'px)';
   world.appendChild(e);
 });
 
-/* ---------- head: where you're looking ---------- */
-var yaw = -24, pitch = 0, yawT = 0, pitchT = 0, head = { x: 0, y: 0 }, push = 0, pushT = 0;
-var FINE = matchMedia('(pointer:fine)').matches;
+/* ---------- head: where you look, and where you stand ---------- */
+var yaw = -24, pitch = 0, yawT = 0, pitchT = 0, head = { x: 0, y: 0 }, cam = { x: 0, y: 0 }, push = 0, pushT = 0;
+var P = 900, YMIN = -132, YMAX = 178, FINE = matchMedia('(pointer:fine)').matches, REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
 function fit(){
-  /* a narrower or shorter screen gets a wider field of view, so the walls still fit */
-  /* phones: zoom in so the windows stay readable; you turn more to see the walls */
+  /* phones zoom in so windows stay readable; you turn more to see the walls */
   P = innerWidth < 700 ? Math.min(innerWidth * 1.4, innerHeight * .75) : Math.max(360, Math.min(900, innerWidth * .62, innerHeight * .9));
   stage.style.perspective = P + 'px';
 }
-fit(); addEventListener('resize', function(){ fit(); sizeEnv(); });
+fit(); addEventListener('resize', fit);
 
-/* return to a wall: case pages link back with #work, #about… */
-var ROOMS = { contact: -112, about: -58, home: 0, work: 60, playground: 138 };
+var ROOMS = { contact: -114, about: -58, home: 0, work: 62, playground: 152 };
 if (ROOMS[location.hash.slice(1)] != null) { yawT = ROOMS[location.hash.slice(1)]; yaw = yawT - 20; }
 addEventListener('hashchange', function(){ var a = ROOMS[location.hash.slice(1)]; if (a != null) turnTo(a); });
 
@@ -122,14 +134,14 @@ addEventListener('pointerdown', function(e){
 });
 addEventListener('pointermove', function(e){
   gaze.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
-  if (FINE) { head.x = (e.clientX / innerWidth - .5) * 12; head.y = (e.clientY / innerHeight - .5) * -7; }
+  head.x = e.clientX / innerWidth - .5; head.y = e.clientY / innerHeight - .5;
   if (!drag) return;
   var dx = e.clientX - drag.x, dy = e.clientY - drag.y; moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
   yawT = clamp(drag.yaw - dx * .15, YMIN, YMAX); pitchT = clamp(drag.pitch + dy * .08, -14, 14);
 });
 addEventListener('pointerup', function(){ drag = null; gaze.classList.remove('pinch'); });
 
-/* a trackpad pinch arrives as ctrl+wheel: pinch in on a window to pull it closer, pinch out to let it go */
+/* a trackpad pinch arrives as ctrl+wheel: pinch in on a window to bring it closer, pinch out to let it go */
 addEventListener('wheel', function(e){
   if (detailOpen && !e.ctrlKey) return;
   e.preventDefault();
@@ -147,17 +159,17 @@ addEventListener('keydown', function(e){
   if (e.key === 'ArrowLeft') yawT = clamp(yawT - 24, YMIN, YMAX);
 });
 
-/* ---------- windows: gaze highlight, tilt, pinch ---------- */
+/* ---------- windows: highlight, tilt, pinch ---------- */
 var gaze = document.getElementById('gaze'), hovered = null;
 els.forEach(function(el){
-  var g = el.querySelector('.glass');
+  var lift = el.querySelector('.lift'), face = el.querySelector('.face');
   el.addEventListener('pointerenter', function(){ hovered = el; el.classList.add('hover'); gaze.classList.add('big'); });
   el.addEventListener('pointerleave', function(){ if (hovered === el) hovered = null; el.classList.remove('hover'); gaze.classList.remove('big');
-    g.style.setProperty('--rx', '0deg'); g.style.setProperty('--ry', '0deg'); });
+    lift.style.setProperty('--rx', '0deg'); lift.style.setProperty('--ry', '0deg'); });
   el.addEventListener('pointermove', function(e){
     var r = el.getBoundingClientRect(), u = (e.clientX - r.left) / r.width, v = (e.clientY - r.top) / r.height;
-    g.style.setProperty('--mx', u * 100 + '%'); g.style.setProperty('--my', v * 100 + '%');
-    g.style.setProperty('--ry', (u - .5) * 7 + 'deg'); g.style.setProperty('--rx', (.5 - v) * 7 + 'deg');
+    face.style.setProperty('--mx', u * 100 + '%'); face.style.setProperty('--my', v * 100 + '%');
+    lift.style.setProperty('--ry', ((u - .5) * 7).toFixed(2) + 'deg'); lift.style.setProperty('--rx', ((.5 - v) * 7).toFixed(2) + 'deg');
   });
   el.addEventListener('click', function(e){
     if (moved > 6) { e.preventDefault(); return; }
@@ -168,10 +180,14 @@ els.forEach(function(el){
   });
 });
 
-var orn = document.getElementById('orn');
-[orn, document.querySelector('.brand')].forEach(function(n){ n.addEventListener('pointerdown', function(e){ e.stopPropagation(); }); });
+var orn = document.getElementById('orn'), brand = document.querySelector('.brand'), themeBtn = document.getElementById('theme');
+[orn, brand, themeBtn].forEach(function(n){ n.addEventListener('pointerdown', function(e){ e.stopPropagation(); }); });
 orn.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) turnTo(+b.getAttribute('data-go')); });
-document.querySelector('.brand').addEventListener('click', function(e){ e.preventDefault(); turnTo(0); });
+brand.addEventListener('click', function(e){ e.preventDefault(); turnTo(0); });
+themeBtn.addEventListener('click', function(){
+  var t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (er) {}
+});
 function turnTo(a){ yawT = a; pitchT = 0; }
 function syncOrn(){
   var best = null, bd = 1e9;
@@ -183,26 +199,26 @@ function syncOrn(){
 var detail = document.getElementById('detail'), dwin = document.getElementById('dwin'), detailOpen = null;
 function caseView(i){
   var c = CASES[i], nx = (i + 1) % CASES.length;
-  return '<div class="dcase"><div class="dimg"><img src="' + src(c.cover) + '" alt="' + esc(c.name) + '"></div>' +
-    '<div class="dtext"><div class="cap"><span class="num">' + String(i + 1).padStart(2, '0') + ' / ' + String(CASES.length).padStart(2, '0') + '</span><span class="cat">' + c.category + ' · ' + c.year + '</span></div>' +
-    '<div class="h1 md">' + c.name + '</div><div class="p">' + c.statement + '</div>' +
-    '<dl class="meta">' + c.meta.slice(0, 4).map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl>' +
-    '<div class="row"><a class="btn pri" href="case.html?p=' + c.slug + '">Read the case study →</a><button class="btn" data-next="' + nx + '">Next: ' + CASES[nx].name + '</button></div></div></div>';
+  return '<div class="dcase"><div class="dimg' + (c.heroContain ? ' contain' : '') + '"><img src="' + src(c.thumb) + '" alt="' + esc(c.name) + '"></div>' +
+    '<div class="dtext"><div><div class="small">' + c.category + ' · ' + c.year + '</div><h2 style="margin-top:10px">' + c.name + '</h2><p class="p">' + c.summary + '</p></div>' +
+    '<div><dl>' + c.meta.slice(0, 3).map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl>' +
+    '<div class="row"><a class="btn pri" href="case.html?p=' + c.slug + '">Read the case study</a><button class="btn" data-next="' + nx + '">Next: ' + CASES[nx].name + '</button></div></div></div></div>';
 }
+function rectOf(el){ return el.querySelector('.face').getBoundingClientRect(); }
 function open(el){
   var p = PANELS[el._i], html;
   if (p.kind === 'case') html = caseView(p.ci);
   else if (p.kind === 'shot') html = '<div class="dshot"><img src="' + src(p.shot) + '" alt="UI shot"></div>';
   else return;
   detailOpen = el;
-  dwin.className = 'dwin ' + (p.kind === 'shot' ? 'is-shot' : '');
+  dwin.className = 'dwin' + (p.kind === 'shot' ? ' is-shot' : '');
   dwin.innerHTML = '<button class="close" id="dclose" aria-label="Close">✕</button>' + html;
   detail.style.pointerEvents = ''; detail.classList.add('open'); document.body.classList.add('focus-mode'); pushT = 1;
-  var a = el.querySelector('.glass').getBoundingClientRect(), b = dwin.getBoundingClientRect();
+  var a = rectOf(el), b = dwin.getBoundingClientRect();
   el.style.visibility = 'hidden';
   dwin.animate([
-    { transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')', borderRadius: '60px', opacity: .5 },
-    { transform: 'none', borderRadius: '32px', opacity: 1 }
+    { transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')', opacity: .5 },
+    { transform: 'none', opacity: 1 }
   ], { duration: 360, easing: 'cubic-bezier(.2,.9,.1,1)' });
 }
 function close(){
@@ -210,7 +226,7 @@ function close(){
   var el = detailOpen; detailOpen = null; pushT = 0;
   document.body.classList.remove('focus-mode');
   detail.style.pointerEvents = 'none';
-  var a = el.querySelector('.glass').getBoundingClientRect(), b = dwin.getBoundingClientRect();
+  var a = rectOf(el), b = dwin.getBoundingClientRect();
   dwin.animate([
     { transform: 'none', opacity: 1 },
     { transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')', opacity: .4 }
@@ -229,55 +245,20 @@ detail.addEventListener('click', function(e){
   }
 });
 
-/* ---------- the room: horizon, floor grid, dust; it turns exactly with your head ---------- */
-var cv = document.getElementById('env'), cx = cv.getContext('2d'), W = 0, H = 0, DPR = Math.min(2, devicePixelRatio || 1), DUST = [];
-function sizeEnv(){
-  W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; cx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  DUST = []; for (var i = 0; i < 200; i++) DUST.push({ a: Math.random() * 360, e: Math.random() * 50 - 5, s: Math.random() * 1.3 + .3, o: Math.random() * .5 + .1 });
-}
-sizeEnv();
-function drawEnv(t){
-  var ppd = P * Math.PI / 180, hz = H * .62 + pitch * ppd;
-  var sky = cx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, '#000'); sky.addColorStop(clamp(hz / H - .25, 0, 1), '#030304'); sky.addColorStop(clamp(hz / H, 0, 1), '#0b0a0a'); sky.addColorStop(1, '#020202');
-  cx.fillStyle = sky; cx.fillRect(0, 0, W, H);
-  /* the room's light: faint and warm, fixed in the world */
-  [[0, '230,161,125', .05], [60, '220,215,210', .035], [-80, '220,215,210', .03], [138, '230,161,125', .03]].forEach(function(L){
-    var x = W / 2 + (L[0] - yaw) * ppd, g = cx.createRadialGradient(x, hz, 0, x, hz, W * .55);
-    g.addColorStop(0, 'rgba(' + L[1] + ',' + L[2] + ')'); g.addColorStop(1, 'rgba(' + L[1] + ',0)');
-    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
-  });
-  cx.save(); cx.beginPath(); cx.rect(0, hz, W, H - hz); cx.clip();
-  cx.strokeStyle = 'rgba(255,255,255,.035)'; cx.lineWidth = 1;
-  for (var k = 1; k < 30; k++) { var y = hz + 380 / (31 - k) + Math.pow(k / 30, 3) * (H - hz); if (y > H) break; cx.globalAlpha = Math.min(1, (y - hz) / 140); cx.beginPath(); cx.moveTo(0, y); cx.lineTo(W, y); cx.stroke(); }
-  cx.globalAlpha = 1;
-  for (var a = -180; a <= 180; a += 10) {
-    var rel = ((a - yaw + 180) % 360 + 360) % 360 - 180; if (Math.abs(rel) > 80) continue;
-    var bx = W / 2 + Math.tan(rel * Math.PI / 180) * P * 2.2, g2 = cx.createLinearGradient(0, hz, 0, H);
-    g2.addColorStop(0, 'rgba(255,255,255,0)'); g2.addColorStop(1, 'rgba(255,255,255,.05)');
-    cx.strokeStyle = g2; cx.beginPath(); cx.moveTo(W / 2 + rel * ppd * .02, hz); cx.lineTo(bx, H + 40); cx.stroke();
-  }
-  cx.restore();
-  DUST.forEach(function(d){
-    var rel = ((d.a - yaw + 180) % 360 + 360) % 360 - 180; if (Math.abs(rel) > 70) return;
-    cx.globalAlpha = d.o * .45 * (.6 + .4 * Math.sin(t * .001 + d.a * 3)); cx.fillStyle = '#ece6df';
-    cx.beginPath(); cx.arc(W / 2 + rel * ppd, hz - d.e * ppd + Math.sin(t * .0004 + d.a) * 6, d.s, 0, 6.283); cx.fill();
-  });
-  cx.globalAlpha = 1;
-}
-
 /* ---------- Lagos time ---------- */
 var clock = document.getElementById('clock');
-function tick(){ if (clock) clock.textContent = 'Lagos ' + new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()) + ' WAT'; }
+function tick(){ if (clock) clock.textContent = 'Lagos ' + new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()); }
 tick(); setInterval(tick, 30000);
 
-/* ---------- loop ---------- */
+/* ---------- loop: turn toward where you're looking, and lean a little with the pointer so near things move more than far ones ---------- */
 var hint = document.getElementById('hint'), hintGone = false;
 function frame(t){
-  var hx = detailOpen ? 0 : head.x, hy = detailOpen ? 0 : head.y;
-  yaw += (yawT + hx - yaw) * .17; pitch += (pitchT + hy - pitch) * .17; push += (pushT - push) * .2;
-  world.style.transform = 'translateZ(' + (P - push * 260).toFixed(2) + 'px) rotateX(' + (-pitch).toFixed(3) + 'deg) rotateY(' + yaw.toFixed(3) + 'deg)';
-  drawEnv(t); syncOrn();
+  var calm = detailOpen || REDUCE, sway = calm ? 0 : Math.sin(t / 3200) * 16;
+  var hx = calm ? 0 : head.x, hy = calm ? 0 : head.y;
+  yaw += (yawT + (FINE ? hx * 6 : 0) - yaw) * .17; pitch += (pitchT - (FINE ? hy * 4 : 0) - pitch) * .17; push += (pushT - push) * .2;
+  cam.x += ((FINE ? hx * 150 : 0) + sway - cam.x) * .08; cam.y += ((FINE ? hy * 70 : 0) - cam.y) * .08;
+  world.style.transform = 'translateZ(' + (P - push * 260).toFixed(2) + 'px) translate3d(' + (-cam.x).toFixed(2) + 'px,' + (-cam.y).toFixed(2) + 'px,0) rotateX(' + (-pitch).toFixed(3) + 'deg) rotateY(' + yaw.toFixed(3) + 'deg)';
+  syncOrn();
   if (!hintGone && Math.abs(yawT) > 15) { hintGone = true; hint.style.opacity = 0; }
   requestAnimationFrame(frame);
 }
