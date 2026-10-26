@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case study — Triumph Ohwojeheri</title>
+<link rel="icon" href="../Favicon.avif">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="space.css">
+<link rel="stylesheet" href="case.css">
+<script src="cases.js"></script>
+</head>
+<body class="case">
+<header class="topbar">
+  <a class="brand" href="index.html#work"><span class="mono">t.</span><span>Back to<br>the room</span></a>
+  <span class="tb-title" id="tbTitle"></span>
+  <a class="tb-next" id="tbNext"></a>
+</header>
+<main id="main"></main>
+<nav class="orn" id="orn" aria-label="Sections"></nav>
+<div class="lightbox" id="lb"><img id="lbImg" alt=""><p id="lbCap"></p><button class="close" aria-label="Close">✕</button></div>
+
+<script>
+(function(){
+"use strict";
+function src(f){ return '../' + encodeURI(f); }
+var q = new URLSearchParams(location.search).get('p');
+var idx = Math.max(0, CASES.findIndex(function(c){ return c.slug === q; }));
+var c = CASES[idx], next = CASES[(idx + 1) % CASES.length], num = String(idx + 1).padStart(2, '0');
+document.title = c.name + ' — Triumph Ohwojeheri';
+document.getElementById('tbTitle').textContent = c.name;
+var tbNext = document.getElementById('tbNext'); tbNext.href = 'case.html?p=' + next.slug; tbNext.innerHTML = 'Next: ' + next.name + ' <span>→</span>';
+
+function fig(img, cap, cls){
+  return '<figure class="frame rv ' + (cls || '') + '" data-cap="' + (cap || '').replace(/"/g, '&quot;') + '"><div class="fwin"><img src="' + src(img) + '" alt="' + (cap || c.name).replace(/"/g, '&quot;') + '" loading="lazy"></div></figure>';
+}
+function sec(id, label, body){ return '<section class="sec" id="' + id + '"><div class="sl rv"><span>' + label + '</span></div><div class="sb">' + body + '</div></section>'; }
+
+/* the hero shows the project's wide overview shot (or its first screen); the gallery doesn't repeat it */
+var heroItem = c.screens.items.filter(function(s){ return s.wide; })[0] || c.screens.items[0];
+var gallery = c.screens.items.filter(function(s){ return s !== heroItem; });
+var heroIsCover = heroItem.img === c.cover;
+
+var H = '';
+/* hero */
+H += '<section class="hero"><div class="kick rv">Case study ' + num + ' · ' + c.category + ' · ' + c.year + '</div>' +
+     '<h1 class="rv">' + c.name + '</h1><p class="statement rv">' + c.statement + '</p>' +
+     '<div class="hero-grid"><p class="intro rv">' + c.intro + '</p>' +
+     '<dl class="mgrid rv">' + c.meta.map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl></div>' +
+     fig(heroItem.img, heroItem.t, 'hero-img' + (heroIsCover ? ' contain' : '')) + '</section>';
+
+/* overview */
+H += sec('overview', 'Overview', '<h2 class="rv">' + c.overview.title + '</h2>' + c.overview.paras.map(function(p){ return '<p class="body rv">' + p + '</p>'; }).join(''));
+
+/* problem */
+H += sec('problem', 'The problem', '<h2 class="rv">' + c.problem.title + '</h2>' + c.problem.paras.map(function(p){ return '<p class="body rv">' + p + '</p>'; }).join('') +
+  '<div class="journey rv"><div class="jlabel">Before · the journey as it was</div><ol>' + c.problem.journey.map(function(j, i){
+    return '<li><span class="jn">' + String(i + 1).padStart(2, '0') + '</span><h4>' + j.t + '</h4><p>' + j.d + '</p></li>'; }).join('') + '</ol></div>');
+
+/* role */
+H += sec('role', 'My role', '<h2 class="rv">What I owned, and what I had to work within</h2><div class="cards c2">' + c.role.map(function(r){
+  return '<div class="card rv"><span class="clabel">' + r.label + '</span><h4>' + r.t + '</h4><p>' + r.d + '</p></div>'; }).join('') + '</div>');
+
+/* discovery */
+H += sec('discovery', 'Discovery', '<h2 class="rv">' + c.research.title + '</h2><p class="body rv">' + c.research.intro + '</p><div class="cards c3">' + c.research.insights.map(function(r){
+  return '<div class="card rv"><span class="clabel">' + r.label + '</span><h4>' + r.t + '</h4><p>' + r.d + '</p></div>'; }).join('') + '</div>' +
+  '<blockquote class="insight rv"><span>The insight</span>' + c.research.insight + '</blockquote>');
+
+/* process */
+H += sec('process', 'Process', '<h2 class="rv">How it came together</h2><ol class="steps">' + c.process.map(function(s, i){
+  return '<li class="rv"><span class="jn">' + String(i + 1).padStart(2, '0') + '</span><h4>' + s.t + '</h4><p>' + s.d + '</p></li>'; }).join('') + '</ol>');
+
+/* decisions */
+H += sec('decisions', 'Key decisions', '<h2 class="rv">' + (c.decisions.length === 3 ? 'Three' : c.decisions.length === 4 ? 'Four' : '') + ' calls that shaped ' + c.name + '</h2>' + c.decisions.map(function(d, i){
+  return '<article class="decision"><div class="dn rv">Decision ' + String(i + 1).padStart(2, '0') + '</div><h3 class="rv">' + d.t + '</h3>' +
+    '<div class="dcols"><div class="rv"><h5>The call</h5><p>' + d.call + '</p></div><div class="rv"><h5>The trade-off</h5><p>' + d.tradeoff + '</p></div></div>' +
+    (d.img ? fig(d.img, d.t) : '') + '</article>'; }).join(''));
+
+/* screens */
+H += sec('screens', 'The product', '<h2 class="rv">' + c.screens.title + '</h2><p class="body rv">' + c.screens.intro + '</p>' +
+  (c.confidential ? '<p class="note rv">' + c.confidential + '</p>' : '') +
+  '<div class="gallery">' + gallery.map(function(s){
+    return '<div class="gitem ' + (s.wide ? 'wide' : '') + '">' + fig(s.img, s.t) + '<div class="gcap rv"><h4>' + s.t + '</h4><p>' + s.d + '</p></div></div>'; }).join('') + '</div>');
+
+/* outcome */
+H += sec('outcome', 'Outcome', '<h2 class="rv">' + c.outcome.title + '</h2><div class="stats">' + c.outcome.items.map(function(o){
+  return '<div class="stat rv"><h4>' + o.t + '</h4><p>' + o.d + '</p></div>'; }).join('') + '</div>');
+
+/* reflection */
+H += sec('reflection', 'Reflection', '<blockquote class="quote rv">' + c.reflection.quote + '</blockquote><p class="body rv">' + c.reflection.text + '</p>');
+
+/* next */
+H += '<a class="next rv" href="case.html?p=' + next.slug + '"><div class="nimg"><img src="' + src(next.cover) + '" alt="' + next.name + '" loading="lazy"></div>' +
+     '<div class="ntext"><span class="kick">Next case study</span><h2>' + next.name + '</h2><p>' + next.tagline + '</p><span class="btn pri">Read it →</span></div></a>' +
+     '<footer class="cfoot"><span>© 2026 Triumph Ohwojeheri</span><a href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com ↗</a><a href="index.html#work">Back to the room ↗</a></footer>';
+document.getElementById('main').innerHTML = H;
+
+/* ---------- section ornament with scroll-spy ---------- */
+var NAV = [['overview', 'Overview'], ['problem', 'Problem'], ['discovery', 'Discovery'], ['process', 'Process'], ['decisions', 'Decisions'], ['screens', 'Screens'], ['outcome', 'Outcome']];
+var orn = document.getElementById('orn');
+orn.innerHTML = '<a href="index.html#work" class="back">← Room</a>' + NAV.map(function(n){ return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join('');
+var links = [].slice.call(orn.querySelectorAll('a[href^="#"]'));
+function spy(){
+  var y = innerHeight * .35, on = null;
+  NAV.forEach(function(n, i){ var s = document.getElementById(n[0]); if (s && s.getBoundingClientRect().top < y) on = i; });
+  links.forEach(function(l, i){ l.classList.toggle('on', i === on); });
+  orn.classList.toggle('show', scrollY > innerHeight * .5);
+}
+addEventListener('scroll', spy, { passive: true }); spy();
+
+/* ---------- things arrive as you reach them: quick, from a little depth ---------- */
+var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+[].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
+
+/* ---------- images are windows: they tilt toward the cursor, and open close up ---------- */
+var FINE = matchMedia('(pointer:fine)').matches;
+[].forEach.call(document.querySelectorAll('.frame'), function(f){
+  var w = f.querySelector('.fwin');
+  if (FINE) {
+    f.addEventListener('pointermove', function(e){
+      var r = f.getBoundingClientRect(), u = (e.clientX - r.left) / r.width - .5, v = (e.clientY - r.top) / r.height - .5;
+      w.style.transform = 'rotateX(' + (-v * 4) + 'deg) rotateY(' + (u * 5) + 'deg) translateZ(14px)';
+      w.style.setProperty('--mx', (u + .5) * 100 + '%'); w.style.setProperty('--my', (v + .5) * 100 + '%');
+    });
+    f.addEventListener('pointerleave', function(){ w.style.transform = ''; });
+  }
+  f.addEventListener('click', function(){ zoom(f); });
+});
+var lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap'), from = null;
+function zoom(f){
+  var im = f.querySelector('img'); from = im;
+  lbImg.src = im.src; lbCap.textContent = f.getAttribute('data-cap') || '';
+  lb.classList.add('open'); document.body.classList.add('lb-open');
+  var go = function(){
+    var a = im.getBoundingClientRect(), b = lbImg.getBoundingClientRect();
+    lbImg.animate([{ transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')', borderRadius: '24px' }, { transform: 'none', borderRadius: '14px' }], { duration: 340, easing: 'cubic-bezier(.2,.9,.1,1)' });
+  };
+  lbImg.complete ? go() : lbImg.onload = go;
+}
+function unzoom(){
+  if (!lb.classList.contains('open')) return;
+  var a = from.getBoundingClientRect(), b = lbImg.getBoundingClientRect();
+  lbImg.animate([{ transform: 'none' }, { transform: 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + a.width / b.width + ',' + a.height / b.height + ')' }], { duration: 240, easing: 'cubic-bezier(.4,0,.2,1)' })
+    .onfinish = function(){ lb.classList.remove('open'); };
+  document.body.classList.remove('lb-open');
+}
+lb.addEventListener('click', unzoom);
+addEventListener('keydown', function(e){ if (e.key === 'Escape') unzoom(); });
+})();
+</script>
+</body>
+</html>
