@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="space.css">
 <script src="cases.js"></script>
 </head>
-<body class="room">
+<body class="room intro">
 <div class="stage" id="stage"><div class="world" id="world"></div></div>
 
 <div class="hint" id="hint">Drag to look around. Click a window, or pinch on a trackpad, to bring it closer.</div>
@@ -29,6 +29,12 @@
 </nav>
 
 <div class="detail" id="detail" role="dialog" aria-modal="true"><div class="dwin" id="dwin"></div></div>
+<div class="intro" id="intro" aria-label="Triumph Ohwojeheri">
+  <canvas id="introCv" aria-hidden="true"></canvas>
+  <p class="intro-sub" id="introSub">Product designer in Lagos</p>
+  <div class="intro-cue" id="introCue"><span>Scroll to enter</span><i></i></div>
+  <button class="intro-skip" id="introSkip">Skip intro</button>
+</div>
 <div class="gaze" id="gaze"></div>
 
 <script>
@@ -87,7 +93,9 @@ function put(cls, w, h, transform, html){
   world.appendChild(e); return e;
 }
 /* floor, ceiling with a ring light, a curved gallery wall, pillars between the rooms */
-put('floor', 7000, 7000, 'translateY(' + FLOOR + 'px) rotateX(90deg)');
+put('floor', 2 * RW + 240, 2 * RW + 240, 'translateY(' + FLOOR + 'px) rotateX(90deg)');
+/* a ring inlaid in the floor where the windows stand: from above, the room reads as a circle */
+put('floor-ring', 2 * R + 120, 2 * R + 120, 'translateY(' + (FLOOR - 1) + 'px) rotateX(90deg)');
 var ceil = put('ceiling', 5600, 5600, 'translateY(' + CEIL + 'px) rotateX(-90deg)');
 ceil.innerHTML = '<div class="ring" style="width:3000px;height:3000px;left:1300px;top:1300px"></div>';
 var N = 48, SEG = 2 * RW * Math.tan(Math.PI / N) + 2, WH = FLOOR - CEIL;
@@ -129,12 +137,13 @@ addEventListener('hashchange', function(){ var a = ROOMS[location.hash.slice(1)]
 
 var drag = null, moved = 0;
 addEventListener('pointerdown', function(e){
-  if (detailOpen) return;
+  if (detailOpen || intro) return;
   drag = { x: e.clientX, y: e.clientY, yaw: yawT, pitch: pitchT }; moved = 0; gaze.classList.add('pinch');
 });
 addEventListener('pointermove', function(e){
   gaze.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
   head.x = e.clientX / innerWidth - .5; head.y = e.clientY / innerHeight - .5;
+  mouse.x = e.clientX; mouse.y = e.clientY;
   if (!drag) return;
   var dx = e.clientX - drag.x, dy = e.clientY - drag.y; moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
   yawT = clamp(drag.yaw - dx * .15, YMIN, YMAX); pitchT = clamp(drag.pitch + dy * .08, -14, 14);
@@ -143,6 +152,7 @@ addEventListener('pointerup', function(){ drag = null; gaze.classList.remove('pi
 
 /* a trackpad pinch arrives as ctrl+wheel: pinch in on a window to bring it closer, pinch out to let it go */
 addEventListener('wheel', function(e){
+  if (intro) { e.preventDefault(); scrollIntro(e.deltaY * .0009); return; }
   if (detailOpen && !e.ctrlKey) return;
   e.preventDefault();
   if (e.ctrlKey) {
@@ -153,6 +163,11 @@ addEventListener('wheel', function(e){
   yawT = clamp(yawT + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * .07, YMIN, YMAX);
 }, { passive: false });
 addEventListener('keydown', function(e){
+  if (intro) {
+    if (['ArrowDown', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0) { e.preventDefault(); scrollIntro(.34); }
+    if (['ArrowUp', 'PageUp'].indexOf(e.key) >= 0) { e.preventDefault(); scrollIntro(-.34); }
+    return;
+  }
   if (e.key === 'Escape' && detailOpen) close();
   if (detailOpen) return;
   if (e.key === 'ArrowRight') yawT = clamp(yawT + 24, YMIN, YMAX);
@@ -250,9 +265,107 @@ var clock = document.getElementById('clock');
 function tick(){ if (clock) clock.textContent = 'Lagos ' + new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()); }
 tick(); setInterval(tick, 30000);
 
+/* ---------- intro: the name as particles; scrolling dissolves it, shows the room from above, then brings you down into it ---------- */
+var intro = !REDUCE && ROOMS[location.hash.slice(1)] == null;
+var introEl = document.getElementById('intro'), icv = document.getElementById('introCv'), ictx = icv.getContext('2d');
+var introSub = document.getElementById('introSub'), introCue = document.getElementById('introCue');
+var ip = 0, ipT = 0, lastScroll = 0, lastT = 0, PTS = [], IW = 0, IH = 0, IDPR = Math.min(2, devicePixelRatio || 1), pstep = 4, ink = '#fff';
+var mouse = { x: -1e4, y: -1e4 };
+function ss(a, b, x){ x = clamp((x - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); }
+function inOut(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+function readInk(){ ink = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff'; }
+function scrollIntro(d){ ipT = clamp(ipT + d, 0, 1); lastScroll = performance.now(); }
+function buildName(){
+  IW = innerWidth; IH = innerHeight;
+  icv.width = IW * IDPR; icv.height = IH * IDPR; ictx.setTransform(IDPR, 0, 0, IDPR, 0, 0);
+  var FONT = 'px "Helvetica Neue", Helvetica, Inter, Arial, sans-serif', oc = document.createElement('canvas'), g = oc.getContext('2d');
+  oc.width = IW; oc.height = IH;
+  /* fit the name to the screen: about 72% of the width on desktop, 88% on phones */
+  g.font = '600 100' + FONT;
+  var fs = Math.min(300, 100 * IW * (IW < 700 ? .88 : .72) / g.measureText('Triumph').width);
+  g.font = '600 ' + fs + FONT;
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#000';
+  g.fillText('Triumph', IW / 2, IH * .44);
+  var px = g.getImageData(0, 0, IW, IH).data;
+  pstep = Math.max(2, Math.round(fs / 62)); PTS = [];
+  for (var y = 0; y < IH; y += pstep) for (var x = 0; x < IW; x += pstep) {
+    if (px[(y * IW + x) * 4 + 3] < 128) continue;
+    var a = Math.random() * 6.283, s = .35 + Math.random();
+    /* each particle gets its own direction to drift in when the name dissolves */
+    PTS.push({ hx: x + (Math.random() - .5) * pstep * .8, hy: y + (Math.random() - .5) * pstep * .8, ox: 0, oy: 0, vx: 0, vy: 0, sz: pstep * (.35 + Math.random() * .45),
+      ax: Math.cos(a) * s, ay: Math.sin(a) * s - .7, n: Math.random() * 6.283, z: .5 + Math.random() * .8 });
+  }
+  introSub.style.top = (IH * .44 + fs * .6) + 'px';
+}
+function finishIntro(){
+  intro = false; ip = ipT = 1;
+  document.body.classList.remove('intro'); stage.style.opacity = ''; ceil.style.opacity = '';
+  introEl.style.transition = 'opacity .4s'; introEl.style.opacity = 0;
+  setTimeout(function(){ introEl.remove(); }, 450);
+}
+if (intro) {
+  readInk(); buildName();
+  addEventListener('resize', function(){ if (intro) buildName(); });
+  themeBtn.addEventListener('click', function(){ setTimeout(readInk, 0); });
+  document.getElementById('introSkip').addEventListener('click', function(){ ipT = 1; ip = .99; });
+  introEl.addEventListener('pointerleave', function(){ mouse.x = mouse.y = -1e4; });
+  var ty = null;
+  addEventListener('touchstart', function(e){ ty = e.touches[0].clientY; mouse.x = e.touches[0].clientX; mouse.y = ty; }, { passive: true });
+  addEventListener('touchmove', function(e){
+    if (!intro) return;
+    var y = e.touches[0].clientY; mouse.x = e.touches[0].clientX; mouse.y = y;
+    if (ty != null) scrollIntro((ty - y) * .0028); ty = y; e.preventDefault();
+  }, { passive: false });
+  addEventListener('touchend', function(){ ty = null; mouse.x = mouse.y = -1e4; });
+} else { document.body.classList.remove('intro'); introEl.remove(); }
+
+function introFrame(t){
+  var dt = Math.min(.05, lastT ? (t - lastT) / 1000 : .016); lastT = t;
+  /* once you're past the halfway point and stop scrolling, finish the descent for you */
+  if (ipT > .45 && ipT < 1 && performance.now() - lastScroll > 650) ipT = 1;
+  ip += (ipT - ip) * .085;
+
+  /* 1 · the name: a spring holds each particle home; the cursor pushes them away; scrolling lets them drift off */
+  var e = ss(0, .3, ip);
+  ictx.clearRect(0, 0, IW, IH);
+  if (e < 1) {
+    ictx.fillStyle = ink;
+    /* a soft spring: particles blown away by the cursor drift back slowly, like dust settling */
+    var CR = Math.max(90, pstep * 30), CR2 = CR * CR, K = 6, C = 2 * Math.sqrt(K) * .45;
+    for (var i = 0; i < PTS.length; i++) {
+      var p = PTS[i], x = p.hx + p.ox, y = p.hy + p.oy, dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
+      if (d2 < CR2) {
+        var d = Math.sqrt(d2) + .1, f = 1 - d / CR; f *= f;
+        p.vx += (dx / d * 2600 * f + (Math.random() - .5) * 2200 * f) * dt;
+        p.vy += (dy / d * 2600 * f + (Math.random() - .5) * 2200 * f - 900 * f) * dt;
+      }
+      p.vx += (-K * p.ox - C * p.vx + Math.sin(t * .003 + p.n) * 4) * dt; p.vy += (-K * p.oy - C * p.vy) * dt;
+      p.ox += p.vx * dt; p.oy += p.vy * dt;
+      var away = Math.min(1, Math.sqrt(p.ox * p.ox + p.oy * p.oy) / 90);
+      var sx = (p.ax * IW * .5 + Math.sin(t * .0012 + p.n) * 40) * e * p.z, sy = p.ay * IH * .55 * e * p.z;
+      ictx.globalAlpha = (1 - e) * (1 - away * .8) * (.75 + .25 * Math.sin(t * .002 + p.n));
+      ictx.fillRect(x + sx, y + sy, p.sz, p.sz);
+    }
+    ictx.globalAlpha = 1;
+  }
+  var ui = 1 - ss(0, .12, ip);
+  introSub.style.opacity = ui; introCue.style.opacity = ui;
+  introEl.style.pointerEvents = ip > .3 ? 'none' : '';
+
+  /* 2 · the room fades in from straight above, a circle on the floor */
+  stage.style.opacity = ss(.06, .3, ip).toFixed(3);
+  /* 3 · the camera cranes down: tilting from looking straight down to level, coming closer, turning to face the intro window */
+  var k = inOut(ss(.24, 1, ip)), up = 1 - k;
+  var DIST = Math.max(1800, RW * P / (Math.min(innerWidth, innerHeight) * .42) - FLOOR);
+  ceil.style.opacity = ss(.8, 1, ip).toFixed(3);
+  world.style.transform = 'translateZ(' + (P - DIST * up).toFixed(1) + 'px) rotateX(' + (-90 * up).toFixed(2) + 'deg) rotateY(' + (-70 * up).toFixed(2) + 'deg)';
+  if (ip > .992 && ipT >= 1) finishIntro();
+}
+
 /* ---------- loop: turn toward where you're looking, and lean a little with the pointer so near things move more than far ones ---------- */
 var hint = document.getElementById('hint'), hintGone = false;
 function frame(t){
+  if (intro) { introFrame(t); requestAnimationFrame(frame); return; }
   var calm = detailOpen || REDUCE, sway = calm ? 0 : Math.sin(t / 3200) * 16;
   var hx = calm ? 0 : head.x, hy = calm ? 0 : head.y;
   yaw += (yawT + (FINE ? hx * 6 : 0) - yaw) * .17; pitch += (pitchT - (FINE ? hy * 4 : 0) - pitch) * .17; push += (pushT - push) * .2;

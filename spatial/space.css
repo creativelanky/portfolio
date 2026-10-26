@@ -13,6 +13,7 @@
   --floor:#1a1b1e; --floor-pool:rgba(120,118,112,.22); --floor-grid:rgba(255,255,255,.035);
   --ceil:#0c0d0f; --ring:rgba(255,238,220,.55); --ring-glow:rgba(255,226,200,.18);
   --pillar-a:#26272b; --pillar-b:#16171a;
+  --floor-ring:rgba(255,236,215,.28); --floor-ring-glow:rgba(255,226,200,.08);
   --face:#1c1d21; --face-hi:rgba(255,255,255,.06); --slab:#0c0c0e; --edge:rgba(255,255,255,.09);
   --shadow:rgba(0,0,0,.55); --panel-shadow:0 30px 80px -24px rgba(0,0,0,.7);
   --surface:#1c1d21; --surface-2:#232428;
@@ -30,6 +31,7 @@
   --floor:#d6d3cd; --floor-pool:rgba(255,255,255,.6); --floor-grid:rgba(0,0,0,.045);
   --ceil:#d9d6d0; --ring:rgba(255,255,255,.95); --ring-glow:rgba(255,255,255,.6);
   --pillar-a:#e6e3de; --pillar-b:#c9c6bf;
+  --floor-ring:rgba(80,70,60,.18); --floor-ring-glow:rgba(255,255,255,.5);
   --face:#fbfaf8; --face-hi:rgba(255,255,255,.9); --slab:#c4c1ba; --edge:rgba(0,0,0,.08);
   --shadow:rgba(60,50,40,.28); --panel-shadow:0 30px 70px -26px rgba(60,50,40,.35);
   --surface:#fbfaf8; --surface-2:#f2f1ee;
@@ -56,11 +58,12 @@ html:has(.room){height:100%;overflow:hidden}
 .world *{transform-style:preserve-3d}
 
 /* architecture */
-.floor,.ceiling,.wall,.pillar,.pool,.fshadow{position:absolute;pointer-events:none;backface-visibility:visible}
-.floor{background:
+.floor,.ceiling,.wall,.pillar,.pool,.fshadow,.floor-ring{position:absolute;pointer-events:none;backface-visibility:visible}
+.floor-ring{border-radius:50%;border:2px solid var(--floor-ring);box-shadow:0 0 50px var(--floor-ring-glow), inset 0 0 50px var(--floor-ring-glow)}
+.floor{border-radius:50%;background:
   repeating-linear-gradient(0deg, var(--floor-grid) 0 1px, transparent 1px 160px),
   repeating-linear-gradient(90deg, var(--floor-grid) 0 1px, transparent 1px 160px),
-  radial-gradient(closest-side, var(--floor) 0, var(--floor) 55%, var(--sky-hz) 100%)}
+  radial-gradient(closest-side, var(--floor) 0, var(--floor) 80%, var(--wall-low) 100%)}
 .ceiling{background:radial-gradient(closest-side, var(--ceil) 0, var(--ceil) 50%, var(--sky-top) 100%)}
 .ring{position:absolute;border-radius:50%;border:3px solid var(--ring);box-shadow:0 0 60px 10px var(--ring-glow), inset 0 0 60px 10px var(--ring-glow)}
 .wall{background:linear-gradient(var(--wall-top), var(--wall-mid) 55%, var(--wall-low) 92%, var(--floor));border-left:1px solid var(--wall-seam)}
@@ -142,6 +145,19 @@ html:has(.room){height:100%;overflow:hidden}
 .gaze.big{width:34px;height:34px;margin:-17px 0 0 -17px;background:color-mix(in srgb, var(--text) 8%, transparent)}
 .gaze.pinch{width:12px;height:12px;margin:-6px 0 0 -6px;background:color-mix(in srgb, var(--text) 80%, transparent)}
 @media (pointer:coarse){ .gaze{display:none} }
+
+/* the intro: the name in particles, then the room from above */
+.intro{position:fixed;inset:0;z-index:20}
+.intro canvas{position:absolute;inset:0;width:100%;height:100%}
+.intro-sub{position:absolute;left:0;right:0;text-align:center;font-size:16px;color:var(--sec);pointer-events:none}
+.intro-cue{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;font-size:13px;color:var(--sec);pointer-events:none}
+.intro-cue i{width:1px;height:44px;background:linear-gradient(var(--sec),transparent);transform-origin:top;animation:cue 1.8s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes cue{0%{transform:scaleY(0);opacity:1}55%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+.intro-skip{all:unset;position:absolute;right:28px;bottom:40px;font-size:13px;color:var(--sec);cursor:pointer}
+.intro-skip:hover{color:var(--text)}
+.intro .stage,body.intro .stage{opacity:0}
+body.intro .orn,body.intro .brand,body.intro .hint{opacity:0;pointer-events:none}
+.brand,.hint{transition:opacity .6s}
 
 /* the pinched window */
 .detail{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;padding:24px}
