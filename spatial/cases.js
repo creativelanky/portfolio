@@ -4,7 +4,6 @@ window.CASES = [
 {
   slug: "lumoswap", name: "Lumoswap", category: "Web3 / DeFi", year: "2025",
   tagline: "DeFi, made effortless.",
-  thumb: "lumoswap-1.jpg", hero: "lumoswap-2.jpg",
   summary: "A decentralised exchange on Creatorchain, a Layer 2 on Optimism’s Superchain. I designed the full product: landing page, swap, trading, liquidity, bridge, staking and farming.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Web app"], ["Scope", "40+ screens and a design system"]],
   context: [
@@ -49,7 +48,6 @@ window.CASES = [
 {
   slug: "oaksjet", name: "Oaksjet", category: "Travel / Luxury", year: "2025",
   tagline: "A higher standard of travel.",
-  thumb: "oaks3.jpg", hero: "oaks1.jpg",
   summary: "A private jet booking platform for Nigeria. I designed the traveller experience on mobile and desktop, and the tools operators use to list aircraft and manage bookings.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Mobile, desktop, operator app"], ["Scope", "UX, UI and design system"]],
   context: [
@@ -82,6 +80,7 @@ window.CASES = [
     { t: "Empty legs get their own page", d: "Discounted repositioning flights are listed by date and route, priced in naira. It’s the cheapest way to try a private flight.", tradeoff: "This inventory changes daily, so the page needed clear sold-out and expired states.", img: "oaks4.jpg", cap: "Current jet deals" }
   ],
   screens: [
+    { img: "oaks1.jpg", t: "Traveller app", d: "Onboarding, a trip-first search, and a jet page with specs, amenities and photos." },
     { img: "oaks5.jpg", t: "Operator desktop", d: "Booking requests arrive as notifications with the payout already worked out." },
     { img: "oaks6.jpg", t: "Availability", d: "A month at a glance: scheduled flights, bookings and unavailable days." }
   ],
@@ -95,7 +94,6 @@ window.CASES = [
 {
   slug: "terrace", name: "Terrace", category: "Web3 / Gaming", year: "2025",
   tagline: "A little anticipation. A big reveal.",
-  thumb: "terrace-1.jpg", hero: "terrace-2.jpg",
   summary: "A loot box campaign for Terrace, a crypto exchange. Users earn mystery boxes of $TRC for signing up, trading, referring friends and verifying their identity. I also designed the token launchpad.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Web and mobile"], ["Timeline", "6 weeks"]],
   context: [
@@ -123,7 +121,7 @@ window.CASES = [
   ],
   decisions: [
     { t: "The rules sit next to the boxes", d: "A How to earn panel stays beside the campaign. Each task shows its status (earned, claimed or locked), and the referral link can be copied straight from it.", tradeoff: "The page is busier than a clean hero with an FAQ link.", img: "terrace-1.jpg", cap: "Campaign home with the How to earn panel" },
-    { t: "Every tier is shown before you open", d: "A carousel shows the Common, Epic, Legendary and Mythic boxes, with Spin to open in the middle.", tradeoff: "Showing the top tiers sets expectations, so the odds behind them had to be fair." },
+    { t: "Every tier is shown before you open", d: "A carousel shows the Common, Epic, Legendary and Mythic boxes, with Spin to open in the middle.", tradeoff: "Showing the top tiers sets expectations, so the odds behind them had to be fair.", img: "terrace-2.jpg", cap: "The campaign on desktop, and the entry modal on mobile" },
     { t: "Verification raises the cap", d: "Unverified users can earn up to 10 boxes. Verifying identity removes the limit, so it becomes something people choose to do.", tradeoff: "Some people will stop at 10." }
   ],
   screens: [
@@ -139,7 +137,6 @@ window.CASES = [
 {
   slug: "dreamspace", name: "Dreamspace", category: "AI / Data", year: "2024",
   tagline: "Complex data. Clear possibilities.",
-  thumb: "dreamspace-1.jpg", hero: "dreamspace-1.jpg",
   summary: "A tool on Space and Time for generating data-driven dapps and dashboards from a prompt, backed by on-chain data and SQL. I designed the builder, the projects area, the developer docs and API key management.",
   meta: [["Role", "Product designer"], ["Year", "2024"], ["Platform", "Web app"], ["Scope", "Builder, docs and API keys"]],
   context: [
@@ -167,7 +164,7 @@ window.CASES = [
     ["Docs and keys", "Designed alongside the product."]
   ],
   decisions: [
-    { t: "Prompt first, SQL visible underneath", d: "The home screen asks one question: what do you want to build? Below it, a SQL editor and table view show what the platform is querying.", tradeoff: "SQL on the home screen can put off business users, so it’s secondary but never hidden." },
+    { t: "Prompt first, SQL visible underneath", d: "The home screen asks one question: what do you want to build? Below it, a SQL editor and table view show what the platform is querying.", tradeoff: "SQL on the home screen can put off business users, so it’s secondary but never hidden.", img: "dreamspace-1.jpg", cap: "Prompt, chat and the query view underneath" },
     { t: "The builder is a docked panel", d: "Chat, Components and Flair & Themes sit in a panel beside the app, with a live preview toggle, so each change shows up as you make it.", tradeoff: "Less canvas than a full-screen editor.", img: "dreamspace-2.jpg", cap: "Components tab in the builder panel" },
     { t: "Page history uses thumbnails", d: "Every page keeps a visual version history, so getting back to a version that worked means recognising it.", tradeoff: "More storage and rendering for every change.", img: "dreamspace-3.jpg", cap: "Pages and version history" }
   ],
@@ -185,7 +182,6 @@ window.CASES = [
 {
   slug: "washpadi", name: "Washpadi", category: "Consumer / Mobile", year: "2025",
   tagline: "Everyday life, a little lighter.",
-  thumb: "crest-grid.jpg", hero: "crest-grid.jpg",
   summary: "An on-demand laundry service. I designed the customer app, the vendor app laundries use to run their business, and the admin platform.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "iOS, Android, web admin"], ["Scope", "3 products, 1 design system"]],
   context: [
@@ -237,7 +233,6 @@ window.CASES = [
 {
   slug: "glitch-market", name: "Glitch Market", category: "AI / Web3", year: "2024",
   tagline: "Making sense of what’s next.",
-  thumb: "Glitch markets cover.jpg", hero: "Glitch markets cover.jpg", heroContain: true,
   summary: "A prediction market where people stake on real-world and on-chain outcomes, with AI agents acting as market makers and helping resolve disputes. I led product design and the brand.",
   meta: [["Role", "Lead product designer"], ["Year", "2024"], ["Platform", "Web and mobile"], ["Scope", "Product and brand"]],
   confidential: "The product screens are confidential for now. I’m happy to walk through them on a call.",

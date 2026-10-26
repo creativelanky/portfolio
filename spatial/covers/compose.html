@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Cover composer. Each cover renders at 1600×1000; render.sh screenshots them with headless Chrome into spatial/covers/*.jpg.
+     Open compose.html?c=lumoswap in a browser to preview one. -->
+<html><head><meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1600px;height:1000px;overflow:hidden;background:#000}
+.cover{position:relative;width:1600px;height:1000px;overflow:hidden;isolation:isolate}
+/* light film grain over everything */
+.cover::after{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
+img{display:block;width:100%}
+
+/* a desktop window: dark frame, three dots, the screen inside */
+.win{position:absolute;border-radius:18px;background:#121214;padding:38px 0 0;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(255,255,255,.10), 0 60px 120px -20px rgba(0,0,0,.65), 0 20px 40px -10px rgba(0,0,0,.4)}
+.win::before{content:"";position:absolute;left:20px;top:14px;width:11px;height:11px;border-radius:50%;background:#ff5f57;box-shadow:19px 0 0 #febc2e, 38px 0 0 #28c840;opacity:.9}
+.win.light{background:#f3f3f1}
+/* a phone: bezel, rounded screen, island */
+.phone{position:absolute;border-radius:72px;padding:15px;background:#0b0b0d;
+  box-shadow:inset 0 0 0 2px #2c2c31, inset 0 0 0 5px #0b0b0d, 0 70px 120px -24px rgba(0,0,0,.6), 0 24px 40px -10px rgba(0,0,0,.35)}
+.phone img{border-radius:58px}
+.phone::after{content:"";position:absolute;left:50%;top:26px;width:30%;height:30px;margin-left:-15%;border-radius:20px;background:#0b0b0d}
+.card{position:absolute;border-radius:28px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.10), 0 50px 100px -20px rgba(0,0,0,.7)}
+.glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+
+/* ---------- Lumoswap: yellow on black ---------- */
+#lumoswap{background:radial-gradient(1200px 800px at 0% 0%, #2b2706, transparent 60%), linear-gradient(160deg,#121109 0%,#070706 60%)}
+#lumoswap .glow.a{width:760px;height:520px;left:-220px;top:-240px;background:#f5d90a;opacity:.22}
+#lumoswap .glow.b{width:600px;height:400px;right:-100px;bottom:-200px;background:#f5d90a;opacity:.12}
+#lumoswap .win{left:140px;top:150px;width:1460px}
+#lumoswap .card{right:90px;bottom:-60px;width:430px;background:#0b0b0b}
+
+/* ---------- Oaksjet: dusk sky ---------- */
+#oaksjet{background:linear-gradient(170deg,#0d1730 0%,#1c2c52 45%,#5a4a63 78%,#c98d68 100%)}
+#oaksjet .glow.a{width:900px;height:500px;right:-200px;bottom:-260px;background:#f2a56b;opacity:.45}
+#oaksjet .glow.b{width:600px;height:400px;left:-200px;top:-200px;background:#4a6fd1;opacity:.35}
+#oaksjet .phone.a{left:350px;top:110px;width:420px}
+#oaksjet .phone.b{left:830px;top:250px;width:420px}
+
+/* ---------- Terrace: neon green on near-black ---------- */
+#terrace{background:radial-gradient(1000px 700px at 100% 0%, #16300a, transparent 60%), linear-gradient(200deg,#0b1208 0%,#050604 70%)}
+#terrace .glow.a{width:800px;height:520px;right:-200px;top:-240px;background:#9cff3c;opacity:.22}
+#terrace .glow.b{width:500px;height:400px;left:-180px;bottom:-200px;background:#3cff8a;opacity:.12}
+#terrace .win{left:150px;top:150px;width:1500px}
+
+/* ---------- Dreamspace: violet to rose ---------- */
+#dreamspace{background:linear-gradient(140deg,#120a2a 0%,#2c1458 40%,#6a1f7a 75%,#c2417f 100%)}
+#dreamspace .glow.a{width:900px;height:600px;right:-260px;bottom:-280px;background:#ff5fa2;opacity:.40}
+#dreamspace .glow.b{width:700px;height:500px;left:-240px;top:-260px;background:#6b5bff;opacity:.45}
+#dreamspace .win{left:150px;top:150px;width:1500px}
+
+/* ---------- Washpadi: deep laundry green ---------- */
+#washpadi{background:linear-gradient(160deg,#0b2218 0%,#123a2a 50%,#1e5c40 100%)}
+#washpadi .glow.a{width:800px;height:520px;left:-200px;top:-260px;background:#6ee7a8;opacity:.25}
+#washpadi .glow.b{width:700px;height:500px;right:-200px;bottom:-260px;background:#3ba36b;opacity:.35}
+#washpadi .phone.a{left:350px;top:110px;width:420px}
+#washpadi .phone.b{left:830px;top:250px;width:420px}
+
+/* ---------- Glitch Market: chromatic noise ---------- */
+#glitch-market{background:radial-gradient(900px 700px at 50% 50%, #1a1a1d, #060607 70%)}
+#glitch-market .glow.a{width:620px;height:520px;left:430px;top:200px;background:#ff2d55;opacity:.30}
+#glitch-market .glow.b{width:620px;height:520px;left:560px;top:260px;background:#2d6bff;opacity:.32}
+#glitch-market .mark{position:absolute;left:50%;top:50%;width:700px;margin:-350px 0 0 -350px;mix-blend-mode:screen;filter:contrast(1.6)}
+#glitch-market .lines{position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 5px)}
+</style></head><body>
+<div class="cover" id="lumoswap"><i class="glow a"></i><i class="glow b"></i>
+  <div class="win"><img src="src/lum-trade.jpg"></div>
+  <div class="card"><img src="src/lum-swap.jpg"></div></div>
+
+<div class="cover" id="oaksjet"><i class="glow a"></i><i class="glow b"></i>
+  <div class="phone a"><img src="src/oaks-search.jpg"></div>
+  <div class="phone b"><img src="src/oaks-jet.jpg"></div></div>
+
+<div class="cover" id="terrace"><i class="glow a"></i><i class="glow b"></i>
+  <div class="win"><img src="src/terrace-app.jpg"></div></div>
+
+<div class="cover" id="dreamspace"><i class="glow a"></i><i class="glow b"></i>
+  <div class="win"><img src="src/dream-app.jpg"></div></div>
+
+<div class="cover" id="washpadi"><i class="glow a"></i><i class="glow b"></i>
+  <div class="phone a"><img src="src/wash-home.jpg"></div>
+  <div class="phone b"><img src="src/wash-vendor.jpg"></div></div>
+
+<div class="cover" id="glitch-market"><i class="glow a"></i><i class="glow b"></i><i class="lines"></i>
+  <img class="mark" src="src/glitch-mark.jpg"></div>
+
+<script>
+/* show only the requested cover */
+var c = new URLSearchParams(location.search).get('c');
+if (c) [].forEach.call(document.querySelectorAll('.cover'), function(el){ if (el.id !== c) el.remove(); });
+</script>
+</body></html>

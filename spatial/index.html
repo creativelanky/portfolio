@@ -58,7 +58,7 @@ var PANELS = [
 var COLS = [32, 62, 92], ROWS = [-185, 185], DEPTH = [20, -20, 10, -10, 25, -15];
 CASES.forEach(function(c, i){
   PANELS.push({ ang: COLS[i % 3], y: ROWS[Math.floor(i / 3)], z: DEPTH[i], w: 480, h: 330, d: .2 + i * .05, kind: 'case', ci: i,
-    html: '<div class="in"><div class="shot-img"><img src="' + th(c.thumb) + '" alt="' + esc(c.name) + '" draggable="false"></div>' +
+    html: '<div class="in"><div class="shot-img"><img src="covers/thumb/' + c.slug + '.jpg" alt="' + esc(c.name) + '" draggable="false"></div>' +
           '<div class="bar"><div><b>' + c.name + '</b><br><span>' + c.tagline + '</span></div><span class="meta">' + c.category + ' · ' + c.year + '</span></div></div>' });
 });
 SHOTS.forEach(function(s, i){
@@ -214,7 +214,7 @@ function syncOrn(){
 var detail = document.getElementById('detail'), dwin = document.getElementById('dwin'), detailOpen = null;
 function caseView(i){
   var c = CASES[i], nx = (i + 1) % CASES.length;
-  return '<div class="dcase"><div class="dimg' + (c.heroContain ? ' contain' : '') + '"><img src="' + src(c.thumb) + '" alt="' + esc(c.name) + '"></div>' +
+  return '<div class="dcase"><div class="dimg"><img src="covers/' + c.slug + '.jpg" alt="' + esc(c.name) + '"></div>' +
     '<div class="dtext"><div><div class="small">' + c.category + ' · ' + c.year + '</div><h2 style="margin-top:10px">' + c.name + '</h2><p class="p">' + c.summary + '</p></div>' +
     '<div><dl>' + c.meta.slice(0, 3).map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl>' +
     '<div class="row"><a class="btn pri" href="case.html?p=' + c.slug + '">Read the case study</a><button class="btn" data-next="' + nx + '">Next: ' + CASES[nx].name + '</button></div></div></div></div>';

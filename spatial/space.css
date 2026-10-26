@@ -106,7 +106,7 @@ html:has(.room){height:100%;overflow:hidden}
 
 .k-case .in{padding:0}
 .k-case .shot-img{position:absolute;left:0;right:0;top:0;bottom:64px;overflow:hidden;background:var(--surface-2)}
-.k-case .shot-img img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;transition:transform .4s cubic-bezier(.2,.9,.1,1)}
+.k-case .shot-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.2,.9,.1,1)}
 .k-case.hover .shot-img img{transform:scale(1.03)}
 .k-case .bar{position:absolute;left:0;right:0;bottom:0;height:64px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line)}
 .k-case .bar b{font-size:17px;font-weight:500;letter-spacing:-.01em}
@@ -167,8 +167,7 @@ body.intro .orn,body.intro .brand,body.intro .hint{opacity:0;pointer-events:none
 .dwin.is-shot{width:auto;max-width:min(1200px,100%);background:var(--surface-2)}
 .dshot img{max-height:calc(100vh - 100px);width:auto;max-width:100%}
 .dimg{aspect-ratio:16/8;background:var(--surface-2);overflow:hidden}
-.dimg img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
-.dimg.contain img{object-fit:contain}
+.dimg img{width:100%;height:100%;object-fit:cover}
 .dtext{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;padding:30px 34px 34px}
 .dtext h2{font-size:40px;font-weight:500;letter-spacing:-.035em;line-height:1}
 .dtext .p{font-size:16px;color:var(--sec)}

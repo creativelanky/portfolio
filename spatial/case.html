@@ -46,7 +46,7 @@ var n = 0;
 function sec(id, name, body){ n++; return '<section class="sec" id="' + id + '"><h2 class="sname rv"><span>' + String(n).padStart(2, '0') + '</span>' + name + '</h2><div class="sbody">' + body + '</div></section>'; }
 
 /* images used in the hero or decisions aren't repeated in the gallery */
-var used = [c.hero].concat(c.decisions.map(function(d){ return d.img; }));
+var used = c.decisions.map(function(d){ return d.img; });
 var rest = c.screens.filter(function(s){ return used.indexOf(s.img) < 0; });
 
 var H = '<header class="head">' +
@@ -54,7 +54,7 @@ var H = '<header class="head">' +
   '<h1 class="rv">' + c.name + '</h1>' +
   '<div class="head-grid"><p class="summary rv">' + c.summary + '</p>' +
   '<dl class="facts rv">' + c.meta.map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl></div></header>' +
-  '<div class="hero-wrap"><div class="hero' + (c.heroContain ? ' contain' : '') + '" id="hero">' + fig(c.hero, '') + '</div></div>';
+  '<div class="hero-wrap"><div class="hero" id="hero"><figure class="fig"><div class="fwin"><img src="covers/' + c.slug + '.jpg" alt="' + esc(c.name) + ' cover"></div></figure></div></div>';
 
 H += '<article class="article">';
 H += sec('context', 'Context', paras(c.context));
@@ -73,7 +73,7 @@ H += sec('reflection', 'Looking back', paras(c.reflection));
 H += '</article>';
 
 H += '<a class="next rv" href="case.html?p=' + next.slug + '"><div class="next-text"><p class="eyebrow">Next project</p><h2>' + next.name + '</h2><p>' + next.tagline + '</p></div>' +
-  '<div class="next-img"><img src="thumbs/' + encodeURI(next.thumb) + '" alt="' + esc(next.name) + '" loading="lazy"></div></a>' +
+  '<div class="next-img"><img src="covers/thumb/' + next.slug + '.jpg" alt="' + esc(next.name) + '" loading="lazy"></div></a>' +
   '<footer class="cfoot"><span>© 2026 Triumph Ohwojeheri</span><a href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a><a href="index.html#work">Back to the room</a></footer>';
 document.getElementById('main').innerHTML = H;
 
