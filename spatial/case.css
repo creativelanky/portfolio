@@ -247,13 +247,44 @@ html:not(.embed) .hero-wrap{max-width:100%}
   html:not(.embed) body.case{padding:0;background:#fff}
   html:not(.embed) .case main{border-radius:0;border:0;box-shadow:none}
   html:not(.embed) body.case::after{display:none}
-  .case main{padding:0 18px}
-  html:not(.embed) .sfoot,.sfoot{margin-left:-18px;margin-right:-18px;width:auto}
-  .head{padding-top:104px}
+  .case main{padding:0 22px}
+  html:not(.embed) .sfoot,.sfoot{margin-left:-22px;margin-right:-22px;width:auto}
+  .head,html:not(.embed) .head{padding-top:140px}
+  html:not(.embed) .ab-hero{padding-top:140px}
   .case .orn{display:none}
   .navpill{top:30px}
   .navpill a[href="resume.pdf"]{display:none}
-  .navpill a{padding:9px 12px;font-size:13.5px}
-  .sf-lead{margin:44px 0 28px}
-  .sf-links{gap:10px 16px;font-size:14px}
+  .navpill a{padding:9px 12px;font-size:13px}
+  /* a phone reads smaller type with more room around it */
+  .case{font-size:15.5px}
+  .head .summary{font-size:20px;line-height:1.3;margin-top:8px}
+  .head .facts{margin-top:40px}
+  .head .facts div{font-size:13.5px;padding:15px 0}
+  .head .facts dt{font-size:13.5px}
+  .eyebrow,.flag{font-size:12.5px}
+  .btn{font-size:13.5px}
+  .avail{font-size:12px}
+  figcaption{font-size:12.5px}
+  .sname{font-size:14.5px}
+  .mini{font-size:13.5px}
+  .before li,.steps li,.trade,.edu li{font-size:14.5px}
+  .points li{font-size:16.5px}
+  .steps b{font-size:17.5px}
+  .ab-hero .lead{font-size:16px;line-height:1.7}
+  .ab-facts dt{font-size:12.5px}
+  .ab-facts dd{font-size:18px}
+  .xp h3{font-size:19px}.xp h3 span{font-size:14px}
+  .xp .when,.xp p a,.edu li span:last-child{font-size:12.5px}
+  .xp p{font-size:14px}
+  .skills h3{font-size:13.5px}
+  .chips span{font-size:11.5px}
+  .stat dd{font-size:13.5px}
+  .sec,.ab-sec{padding-top:88px;gap:18px}
+  .stats{gap:30px 20px}
+  .sf-in{padding:44px 22px 28px}
+  .sf-status{font-size:12.5px}
+  .sf-lead{margin:52px 0 32px}
+  .sf-email{font-size:20px}
+  .sf-links{gap:12px 18px;font-size:13.5px}
+  .sf-bot{margin-top:44px;font-size:11.5px}
 }

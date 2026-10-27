@@ -9,7 +9,7 @@ if (!window.MOBILE) return;
 ['stage', 'hint', 'toplinks', 'orn', 'detail', 'portal', 'intro', 'gaze'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
 var b = document.querySelector('.brand'); if (b) b.remove();
 document.body.className = 'mhome';
-var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=mobile'; document.head.appendChild(css);
+var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=space'; document.head.appendChild(css);
 
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
