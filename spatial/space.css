@@ -339,3 +339,18 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .mhome .sfoot{width:auto;margin:96px -16px 0}
 .mhome .sf-in{padding:36px 20px 24px}
 .m-sec{scroll-margin-top:84px}
+/* the about intro and statement, sized for a phone */
+.mhome .ab-hero{display:block;padding:108px 4px 0;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
+.mhome .ab-hero h1{font-size:clamp(42px,12vw,56px);margin:26px 0 18px}
+.mhome .ab-hero .lead{font-size:16px;line-height:1.6}
+.mhome .ab-photo{margin-top:32px;border-radius:24px;padding:8px}
+.mhome .ascii{border-radius:18px}
+.mhome .ab-facts{margin:28px 4px 0;grid-template-columns:1fr 1fr}
+.mhome .ab-facts div{padding:14px 12px 16px 0}
+.mhome .ab-facts dd{font-size:15px}
+.mhome .stmt-sec{height:180vh;margin:24px 4px 0}
+.mhome .stmt-pin{padding:84px 0 40px}
+.mhome .stmt-sec .stmt{font-size:clamp(28px,8.4vw,36px)}
+.mhome .stats{grid-template-columns:1fr 1fr;gap:22px 16px;margin-top:36px}
+.mhome .stat dt{font-size:40px}
+.mhome .stat dd{font-size:14px}

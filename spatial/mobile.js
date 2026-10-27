@@ -18,13 +18,34 @@ var loops = PICK.map(function(k){ return PLAYGROUND.filter(function(g){ return g
 
 var m = document.createElement('main'); m.className = 'm';
 m.innerHTML = navHTML('') +
-  '<header class="m-hero">' +
-    '<p class="m-who"><img src="' + th('photo-4.jpg') + '" alt=""><span><b>Triumph Ohwojeheri</b>Product designer, Lagos</span></p>' +
-    '<h1 class="m-h1">Complex ideas.<br><em>Thoughtfully</em> simple.</h1>' +
-    '<p class="m-p">I turn complex problems into digital experiences that feel right. From Web3 to the everyday.</p>' +
-    '<div class="m-row"><a class="btn pri" href="#work">View work</a><a class="btn" href="mailto:triumphohwojeheri@gmail.com">Email me</a></div>' +
-    '<p class="avail m-avail"><i></i>Available for select projects</p>' +
+  /* the first two sections of the about page: who I am with the portrait, then the statement and the numbers */
+  '<header class="ab-hero m-ab">' +
+    '<div>' +
+      '<p class="m-who"><img src="' + th('photo-4.jpg') + '" alt=""><span><b>Triumph Ohwojeheri</b>Product designer, Lagos</span></p>' +
+      '<h1 class="mask"><span class="ln"><span>I design products</span></span><span class="ln"><span>that make <em>complex</em></span></span><span class="ln"><span>things feel simple.</span></span></h1>' +
+      '<p class="lead rv">I’m Triumph, a product designer in Lagos with 4+ years of experience across fintech, Web3, DeFi, AI and SaaS. I work end to end, from research and user flows to high-fidelity UI, prototypes and design systems, and I’ve led zero-to-one design for trading, payments and decentralised apps. On the side, I vibe-code my designs to life.</p>' +
+      '<div class="m-row rv"><a class="btn pri" href="#work">View work</a><a class="btn" href="mailto:triumphohwojeheri@gmail.com">Email me</a></div>' +
+      '<p class="avail m-avail"><i></i>Available for select projects</p>' +
+    '</div>' +
+    '<div class="ab-photo rv"><div class="ascii" id="ascii" role="img" aria-label="Portrait of Triumph Ohwojeheri, drawn in ASCII characters">' +
+      '<img class="ascii-photo" id="asciiPhoto" src="' + th('photo-3.jpg') + '" alt=""><canvas class="ascii-cv" id="asciiCv"></canvas></div></div>' +
   '</header>' +
+  '<dl class="ab-facts rv">' +
+    '<div><dt>Experience</dt><dd>4+ years</dd></div><div><dt>Focus</dt><dd>Web3, fintech, AI, SaaS</dd></div>' +
+    '<div><dt>Based in</dt><dd>Lagos, Nigeria</dd></div><div><dt>Works with</dt><dd>Teams in the US, Europe and Africa</dd></div>' +
+  '</dl>' +
+  '<section class="stmt-sec">' +
+    '<div class="stmt-pin">' +
+      '<p class="rv" style="margin-bottom:22px"><span class="eyebrow">In short</span></p>' +
+      '<p class="stmt" data-scrub="sticky">I take complicated, high-stakes products like trading apps, cross-border payments, on-chain data and AI tools, and make them simple to use without hiding what matters.</p>' +
+      '<dl class="stats" data-after>' +
+        '<div class="stat"><dt>4+</dt><dd>years designing web and mobile products</dd></div>' +
+        '<div class="stat"><dt>8</dt><dd>teams, from New York and Paris to Uganda</dd></div>' +
+        '<div class="stat"><dt>20+</dt><dd>projects across Web3, fintech and AI</dd></div>' +
+        '<div class="stat"><dt>0→1</dt><dd>product design led from first concept at Glitch Markets</dd></div>' +
+      '</dl>' +
+    '</div>' +
+  '</section>' +
   '<section class="m-sec" id="work"><h2 class="m-h2">Selected work</h2><div class="m-cards">' +
     CASES.map(function(c, i){ return cardHTML(c, i); }).join('') + '</div></section>' +
   '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2">Playground</h2><span>Swipe</span></div><div class="m-track">' +
@@ -59,6 +80,6 @@ if ('IntersectionObserver' in window) {
   vids.forEach(function(v){ io.observe(v); });
 }
 
-/* the shared page motion (reveals, the footer, the top bar's pill) */
-var s = document.createElement('script'); s.src = 'site.js?v=mobile'; document.body.appendChild(s);
+/* the portrait, then the shared page motion (reveals, the statement, the footer, the top bar's pill) */
+['ascii.js?v=1', 'site.js?v=mobile2'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
 })();
