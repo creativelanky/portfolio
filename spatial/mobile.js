@@ -27,8 +27,7 @@ m.innerHTML = navHTML('') +
       '<div class="m-row rv"><a class="btn pri" href="#work">View work</a><a class="btn" href="mailto:triumphohwojeheri@gmail.com">Email me</a></div>' +
       '<p class="avail m-avail"><i></i>Available for select projects</p>' +
     '</div>' +
-    '<div class="ab-photo rv"><div class="ascii" id="ascii" role="img" aria-label="Portrait of Triumph Ohwojeheri, drawn in ASCII characters">' +
-      '<img class="ascii-photo" id="asciiPhoto" src="' + th('photo-3.jpg') + '" alt=""><canvas class="ascii-cv" id="asciiCv"></canvas></div></div>' +
+    '<div class="ab-photo rv"><div class="dust" id="dust" role="img" aria-label="Portrait of Triumph Ohwojeheri" data-src="' + th('photo-3.jpg') + '"><canvas></canvas></div></div>' +
   '</header>' +
   '<dl class="ab-facts rv">' +
     '<div><dt>Experience</dt><dd>4+ years</dd></div><div><dt>Focus</dt><dd>Web3, fintech, AI, SaaS</dd></div>' +
@@ -81,5 +80,5 @@ if ('IntersectionObserver' in window) {
 }
 
 /* the portrait, then the shared page motion (reveals, the statement, the footer, the top bar's pill) */
-['ascii.js?v=1', 'site.js?v=mobile2'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
+['dust.js?v=3', 'site.js?v=mobile2'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
 })();
