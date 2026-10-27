@@ -4,6 +4,7 @@ window.CASES = [
 {
   slug: "lumoswap", name: "Lumoswap", category: "Web3 / DeFi", year: "2025",
   tagline: "DeFi, made effortless.",
+  headline: "A DEX that feels as quick as a fintech app", flag: "Shipped · 40+ screens", logo: "logos/lumoswap.jpg", logoBg: "#0b0b0b", mark: "",
   summary: "A decentralised exchange on Creatorchain, a Layer 2 on Optimism’s Superchain. I designed the full product: landing page, swap, trading, liquidity, bridge, staking and farming.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Web app"], ["Scope", "40+ screens and a design system"]],
   context: [
@@ -48,6 +49,7 @@ window.CASES = [
 {
   slug: "oaksjet", name: "Oaksjet", category: "Travel / Luxury", year: "2025",
   tagline: "A higher standard of travel.",
+  headline: "Private jet charter, booked like a normal flight", flag: "Two-sided marketplace", logo: "", logoBg: "#1b2550", mark: "O",
   summary: "A private jet booking platform for Nigeria. I designed the traveller experience on mobile and desktop, and the tools operators use to list aircraft and manage bookings.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Mobile, desktop, operator app"], ["Scope", "UX, UI and design system"]],
   context: [
@@ -94,6 +96,7 @@ window.CASES = [
 {
   slug: "terrace", name: "Terrace", category: "Web3 / Gaming", year: "2025",
   tagline: "A little anticipation. A big reveal.",
+  headline: "A rewards campaign that turns onboarding into a game", flag: "Shipped in 6 weeks", logo: "", logoBg: "#0b0f08", mark: "t",
   summary: "A loot box campaign for Terrace, a crypto exchange. Users earn mystery boxes of $TRC for signing up, trading, referring friends and verifying their identity. I also designed the token launchpad.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Web and mobile"], ["Timeline", "6 weeks"]],
   context: [
@@ -137,8 +140,9 @@ window.CASES = [
 {
   slug: "dreamspace", name: "Dreamspace", category: "AI / Data", year: "2024",
   tagline: "Complex data. Clear possibilities.",
+  headline: "From a sentence to an on-chain app", flag: "Space and Time · MakeInfinite", logo: "logos/dreamspace.jpg", logoBg: "#0b0b0b", mark: "",
   summary: "A tool on Space and Time for generating data-driven dapps and dashboards from a prompt, backed by on-chain data and SQL. I designed the builder, the projects area, the developer docs and API key management.",
-  meta: [["Role", "Product designer"], ["Year", "2024"], ["Platform", "Web app"], ["Scope", "Builder, docs and API keys"]],
+  meta: [["Role", "Product designer (part-time)"], ["Year", "Feb 2024 – Jan 2025"], ["Platform", "Web app"], ["Scope", "Builder, docs and API keys"]],
   context: [
     "Dreamspace has two kinds of users. Developers want SQL, schemas and APIs. Business users want a dashboard that answers a question. Both want to build on data they can verify.",
     "The product generates an app from a sentence. My job was to make sure developers could still see and edit what was generated, and that nobody lost work while trying changes."
@@ -182,6 +186,7 @@ window.CASES = [
 {
   slug: "washpadi", name: "Washpadi", category: "Consumer / Mobile", year: "2025",
   tagline: "Everyday life, a little lighter.",
+  headline: "One laundry service, three apps that fit their users", flag: "3 products, 1 system", logo: "logos/washpadi.jpg", logoBg: "#f2f2f2", mark: "",
   summary: "An on-demand laundry service. I designed the customer app, the vendor app laundries use to run their business, and the admin platform.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "iOS, Android, web admin"], ["Scope", "3 products, 1 design system"]],
   context: [
@@ -231,10 +236,11 @@ window.CASES = [
   reflection: ["I’d test the vendor app on budget phones and slow networks from the first wireframe. That’s where its hardest problems were, and I found them late."]
 },
 {
-  slug: "glitch-market", name: "Glitch Market", category: "AI / Web3", year: "2024",
+  slug: "glitch-market", name: "Glitch Market", category: "AI / Web3", year: "2025",
   tagline: "Making sense of what’s next.",
+  headline: "A prediction market where AI agents take part", flag: "Sole designer", logo: "logos/glitch-market.jpg", logoBg: "#0e0e0f", mark: "",
   summary: "A prediction market where people stake on real-world and on-chain outcomes, with AI agents acting as market makers and helping resolve disputes. I led product design and the brand.",
-  meta: [["Role", "Lead product designer"], ["Year", "2024"], ["Platform", "Web and mobile"], ["Scope", "Product and brand"]],
+  meta: [["Role", "UX/UI designer, sole designer"], ["Year", "Sept 2025 – Mar 2026"], ["Platform", "Web and mobile"], ["Scope", "Product and brand"]],
   confidential: "The product screens are confidential for now. I’m happy to walk through them on a call.",
   context: [
     "Prediction markets attract casual users betting on pop culture, and traders reading on-chain signals. Glitch Market adds AI agents that set prices and validate outcomes. The interface had to work for all of them."
@@ -275,5 +281,77 @@ window.CASES = [
 }
 ];
 
-/* Shots outside the case studies */
-window.SHOTS = ["agentic-grid.jpg", "supersocial-grid.jpg", "feedpay-grid.jpg", "terrace-grid.jpg", "Frame 253.jpg", "Scene-16.jpg"];
+/* The playground: interaction loops first, then shots from outside the case studies.
+   Loops are muted videos (loops/<f>.mp4, with loops/<f>.jpg as the still); bg fills the space around a wide loop. */
+window.PLAYGROUND = [
+  { loop: "eikos-01-feed", t: "Market feed", by: "Eikos", bg: "#f0e6dc" },
+  { loop: "eikos-02-live", t: "A live market", by: "Eikos", bg: "#8c3325" },
+  { loop: "eikos-03-buy", t: "Buying a position", by: "Eikos", bg: "#050505" },
+  { loop: "eikos-04-share", t: "Sharing a trade", by: "Eikos", bg: "#3b1411" },
+  { loop: "eikos-05-portfolio", t: "Portfolio", by: "Eikos", bg: "#f0e6dc" },
+  { loop: "eikos-06-ask", t: "Ask Eikos", by: "Eikos", bg: "#cab8a7" },
+  { loop: "01-balance", t: "Wallet home", by: "Wallet", bg: "#f3eee5" },
+  { loop: "02-chart", t: "Price chart", by: "Wallet", bg: "#111111" },
+  { loop: "03-network", t: "Switching networks", by: "Wallet", bg: "#fe6b1f" },
+  { loop: "04-send", t: "Sending ETH", by: "Wallet", bg: "#ffe2c7" },
+  { loop: "05-credentials", t: "Zero-knowledge ID", by: "Wallet", bg: "#161616" },
+  { loop: "06-score", t: "Points and activity", by: "Wallet", bg: "#12362a" },
+  { loop: "02-leave-types", t: "Choosing a leave type", by: "CompCrafter", bg: "#263b0f" },
+  { loop: "03-cee-books-leave", t: "Booking leave in a sentence", by: "CompCrafter", bg: "#f6f1e5" },
+  { loop: "01-product-at-a-glance", t: "The product at a glance", by: "CompCrafter", bg: "#0f1906" },
+  { loop: "05-sign-contract", t: "Signing a contract", by: "CompCrafter", bg: "#f6f1e5" },
+  { loop: "04-clock-in", t: "Clocking in", by: "CompCrafter", bg: "#d9efbd" },
+  { loop: "06-comp-worksheet", t: "The pay review worksheet", by: "CompCrafter", bg: "#0f1906" },
+  { shot: "agentic-grid.jpg", t: "Hiring landing page", by: "Agentic" },
+  { shot: "Frame 253.jpg", t: "Onboarding", by: "Orderly" },
+  { shot: "supersocial-grid.jpg", t: "Social feed", by: "SuperSocial" },
+  { shot: "feedpay-grid.jpg", t: "Payments", by: "Feedpay" },
+  { shot: "terrace-grid.jpg", t: "Listings", by: "Terrace" },
+  { shot: "Scene-16.jpg", t: "Laundry home", by: "Washpadi" }
+];
+
+/* Each cover's dark base colour, shown while its image loads */
+window.COVER = {
+  lumoswap: { base: "#0b0b08", pos: "14% 40%" },
+  oaksjet: { base: "#1c2c52", pos: "50% 30%" },
+  terrace: { base: "#070a06", pos: "14% 40%" },
+  dreamspace: { base: "#2c1458", pos: "30% 40%" },
+  washpadi: { base: "#123a2a", pos: "50% 30%" },
+  "glitch-market": { base: "#0b0b0c", pos: "50% 50%" }
+};
+
+/* The project card, shared by the room, its preview window and the case pages */
+window.cardHTML = function(c, i, opt){
+  opt = opt || {};
+  function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+  var cv = window.COVER[c.slug] || {}, role = (c.meta.filter(function(m){ return m[0] === "Role"; })[0] || ["", ""])[1];
+  var facts = c.meta.filter(function(m){ return m[0] === "Platform" || m[0] === "Scope" || m[0] === "Timeline"; }).slice(0, 2);
+  var logo = c.logo ? '<img src="' + c.logo + '" alt="">' : "<b>" + c.mark + "</b>";
+  return '<article class="pcard">' +
+    '<div class="pc-v" style="--base:' + cv.base + '"><img src="covers/card/' + c.slug + '.jpg" alt="' + esc(c.name) + ' cover" draggable="false"></div>' +
+    '<div class="pc-b">' +
+      '<div class="pc-org"><span class="pc-lg" style="background:' + c.logoBg + '">' + logo + '</span>' +
+        '<div class="pc-who"><b>' + c.name + '</b><span>' + role + '</span></div><span class="pc-yr">' + c.year + '</span></div>' +
+      '<h3 class="pc-h">' + c.headline + '</h3>' +
+      '<p class="pc-d">' + c.summary + '</p>' +
+      '<div class="pc-f"><div class="pc-r">' + facts.map(function(f){ return '<div><b>' + f[1] + '</b><span>' + f[0] + '</span></div>'; }).join("") + '</div>' +
+        (opt.extra || "") + '<a class="pc-go" href="case.html?p=' + c.slug + '" aria-label="Read the ' + esc(c.name) + ' case study">→</a></div>' +
+    '</div></article>';
+};
+
+/* Shared top navigation and footer for the case and about pages */
+window.navHTML = function(on){
+  return '<nav class="navpill" aria-label="Main"><a class="tm" href="index.html" aria-label="Back to the room">t.</a>' +
+    '<a href="index.html#work"' + (on === "work" ? ' class="on"' : '') + '>Work</a><a href="about.html"' + (on === "about" ? ' class="on"' : '') + '>About</a>' +
+    '<a href="mailto:triumphohwojeheri@gmail.com">Contact</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a></nav>';
+};
+window.footerHTML = function(){
+  /* dark, like Stanley's; the bottom row keeps Lagos time */
+  return '<footer class="sfoot"><div class="sf-in">' +
+    '<div class="sf-top rv"><span class="eyebrow">Get in touch</span><span class="sf-status"><i></i>Available for select projects</span></div>' +
+    '<p class="sf-lead mask"><span class="ln"><span>Let’s make it something</span></span><span class="ln"><span><em>good</em>.</span></span></p>' +
+    '<div class="sf-contact rv"><a class="sf-email" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a><button class="sf-copy" data-copy="triumphohwojeheri@gmail.com">Copy</button>' +
+      '<span class="sf-links"><a href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call ↗</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a><a href="https://linkedin.com/in/triumph-ohwojeheri" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://twitter.com/amazinglanky" target="_blank" rel="noopener">X ↗</a><a href="https://dribbble.com/amazinglanky" target="_blank" rel="noopener">Dribbble ↗</a></span></div>' +
+    '<div class="sf-bot"><span>© 2026 Triumph Ohwojeheri</span><span>Lagos, Nigeria <span class="lagos" data-lagos></span></span><a href="#" data-top>Back to top ↑</a></div>' +
+  '</div></footer>';
+};
