@@ -1,6 +1,6 @@
 /* ---------- tokens: one light theme, purple as the brand colour ---------- */
 :root{
-  --bg:#f7f6f3;
+  --bg:#f7f6f3; --bg-rgb:247,246,243;
   --paper:#ffffff;
   --panel:#f4f4f2;            /* the grey beside each cover */
   --ink:#18181b;
@@ -200,7 +200,7 @@ html:has(.room){height:100%;overflow:hidden}
 .intro-skip{all:unset;position:absolute;right:28px;bottom:40px;font:500 13px/1 var(--body);color:var(--sec);cursor:pointer}
 .intro-skip:hover{color:var(--ink)}
 .intro .stage,body.intro .stage{opacity:0}
-body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks{opacity:0;pointer-events:none}
+body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks,body.intro .modesw{opacity:0;pointer-events:none}
 .brand,.hint{transition:opacity .6s}
 
 /* a page opened as a window in the room */
@@ -219,7 +219,7 @@ body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks{opacity:
 .pwin iframe{display:block;width:100%;height:100%;border:0;background:#fff}
 .pgrab{width:72px;height:5px;margin-top:12px;border-radius:6px;background:rgba(24,24,27,.22)}
 .portal-open .stage{filter:blur(6px) brightness(.94)}
-.portal-open .orn,.portal-open .toplinks,.portal-open .hint{opacity:0;pointer-events:none}
+.portal-open .orn,.portal-open .toplinks,.portal-open .hint,.portal-open .modesw,.focus-mode .modesw{opacity:0;pointer-events:none}
 @media (max-width:760px){ .pwin{width:calc(100vw - 16px);height:calc(100vh - 110px);border-radius:12px} .pbar #popen{display:none} }
 
 /* the pinched window */
@@ -311,6 +311,8 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .m-head span{font-size:12px;color:var(--mute)}
 .m-h2{font:400 30px/1 var(--display);letter-spacing:-.03em;margin:0 2px 26px}
 .m-cards{display:flex;flex-direction:column;gap:22px}
+/* project cards, sized for a phone */
+@media (max-width:760px){
 .m .pcard{border-radius:24px;cursor:pointer}
 .m .pc-v{min-height:0;aspect-ratio:1/1;border-radius:18px}
 .m .pc-b{padding:26px 22px 22px;border-radius:18px}
@@ -322,6 +324,7 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .m .pc-r{gap:22px}
 .m .pc-r b{font-size:15.5px}
 .m .pc-r span{font-size:11px}
+}
 /* loops: a row you swipe, each one snaps to the middle */
 .m-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -22px;padding:0 22px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .m-track::-webkit-scrollbar{display:none}
@@ -339,9 +342,11 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .m-about .fan.open .fp-r{transform:translate(70px,18px) rotate(8deg) scale(.86)}
 .m-sum{padding:28px 16px 16px}
 .m-h3{font:400 26px/1.08 var(--display);letter-spacing:-.028em}
+/* the footer, about intro and statement, sized for a phone */
+@media (max-width:760px){
 .mhome .sfoot{width:auto;margin:128px -22px 0}
 .mhome .sf-in{padding:44px 22px 28px}
-/* the about intro and statement, sized for a phone; the hero starts well clear of the floating nav */
+/* the hero starts well clear of the floating nav */
 .mhome .ab-hero{display:block;padding:148px 2px 0;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
 .mhome .ab-hero h1{font-size:clamp(38px,11vw,50px);margin:34px 0 22px}
 .mhome .ab-hero .lead{font-size:14.5px;line-height:1.7}
@@ -357,6 +362,84 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .mhome .stats{grid-template-columns:1fr 1fr;gap:30px 20px;margin-top:48px}
 .mhome .stat dt{font-size:36px}
 .mhome .stat dd{font-size:12.5px;margin-top:12px}
+}
 /* the portrait as dust (dust.js) */
 .mhome .dust{position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:var(--paper);touch-action:pan-y}
 .mhome .dust canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* ---------- the room on a phone (index.html?room=1): narrow, tall windows; you swipe from wall to wall ---------- */
+.phone .orn{top:34px;max-width:calc(100% - 16px)}
+.phone .orn button{padding:9px 9px;font-size:12px}
+.phone .hint{display:block;bottom:22px}
+.phone .in{padding:24px 22px}
+.phone .k-hero .top{flex-direction:column;align-items:flex-start;gap:8px}
+.phone .k-hero .h1{font-size:46px;margin-top:auto}
+.phone .k-hero .p{font-size:15px}
+.phone .k-hero .row{flex-wrap:wrap;gap:8px;margin-top:26px}
+.phone .k-case .pcard{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+.phone .k-case .pc-v{min-height:0}
+.phone .k-case .pc-v::after{display:none}
+.phone .k-case .pc-b{padding:20px 20px 18px}
+.phone .k-case .pc-b .flag{display:none}
+.phone .k-case .pc-h{margin-top:16px;font-size:23px}
+.phone .k-case .pc-d{font-size:13.5px;margin:10px 0 16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.phone .k-case .pc-r{gap:18px}.phone .k-case .pc-r b{font-size:15px}
+.phone .about-sum{grid-template-columns:1fr;grid-template-rows:262px minmax(0,1fr)}
+.phone .about-sum .fp{width:160px;height:210px;margin:-105px 0 0 -80px}
+.phone .about-sum .fp-c{width:172px;height:226px;margin:-113px 0 0 -86px}
+.phone .about-sum .fan.open .fp-l{transform:translate(-68px,12px) rotate(-9deg) scale(.86)}
+.phone .about-sum .fan.open .fp-r{transform:translate(68px,18px) rotate(8deg) scale(.86)}
+.phone .sum{padding:18px 14px 12px}
+.phone .sum .h2{font-size:27px;margin-top:10px}
+.phone .sum .p{font-size:13.5px}
+.phone .sum-k{display:none}
+.phone .sum .row{margin-top:auto;flex-wrap:nowrap;gap:8px}
+.phone .sum .row .btn{padding:12px 16px;font-size:13.5px;white-space:nowrap}
+.phone .k-contact .h1.md{font-size:38px}
+.phone .socials{flex-wrap:wrap;gap:10px 14px}
+.phone .socials .clock{margin-left:0;width:100%}
+.phone .tile figcaption{font-size:12px}
+
+/* ---------- the view switch: Normal (the scrolling site) or Spatial (the room) ---------- */
+.modesw{position:relative;display:inline-flex;gap:2px;padding:4px;border-radius:999px;isolation:isolate;background:#111113;
+  box-shadow:0 14px 30px -18px rgba(15,12,25,.6), inset 0 0 0 1px rgba(255,255,255,.07);user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.modesw a{position:relative;padding:9px 15px;border-radius:999px;font:500 13px/1 var(--body);color:rgba(255,255,255,.6);white-space:nowrap;transition:color .2s;-webkit-user-drag:none}
+.modesw a:hover,.modesw a.on{color:#fff}
+.modesw .pill{top:4px;bottom:4px}
+/* in the room it waits in the bottom left corner */
+.room .modesw{position:fixed;left:24px;bottom:22px;z-index:5;transition:opacity .4s}
+@media (max-width:760px){ .room .modesw{left:50%;bottom:16px;transform:translateX(-50%)} .phone .hint{bottom:66px} }
+/* on the normal home it sits under the buttons */
+.m-mode{display:flex;align-items:center;gap:14px;margin-top:24px}
+.m-mode span{font-size:12.5px;color:var(--dim)}
+
+/* the normal home's intro plays on its own over the page (intro.js) */
+.intro.auto{z-index:40;background:var(--bg)}
+.intro.auto .intro-sub{opacity:0}
+
+/* ---------- the normal home on a bigger screen: the about page's layout, the work as wide cards, loops three across ---------- */
+@media (min-width:761px){
+  .m{max-width:1296px;margin:0 auto;padding:0 48px}
+  .m .navpill{top:34px}
+  .mhome .ab-hero{padding-top:170px;align-items:center;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
+  .mhome .ab-hero h1{margin:30px 0 26px}
+  .m-row{margin-top:32px}
+  .m-who img{width:46px;height:46px}
+  .m-who{font-size:13px}.m-who b{font-size:14.5px}
+  .m-mode{margin-top:26px}
+  .m-avail{margin-top:28px;font-size:13px}
+  .ab-photo .dust{aspect-ratio:4/5}
+  .m-sec{padding-top:150px}
+  .m-h2{font-size:clamp(40px,4vw,56px);margin:0 0 36px}
+  .m-head span{font-size:14px}
+  .m-cards{gap:28px}
+  .m .pcard{cursor:pointer}
+  .m-track{margin:0;padding:0 0 6px;gap:20px}
+  .m-tile{flex:0 0 calc((100% - 40px) / 3)}
+  .m-tile figcaption{font-size:13px}
+  .m-about{display:grid;grid-template-columns:420px 1fr;gap:10px}
+  .m-about .fan{height:auto;min-height:380px}
+  .m-sum{padding:36px 36px 30px;display:flex;flex-direction:column}
+  .m-h3{font-size:40px}
+  .m-p{font-size:16px;max-width:52ch}
+  .m-sum .m-row{margin-top:auto;padding-top:28px}
+}

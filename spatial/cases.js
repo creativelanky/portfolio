@@ -341,7 +341,7 @@ window.cardHTML = function(c, i, opt){
 
 /* Shared top navigation and footer for the case and about pages */
 window.navHTML = function(on){
-  return '<nav class="navpill" aria-label="Main"><a class="tm" href="index.html" aria-label="Back to the room">t.</a>' +
+  return '<nav class="navpill" aria-label="Main"><a class="tm" href="index.html" aria-label="Home">t.</a>' +
     '<a href="index.html#work"' + (on === "work" ? ' class="on"' : '') + '>Work</a><a href="about.html"' + (on === "about" ? ' class="on"' : '') + '>About</a>' +
     '<a href="mailto:triumphohwojeheri@gmail.com">Contact</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a></nav>';
 };

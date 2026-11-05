@@ -9,16 +9,29 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=dust">
+<link rel="stylesheet" href="space.css?v=modes2">
 <script src="cases.js?v=loops2"></script>
 <script src="nav.js?v=details"></script>
-<script>window.MOBILE = matchMedia("(max-width: 760px)").matches;</script>
+<script>
+/* two ways to see the site: normal mode, a page you scroll (mobile.js), and spatial mode, the room.
+   Normal is the default; ?mode=spatial or ?mode=normal switches, and the choice is remembered */
+(function(){
+  var m = /[?&]mode=(spatial|normal)/.exec(location.search), mode = m && m[1];
+  try { if (mode) localStorage.setItem('mode', mode); else mode = localStorage.getItem('mode'); } catch (e) {}
+  window.SPATIAL = mode === 'spatial';
+})();
+window.PHONE_ROOM = window.SPATIAL && matchMedia("(max-width: 760px)").matches;   /* the room, sized for a phone */
+window.MOBILE = !window.SPATIAL;   /* the normal page; the name is from when only phones got it */
+if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
+</script>
 </head>
 <body class="room intro">
 <div class="stage" id="stage"><canvas class="room-cv" id="roomCv" aria-hidden="true"></canvas><div class="world" id="world"></div></div>
 
 <div class="hint" id="hint">Drag to look around. Click a window, or pinch on a trackpad, to bring it closer.</div>
+<script>if (window.PHONE_ROOM) document.getElementById('hint').textContent = 'Swipe to turn. Swipe up on work to flip projects.';</script>
 <a class="brand" href="#" aria-label="Triumph Ohwojeheri, home"><span class="tm">t.</span><span>Triumph<br>Ohwojeheri</span></a>
+<nav class="modesw" id="modesw" aria-label="View"><a href="?mode=normal">Normal</a><a href="?mode=spatial#home" class="on">Spatial</a></nav>
 <nav class="toplinks" id="toplinks"><a class="btn" href="about.html">About me</a><a class="btn pri" href="resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
 <nav class="orn" id="orn" aria-label="Rooms">
   <button data-go="-114">Contact</button>
@@ -44,22 +57,25 @@
   <button class="intro-skip" id="introSkip">Skip intro</button>
 </div>
 <div class="gaze" id="gaze"></div>
-<script src="mobile.js?v=4"></script>
+<script src="intro.js?v=3"></script>
+<script src="mobile.js?v=5"></script>
 
 <script>
 (function(){
 "use strict";
-if (window.MOBILE) return;   /* a phone gets the plain page built by mobile.js */
+if (window.MOBILE) return;   /* normal mode: the page built by mobile.js */
 function src(f){ return '../' + encodeURI(f); }
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
 /* ---------- the room's dimensions (px, the viewer's eye is at 0,0,0) ---------- */
 var R = 1000, FLOOR = 520, CEIL = -760, RW = 2100, RP = 1420;
+/* on a phone the windows are narrow and tall, sized so the one you face fills the screen's width (see fit()) */
+var PHONE = !!window.PHONE_ROOM;
 
 /* ---------- what hangs where. ang: degrees around you (negative = left); y: height; z: nearer (+) or further (-) ---------- */
 var PANELS = [
-  { ang: 0, y: -20, w: 660, h: 420, d: .1, kind: 'hero',
+  { ang: 0, y: -20, w: PHONE ? 360 : 660, h: PHONE ? 520 : 420, d: .1, kind: 'hero',
     html: '<div class="in"><div class="top"><span class="small">Independent product designer, Lagos</span><span class="avail"><i></i>Available for select projects</span></div>' +
           '<div class="h1">Complex ideas.<br><em>Thoughtfully</em> simple.</div>' +
           '<div class="p">I’m Triumph. I turn complex problems into digital experiences that feel right. From Web3 to the everyday.</div>' +
@@ -68,27 +84,28 @@ var PANELS = [
 /* the work wall: one project in front, its neighbours either side (see "the work slider" below) */
 var WORK = 62, NCASE = CASES.length;
 CASES.forEach(function(c, i){
-  PANELS.push({ ang: WORK, y: -10, w: 1000, h: 504, d: .2, kind: 'case', ci: i, stack: true, html: cardHTML(c, i) });
+  PANELS.push({ ang: WORK, y: PHONE ? -30 : -10, w: PHONE ? 360 : 1000, h: PHONE ? 640 : 504, d: .2, kind: 'case', ci: i, stack: true, html: cardHTML(c, i) });
 });
-PANELS.push({ ang: WORK, y: 330, z: 200, w: 300, h: 60, d: .3, kind: 'ctrl',
+PANELS.push({ ang: WORK, y: PHONE ? 334 : 330, z: PHONE ? 0 : 200, w: 300, h: 60, d: .3, kind: 'ctrl',
   html: '<div class="ctrl"><button data-step="-1" aria-label="Previous project">←</button><span class="dots" id="dots">' +
         CASES.map(function(c, i){ return '<i data-pick="' + i + '"></i>'; }).join('') + '</span><button data-step="1" aria-label="Next project">→</button></div>' });
 /* the playground: four pieces at a time, two by two (see "the playground pages" below) */
-var PLAY = 152, NPAGE = Math.ceil(PLAYGROUND.length / 4), PW = 440, PH = 362, PGAP = 26;
+/* a page is two by two; on a phone, two stacked */
+var PLAY = 152, PER = PHONE ? 2 : 4, NPAGE = Math.ceil(PLAYGROUND.length / PER), PW = PHONE ? 360 : 440, PH = PHONE ? 290 : 362, PGAP = PHONE ? 16 : 26;
 PLAYGROUND.forEach(function(g, i){
   var media = g.loop
     ? '<video muted loop playsinline preload="none" poster="loops/' + g.loop + '.jpg" src="loops/' + g.loop + '.mp4"></video>'
     : '<img src="' + th(g.shot) + '" alt="' + esc(g.t) + '" draggable="false">';
-  PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % 4) * .05, kind: 'play', stack: true, play: g, page: (i / 4) | 0, slot: i % 4,
+  PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % PER) * .05, kind: 'play', stack: true, play: g, page: (i / PER) | 0, slot: i % PER,
     html: '<figure class="tile"><div class="tm-media' + (g.loop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + '">' + media + '</div>' +
           '<figcaption><b>' + esc(g.t) + '</b><span>' + esc(g.by) + '</span></figcaption></figure>' });
 });
-PANELS.push({ ang: PLAY, y: 430, z: 60, w: 220, h: 56, d: .6, kind: 'ctrl',
+PANELS.push({ ang: PLAY, y: PHONE ? 340 : 430, z: PHONE ? 0 : 60, w: PHONE ? 340 : 220, h: 56, d: .6, kind: 'ctrl',
   html: '<div class="ctrl"><button data-pstep="-1" aria-label="Previous page">←</button><span class="dots" id="pdots">' +
         Array.apply(null, Array(NPAGE)).map(function(_, i){ return '<i data-ppick="' + i + '"></i>'; }).join('') + '</span><button data-pstep="1" aria-label="Next page">→</button></div>' });
 PANELS.push(
   /* the about wall: one card, a summary beside a small arrangement of photos that fans out when you face it */
-  { ang: -58, y: -10, w: 900, h: 470, d: .3, kind: 'about', stack: true,
+  { ang: -58, y: PHONE ? -20 : -10, w: PHONE ? 360 : 900, h: PHONE ? 660 : 470, d: .3, kind: 'about', stack: true,
     html: '<div class="about-sum"><div class="fan" id="fan">' +
             '<figure class="fp fp-l"><img src="' + th('photo-3.jpg') + '" alt="" draggable="false"></figure>' +
             '<figure class="fp fp-r"><img src="' + th('photo-8.jpg') + '" alt="" draggable="false"></figure>' +
@@ -98,7 +115,7 @@ PANELS.push(
             '<div class="p">I’m Triumph, a product designer in Lagos with 4+ years across fintech, Web3, AI and SaaS. I work end to end, from research and flows to high-fidelity UI and design systems, and I’ve led zero-to-one design for trading, payments and decentralised apps.</div>' +
             '<p class="sum-k">8 teams · 20+ projects · lately Glitch Markets, Human Tech, Space and Time</p>' +
             '<div class="row"><a class="btn pri" href="about.html">My story and experience</a><a class="btn" href="resume.pdf" target="_blank" rel="noopener">Resume</a></div></div></div>' },
-  { ang: -114, y: -10, w: 480, h: 380, d: .45, kind: 'contact',
+  { ang: -114, y: -10, w: PHONE ? 360 : 480, h: PHONE ? 360 : 380, d: .45, kind: 'contact',
     html: '<div class="in"><span class="small">Have something in mind?</span><div class="h1 md">Let’s make it<br>something good.</div>' +
           '<a class="mail" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a>' +
           '<div class="row"><a class="btn pri" href="mailto:triumphohwojeheri@gmail.com">Email me</a><a class="btn" href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call</a></div>' +
@@ -126,7 +143,7 @@ var els = PANELS.map(function(p, i){
   SHADOWS.push({ ang: p.ang, r: R - (p.z || 0) - 40, w: p.w * 1.05, d: 160, a: Math.max(.25, 1 - (FLOOR - (p.y + p.h / 2)) / 900) });
   return e;
 });
-LABELS.forEach(function(l){
+if (!PHONE) LABELS.forEach(function(l){
   var e = document.createElement('div'); e.className = 'label'; e.textContent = l.t;
   e.style.transform = 'rotateY(' + (-l.ang) + 'deg) translate3d(-50%,' + l.y + 'px,' + (-R) + 'px)';
   world.appendChild(e);
@@ -235,7 +252,7 @@ addEventListener('resize', function(){ sizeRoom(); lastWT = ''; });
    Every card stays parallel to the wall (nothing rotates), and each one only ever gets a new slot, which the browser
    animates by itself. Parallel planes sliding are the steadiest thing 3D CSS can do, so nothing flickers. */
 var current = 0, slideEls = els.filter(function(e){ return PANELS[e._i].kind === 'case'; }), dots = document.getElementById('dots');
-var FRONT = 220, SIDE_X = 860, SIDE_Z = 760, FAR_X = 1500;   /* front card nearer than the wall; side cards out and back */
+var FRONT = PHONE ? 0 : 220, SIDE_X = PHONE ? 440 : 860, SIDE_Z = PHONE ? 520 : 760, FAR_X = PHONE ? 900 : 1500;   /* front card nearer than the wall; side cards out and back */
 SHADOWS.push({ ang: WORK, r: R - FRONT - 30, w: 1100, d: 260, a: 1 });
 function adiff(a, b){ return ((a - b) % 360 + 540) % 360 - 180; }   /* shortest signed angle from b to a */
 function placeSlides(){
@@ -264,8 +281,8 @@ function placePage(){
   playEls.forEach(function(e){
     var p = PANELS[e._i], o = ((p.page - page) % NPAGE + NPAGE * 1.5) % NPAGE - NPAGE / 2;
     o = o === 0 ? 0 : o < 0 ? -1 : 1;
-    var col = p.slot % 2, row = p.slot >> 1;
-    var x = (col ? 1 : -1) * (PW + PGAP) / 2 + o * AWAY_X, y = (row ? 1 : -1) * (PH + PGAP) / 2 - 20, z = R - PLAY_Z + Math.abs(o) * AWAY_Z;
+    var col = PHONE ? -1 : p.slot % 2, row = PHONE ? p.slot : p.slot >> 1;
+    var x = (col < 0 ? 0 : (col ? 1 : -1) * (PW + PGAP) / 2) + o * AWAY_X, y = (row ? 1 : -1) * (PH + PGAP) / 2 - (PHONE ? 30 : 20), z = R - (PHONE ? 0 : PLAY_Z) + Math.abs(o) * AWAY_Z;
     e.dataset.slot = o === 0 ? 'front' : 'away';
     e.style.transitionDelay = o === 0 ? p.slot * 45 + 'ms, 0s' : '';   /* tiles arrive one after another; leaving keeps the stylesheet's delay for visibility */
     e.style.transform = 'rotateY(' + (-PLAY) + 'deg) translate3d(' + x + 'px,' + y + 'px,' + (-z) + 'px)';
@@ -298,7 +315,8 @@ var P = 900, FINE = matchMedia('(pointer:fine)').matches, REDUCE = matchMedia('(
 function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
 function fit(){
   /* phones zoom in so windows stay readable; you turn more to see the walls */
-  P = innerWidth < 700 ? Math.min(innerWidth * 1.4, innerHeight * .75) : Math.max(360, Math.min(900, innerWidth * .62, innerHeight * .9));
+  P = PHONE ? R * Math.min((innerWidth - 22) / 360, (innerHeight - 150) / 680)
+    : innerWidth < 700 ? Math.min(innerWidth * 1.4, innerHeight * .75) : Math.max(360, Math.min(900, innerWidth * .62, innerHeight * .9));
   stage.style.perspective = P + 'px';
 }
 fit(); addEventListener('resize', fit);
@@ -319,9 +337,26 @@ addEventListener('pointermove', function(e){
   mouse.x = e.clientX; mouse.y = e.clientY;
   if (!drag) return;
   var dx = e.clientX - drag.x, dy = e.clientY - drag.y; moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
+  if (PHONE) { if (Math.abs(dx) > Math.abs(dy)) yawT = drag.yaw - dx * .22; return; }
   yawT = drag.yaw - dx * .15; pitchT = clamp(drag.pitch + dy * .08, -14, 14);
 });
-addEventListener('pointerup', function(){ drag = null; gaze.classList.remove('pinch'); });
+addEventListener('pointerup', function(e){
+  var d = drag; drag = null; gaze.classList.remove('pinch');
+  if (!PHONE || !d) return;
+  var dx = e.clientX - d.x, dy = e.clientY - d.y;
+  /* a phone settles on a wall: a flick sideways goes to the next one, a short drag snaps back to the nearest */
+  if (Math.abs(dx) > Math.abs(dy)) {
+    var walls = [-114, -58, 0, 62, 152], at = ((yawT % 360) + 540) % 360 - 180, from = ((d.yaw % 360) + 540) % 360 - 180;
+    var near = walls.reduce(function(b, w){ return Math.abs(adiff(w, at)) < Math.abs(adiff(b, at)) ? w : b; }, walls[0]);
+    if (near === walls.reduce(function(b, w){ return Math.abs(adiff(w, from)) < Math.abs(adiff(b, from)) ? w : b; }, walls[0]) && Math.abs(dx) > 40) {
+      var i = walls.indexOf(near) + (dx < 0 ? 1 : -1); near = walls[(i + walls.length) % walls.length];
+    }
+    turnTo(near);
+  } else if (Math.abs(dy) > 40) {
+    if (nearWork()) { stepLock = 0; step(dy < 0 ? 1 : -1); }
+    else if (nearPlay()) { pageLock = 0; stepPage(dy < 0 ? 1 : -1); }
+  }
+});
 
 /* a trackpad pinch arrives as ctrl+wheel: pinch in on a window to bring it closer, pinch out to let it go */
 addEventListener('wheel', function(e){
@@ -401,6 +436,8 @@ var ornTabs = [].slice.call(orn.querySelectorAll('button')), ornHeld = null;
 /* the pill springs to the wall you pick and stays there while the room turns; dragging it turns the room as it passes each wall */
 function pickWall(b){ if (!b) return; turnTo(+b.getAttribute('data-go')); ornHeld = { tab: b, yawT: yawT }; tabBar.set(b); mark(b); }
 var tabBar = springNav(orn, { tabs: 'button', onOver: pickWall, onPick: pickWall });
+var modesw = document.getElementById('modesw');
+springNav(modesw, { tabs: 'a', hover: true, onPick: function(t){ if (t) t.click(); } }).set(modesw.querySelector('.on'));
 orn.addEventListener('click', function(e){ pickWall(e.target.closest('button')); });
 brand.addEventListener('click', function(e){ e.preventDefault(); turnTo(0); });
 function turnTo(a){ yawT += adiff(a, yawT); pitchT = 0; }   /* the short way round */
@@ -555,6 +592,9 @@ if (intro) {
   readInk(); buildName();
   addEventListener('resize', function(){ if (intro) buildName(); });
   document.getElementById('introSkip').addEventListener('click', function(){ ipT = 1; ip = .99; });
+  /* it plays on its own: the name holds for a moment, then blows apart and you come down into the room */
+  introCue.style.display = 'none';
+  setTimeout(function(){ if (intro && ipT < .05) { ipT = 1; lastScroll = performance.now(); } }, 1700);
   introEl.addEventListener('pointerleave', function(){ mouse.x = mouse.y = -1e4; });
   var ty = null;
   addEventListener('touchstart', function(e){ ty = e.touches[0].clientY; mouse.x = e.touches[0].clientX; mouse.y = ty; }, { passive: true });

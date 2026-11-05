@@ -72,7 +72,7 @@ document.getElementById('nav').outerHTML = navHTML('work');
 /* ---------- section menu with scroll-spy ---------- */
 var NAV = [['context', 'Context'], ['problem', 'Problem'], ['findings', 'Findings'], ['process', 'Process'], ['decisions', 'Decisions'], ['outcome', 'Outcome']];
 var orn = document.getElementById('orn');
-orn.innerHTML = '<a href="index.html#work" class="back">Room</a>' + NAV.map(function(x){ return '<a href="#' + x[0] + '">' + x[1] + '</a>'; }).join('');
+orn.innerHTML = '<a href="index.html#work" class="back">All work</a>' + NAV.map(function(x){ return '<a href="#' + x[0] + '">' + x[1] + '</a>'; }).join('');
 var links = [].slice.call(orn.querySelectorAll('a[href^="#"]'));
 var secBar = springNav(orn, { tabs: 'a', hover: true, onPick: function(t){ if (t) t.click(); } });
 
