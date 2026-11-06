@@ -31,6 +31,7 @@ function count(group){
 }
 
 /* ---------- statements scrub word by word with scroll ----------
+   Words only change how dark they are, which isn't motion, so this runs even with reduced motion on.
    data-scrub="sticky": the statement sits in a tall section and fills as you scroll through it.
    otherwise: it fills as it travels up through the middle of the screen. */
 function splitWords(el){
@@ -59,7 +60,6 @@ function scrub(){
     var p, FIN = s.box ? .62 : 1;
     if (s.box) { var r = s.box.getBoundingClientRect(), span = r.height - innerHeight; p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 1; }
     else { var q = s.el.getBoundingClientRect(); p = Math.min(1, Math.max(0, (innerHeight * .88 - q.top) / (innerHeight * .55))); }
-    if (REDUCE) p = 1;
     var N = s.words.length, pos = (p / FIN) * (N + 1.5);
     for (var i = 0; i < N; i++) s.words[i].style.setProperty('--o', (0.14 + 0.86 * Math.min(1, Math.max(0, (pos - i) / 1.5))).toFixed(3));
     /* what follows the statement (a sign-off, the stats) arrives once it has been read */

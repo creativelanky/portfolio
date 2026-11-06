@@ -343,8 +343,16 @@ window.cardHTML = function(c, i, opt){
 window.navHTML = function(on){
   return '<nav class="navpill" aria-label="Main"><a class="tm" href="index.html" aria-label="Home">t.</a>' +
     '<a href="index.html#work"' + (on === "work" ? ' class="on"' : '') + '>Work</a><a href="about.html"' + (on === "about" ? ' class="on"' : '') + '>About</a>' +
-    '<a href="mailto:triumphohwojeheri@gmail.com">Contact</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a></nav>';
+    '<a href="mailto:triumphohwojeheri@gmail.com">Contact</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a>' +
+    '<button class="modetg" type="button" role="switch" aria-checked="false" aria-label="Spatial mode: see the site as a 3D room"><span>Spatial</span><i></i></button></nav>';
 };
+/* the Spatial toggle (in the nav here, and in the room's top corner): flips between the scrolling site and the 3D room */
+document.addEventListener('click', function(e){
+  var t = e.target.closest && e.target.closest('.modetg'); if (!t) return;
+  var on = t.getAttribute('aria-checked') !== 'true';
+  t.setAttribute('aria-checked', on);
+  setTimeout(function(){ location.href = 'index.html?mode=' + (on ? 'spatial#home' : 'normal'); }, 260);   /* let the knob slide first */
+});
 window.footerHTML = function(){
   /* dark, like Stanley's; the bottom row keeps Lagos time */
   return '<footer class="sfoot"><div class="sf-in">' +

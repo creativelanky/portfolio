@@ -1,15 +1,15 @@
 /* The home page in normal mode (the default, on every screen; spatial mode is the room).
    One scroll: who I am, the work, a row of loops, a short about and the footer. Case studies open as normal pages.
-   It opens with the name in particles (intro.js), and a switch near the top lets you step into the room instead. */
+   It opens with the name in particles (intro.js), and the Spatial toggle in the nav steps into the room instead. */
 (function(){
 "use strict";
 if (!window.MOBILE) return;
 
 /* take the room out, so nothing of it loads or runs */
-['stage', 'hint', 'toplinks', 'orn', 'modesw', 'detail', 'portal', 'gaze'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
+['stage', 'hint', 'toplinks', 'orn', 'detail', 'portal', 'gaze'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
 var b = document.querySelector('.brand'); if (b) b.remove();
 document.body.className = 'mhome';
-var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=space'; document.head.appendChild(css);
+var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=about3'; document.head.appendChild(css);
 
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -25,10 +25,10 @@ m.innerHTML = navHTML('') +
       '<h1 class="mask"><span class="ln"><span>I design products</span></span><span class="ln"><span>that make <em>complex</em></span></span><span class="ln"><span>things feel simple.</span></span></h1>' +
       '<p class="lead rv">I’m Triumph, a product designer in Lagos with 4+ years of experience across fintech, Web3, DeFi, AI and SaaS. I work end to end, from research and user flows to high-fidelity UI, prototypes and design systems, and I’ve led zero-to-one design for trading, payments and decentralised apps. On the side, I vibe-code my designs to life.</p>' +
       '<div class="m-row rv"><a class="btn pri" href="#work">View work</a><a class="btn" href="mailto:triumphohwojeheri@gmail.com">Email me</a></div>' +
-      '<div class="m-mode"><nav class="modesw" id="modesw" aria-label="View"><a href="?mode=normal" class="on">Normal</a><a href="?mode=spatial#home">Spatial</a></nav><span>Try the site as a 3D room</span></div>' +
       '<p class="avail m-avail"><i></i>Available for select projects</p>' +
     '</div>' +
-    '<div class="ab-photo rv"><div class="dust" id="dust" role="img" aria-label="Portrait of Triumph Ohwojeheri" data-src="' + th('photo-3.jpg') + '"><canvas></canvas></div></div>' +
+    '<div class="ab-photo ab-bust rv">' +
+      '<div class="bust" id="bust" data-bust role="img" aria-label="Chrome bust of Triumph Ohwojeheri" data-src="img/bust-3.glb?v=2" data-paint="img/bust-paint-3.jpg" data-frame="196,830,62,950" data-strength=".6" data-hair="205,335,690,425"></div></div>' +
   '</header>' +
   '<dl class="ab-facts rv">' +
     '<div><dt>Experience</dt><dd>4+ years</dd></div><div><dt>Focus</dt><dd>Web3, fintech, AI, SaaS</dd></div>' +
@@ -80,11 +80,11 @@ if ('IntersectionObserver' in window) {
   vids.forEach(function(v){ io.observe(v); });
 }
 
-/* the view switch */
-var ms = document.getElementById('modesw');
-springNav(ms, { tabs: 'a', hover: true, onPick: function(t){ if (t) t.click(); } }).set(ms.querySelector('.on'));
-
-/* after the intro: the portrait, then the shared page motion (reveals, the statement, the footer, the top bar's pill) */
-function start(){ ['dust.js?v=3', 'site.js?v=mobile2'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); }); }
+/* after the intro: the shared page motion (reveals, the statement, the footer, the top bar's pill) */
+function start(){
+  ['site.js?v=scrub1'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
+  /* the chrome bust, in 3D (three.js comes from the import map in the page's head); its space stays empty until it fades in */
+  var b = document.createElement('script'); b.type = 'module'; b.src = 'bust.js?v=19'; document.body.appendChild(b);
+}
 if (window.runIntro) runIntro(start); else start();
 })();

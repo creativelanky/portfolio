@@ -200,7 +200,7 @@ html:has(.room){height:100%;overflow:hidden}
 .intro-skip{all:unset;position:absolute;right:28px;bottom:40px;font:500 13px/1 var(--body);color:var(--sec);cursor:pointer}
 .intro-skip:hover{color:var(--ink)}
 .intro .stage,body.intro .stage{opacity:0}
-body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks,body.intro .modesw{opacity:0;pointer-events:none}
+body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks{opacity:0;pointer-events:none}
 .brand,.hint{transition:opacity .6s}
 
 /* a page opened as a window in the room */
@@ -219,7 +219,7 @@ body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks,body.int
 .pwin iframe{display:block;width:100%;height:100%;border:0;background:#fff}
 .pgrab{width:72px;height:5px;margin-top:12px;border-radius:6px;background:rgba(24,24,27,.22)}
 .portal-open .stage{filter:blur(6px) brightness(.94)}
-.portal-open .orn,.portal-open .toplinks,.portal-open .hint,.portal-open .modesw,.focus-mode .modesw{opacity:0;pointer-events:none}
+.portal-open .orn,.portal-open .toplinks,.portal-open .hint{opacity:0;pointer-events:none}
 @media (max-width:760px){ .pwin{width:calc(100vw - 16px);height:calc(100vh - 110px);border-radius:12px} .pbar #popen{display:none} }
 
 /* the pinched window */
@@ -309,7 +309,7 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .m-sec{padding-top:104px;scroll-margin-top:96px}
 .m-head{display:flex;justify-content:space-between;align-items:baseline}
 .m-head span{font-size:12px;color:var(--mute)}
-.m-h2{font:400 30px/1 var(--display);letter-spacing:-.03em;margin:0 2px 26px}
+.m-h2{font:400 23px/1 var(--display);letter-spacing:-.025em;margin:0 2px 22px}
 .m-cards{display:flex;flex-direction:column;gap:22px}
 /* project cards, sized for a phone */
 @media (max-width:760px){
@@ -346,8 +346,8 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 @media (max-width:760px){
 .mhome .sfoot{width:auto;margin:128px -22px 0}
 .mhome .sf-in{padding:44px 22px 28px}
-/* the hero starts well clear of the floating nav */
-.mhome .ab-hero{display:block;padding:148px 2px 0;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
+/* the hero starts well clear of the floating nav (html:not(.embed) so case.css's About-page spacing doesn't win) */
+html:not(.embed) .mhome .ab-hero{display:block;padding:196px 2px 0;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
 .mhome .ab-hero h1{font-size:clamp(38px,11vw,50px);margin:34px 0 22px}
 .mhome .ab-hero .lead{font-size:14.5px;line-height:1.7}
 .mhome .ab-photo{margin-top:52px;border-radius:24px;padding:8px}
@@ -363,6 +363,31 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .mhome .stat dt{font-size:36px}
 .mhome .stat dd{font-size:12.5px;margin-top:12px}
 }
+/* the chrome bust (bust.js) sits over the dust portrait and replaces it once the model has loaded */
+.ab-photo{position:relative}
+.bust{position:absolute;inset:-6% -10%;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.bust.on{opacity:1;pointer-events:auto;touch-action:pan-y}
+/* once the bust is in, the photo card around it goes: it stands straight on the page */
+.ab-photo:has(.bust.on){background:none;border-color:transparent;box-shadow:none}
+.ab-photo:has(.bust.on) .dust{visibility:hidden}
+/* the home hero has no portrait card at all: the space waits empty until the bust fades in */
+.mhome .ab-photo.ab-bust{aspect-ratio:4/5;background:none;border-color:transparent;box-shadow:none}
+/* the bust's place: an empty 4:5 space with no card, until the bust fades in */
+.ab-bust{position:relative;aspect-ratio:4/5;padding:0;background:none;border-color:transparent;box-shadow:none}
+/* in the room it sits at the top of the intro card, and everything under it is centred */
+.hero-in{align-items:center;text-align:center;padding:18px 40px 36px}
+.k-hero .face,.k-hero .back{border-radius:32px}
+.bust-card{position:relative;inset:auto;flex:1 1 auto;width:100%;min-height:0;margin-bottom:8px}
+.hero-in .h1{margin-top:14px;font-size:56px}
+.hero-in .p{margin-left:auto;margin-right:auto;max-width:40ch}
+.hero-in .row{margin-top:26px;justify-content:center}
+.hero-in .avail{margin-top:20px}
+.phone .hero-in{padding:10px 20px 26px}
+.phone .hero-in .h1{font-size:40px;margin-top:10px}
+.phone .hero-in .p{font-size:14px}
+.phone .hero-in .row{margin-top:20px;flex-wrap:nowrap}
+.phone .hero-in .row .btn{padding:12px 16px;font-size:13.5px;white-space:nowrap}
+.bust canvas{display:block;width:100%;height:100%}
 /* the portrait as dust (dust.js) */
 .mhome .dust{position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:var(--paper);touch-action:pan-y}
 .mhome .dust canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -371,10 +396,6 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .phone .orn button{padding:9px 9px;font-size:12px}
 .phone .hint{display:block;bottom:22px}
 .phone .in{padding:24px 22px}
-.phone .k-hero .top{flex-direction:column;align-items:flex-start;gap:8px}
-.phone .k-hero .h1{font-size:46px;margin-top:auto}
-.phone .k-hero .p{font-size:15px}
-.phone .k-hero .row{flex-wrap:wrap;gap:8px;margin-top:26px}
 .phone .k-case .pcard{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
 .phone .k-case .pc-v{min-height:0}
 .phone .k-case .pc-v::after{display:none}
@@ -399,18 +420,27 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 .phone .socials .clock{margin-left:0;width:100%}
 .phone .tile figcaption{font-size:12px}
 
-/* ---------- the view switch: Normal (the scrolling site) or Spatial (the room) ---------- */
-.modesw{position:relative;display:inline-flex;gap:2px;padding:4px;border-radius:999px;isolation:isolate;background:#111113;
-  box-shadow:0 14px 30px -18px rgba(15,12,25,.6), inset 0 0 0 1px rgba(255,255,255,.07);user-select:none;-webkit-user-select:none;touch-action:pan-y}
-.modesw a{position:relative;padding:9px 15px;border-radius:999px;font:500 13px/1 var(--body);color:rgba(255,255,255,.6);white-space:nowrap;transition:color .2s;-webkit-user-drag:none}
-.modesw a:hover,.modesw a.on{color:#fff}
-.modesw .pill{top:4px;bottom:4px}
-/* in the room it waits in the bottom left corner */
-.room .modesw{position:fixed;left:24px;bottom:22px;z-index:5;transition:opacity .4s}
-@media (max-width:760px){ .room .modesw{left:50%;bottom:16px;transform:translateX(-50%)} .phone .hint{bottom:66px} }
-/* on the normal home it sits under the buttons */
-.m-mode{display:flex;align-items:center;gap:14px;margin-top:24px}
-.m-mode span{font-size:12.5px;color:var(--dim)}
+/* ---------- the Spatial toggle: off on the scrolling site, on in the room ---------- */
+.modetg{all:unset;box-sizing:border-box;position:relative;display:inline-flex;align-items:center;gap:9px;padding:0 10px 0 14px;height:36px;border-radius:999px;
+  font:500 13px/1 var(--body);color:rgba(255,255,255,.6);cursor:pointer;white-space:nowrap;transition:color .2s}
+.modetg:hover{color:#fff}
+.modetg i{position:relative;width:30px;height:18px;border-radius:999px;background:rgba(255,255,255,.18);transition:background .25s}
+.modetg i::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .26s cubic-bezier(.34,1.4,.5,1)}
+.modetg[aria-checked="true"] i{background:var(--accent)}
+.modetg[aria-checked="true"] i::after{transform:translateX(12px)}
+.modetg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.navpill .modetg{margin-left:4px;border-left:1px solid rgba(255,255,255,.1);border-radius:0 999px 999px 0}
+/* in the room it ends the wall tabs, the same as in the normal nav */
+.orn button.modetg{all:unset;box-sizing:border-box;position:relative;display:inline-flex;align-items:center;gap:9px;height:36px;padding:0 10px 0 14px;margin-left:4px;
+  border-left:1px solid rgba(255,255,255,.1);border-radius:0 999px 999px 0;font:500 13px/1 var(--body);color:rgba(255,255,255,.6);cursor:pointer;white-space:nowrap}
+.orn button.modetg:hover{color:#fff}
+@media (max-width:760px){
+  .navpill .modetg{padding:0 8px 0 10px;gap:7px;font-size:13px}
+  /* on a phone the room's tabs are tight: the toggle keeps just its switch */
+  .phone .orn button.modetg{padding:0 6px 0 8px;margin-left:2px}
+  .phone .orn button.modetg span{display:none}
+}
 
 /* the normal home's intro plays on its own over the page (intro.js) */
 .intro.auto{z-index:40;background:var(--bg)}
@@ -420,21 +450,31 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
 @media (min-width:761px){
   .m{max-width:1296px;margin:0 auto;padding:0 48px}
   .m .navpill{top:34px}
-  .mhome .ab-hero{padding-top:170px;align-items:center;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
-  .mhome .ab-hero h1{margin:30px 0 26px}
-  .m-row{margin-top:32px}
-  .m-who img{width:46px;height:46px}
+  html:not(.embed) .mhome .ab-hero{padding-top:clamp(220px,26vh,300px);grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(56px,8vw,120px);align-items:center;animation:mrise .7s cubic-bezier(.22,1,.36,1) both}
+  .mhome .ab-hero h1{font-size:clamp(44px,4.7vw,68px);line-height:1.02;margin:44px 0 28px}
+  .mhome .ab-hero h1 .ln > span{white-space:nowrap}   /* three lines, never six */
+  .mhome .ab-hero .lead{font-size:16px;line-height:1.75;max-width:50ch}
+  .m-row{margin-top:40px}
+  .m-who img{width:44px;height:44px}
   .m-who{font-size:13px}.m-who b{font-size:14.5px}
-  .m-mode{margin-top:26px}
-  .m-avail{margin-top:28px;font-size:13px}
+  .m-avail{margin-top:36px;font-size:13px}
+  .mhome .ab-photo{max-width:440px;justify-self:end;width:100%}
   .ab-photo .dust{aspect-ratio:4/5}
   .m-sec{padding-top:150px}
-  .m-h2{font-size:clamp(40px,4vw,56px);margin:0 0 36px}
-  .m-head span{font-size:14px}
+  .m-h2{font-size:clamp(26px,2.3vw,32px);margin:0 0 28px}
+  .m-head span{display:none}
   .m-cards{gap:28px}
-  .m .pcard{cursor:pointer}
-  .m-track{margin:0;padding:0 0 6px;gap:20px}
-  .m-tile{flex:0 0 calc((100% - 40px) / 3)}
+  /* project cards: a slightly shorter cover, and the text spread through the panel: who at the top, the headline and summary
+     in the middle with room to breathe, the facts at the bottom */
+  .m .pcard{cursor:pointer;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+  .m .pc-v::after{padding-top:80%}
+  .m .pc-b{padding:36px 40px 32px}
+  .m .pc-h{margin-top:auto;font-size:clamp(28px,2.6vw,36px);line-height:1.08}
+  .m .pc-d{margin:18px 0 0;font-size:16px;line-height:1.7;max-width:44ch}
+  .m .pc-f{margin-top:auto;padding-top:24px}
+  /* all nine loops at once, three by three, instead of a row to swipe */
+  .m-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;overflow:visible;margin:0;padding:0}
+  .m-tile{flex:none}
   .m-tile figcaption{font-size:13px}
   .m-about{display:grid;grid-template-columns:420px 1fr;gap:10px}
   .m-about .fan{height:auto;min-height:380px}
@@ -442,4 +482,20 @@ body.intro .meter,.portal-open .meter,.embed .meter{opacity:0}
   .m-h3{font-size:40px}
   .m-p{font-size:16px;max-width:52ch}
   .m-sum .m-row{margin-top:auto;padding-top:28px}
+}
+
+/* ---------- big screens: a wider page, a bigger headline and portrait, so nothing looks lost ---------- */
+@media (min-width:1600px){
+  .m{max-width:1480px;padding:0 64px}
+  .mhome .ab-hero h1{font-size:clamp(62px,3.7vw,72px)}
+  .mhome .ab-hero .lead{font-size:18px;max-width:54ch}
+  .mhome .ab-photo{max-width:540px}
+  .m-h2{font-size:36px}
+  .m-tile figcaption{font-size:14px}
+  .hero-in .h1{font-size:60px}
+}
+/* small phones: keep the hero buttons on one line */
+@media (max-width:380px){
+  .m-row .btn{padding:12px 16px}
+  html:not(.embed) .mhome .ab-hero{padding-top:176px}
 }

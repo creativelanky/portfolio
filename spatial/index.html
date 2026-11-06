@@ -9,8 +9,9 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=modes2">
-<script src="cases.js?v=loops2"></script>
+<link rel="stylesheet" href="space.css?v=round1">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script src="cases.js?v=modes1"></script>
 <script src="nav.js?v=details"></script>
 <script>
 /* two ways to see the site: normal mode, a page you scroll (mobile.js), and spatial mode, the room.
@@ -31,7 +32,6 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
 <div class="hint" id="hint">Drag to look around. Click a window, or pinch on a trackpad, to bring it closer.</div>
 <script>if (window.PHONE_ROOM) document.getElementById('hint').textContent = 'Swipe to turn. Swipe up on work to flip projects.';</script>
 <a class="brand" href="#" aria-label="Triumph Ohwojeheri, home"><span class="tm">t.</span><span>Triumph<br>Ohwojeheri</span></a>
-<nav class="modesw" id="modesw" aria-label="View"><a href="?mode=normal">Normal</a><a href="?mode=spatial#home" class="on">Spatial</a></nav>
 <nav class="toplinks" id="toplinks"><a class="btn" href="about.html">About me</a><a class="btn pri" href="resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
 <nav class="orn" id="orn" aria-label="Rooms">
   <button data-go="-114">Contact</button>
@@ -39,6 +39,7 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
   <button data-go="0" class="on">Home</button>
   <button data-go="62">Work</button>
   <button data-go="152">Playground</button>
+  <button class="modetg" type="button" role="switch" aria-checked="true" aria-label="Spatial mode: see the site as a 3D room"><span>Spatial</span><i></i></button>
 </nav>
 
 <div class="detail" id="detail" role="dialog" aria-modal="true"><div class="dwin" id="dwin"></div></div>
@@ -58,7 +59,7 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
 </div>
 <div class="gaze" id="gaze"></div>
 <script src="intro.js?v=3"></script>
-<script src="mobile.js?v=5"></script>
+<script src="mobile.js?v=31"></script>
 
 <script>
 (function(){
@@ -75,11 +76,14 @@ var PHONE = !!window.PHONE_ROOM;
 
 /* ---------- what hangs where. ang: degrees around you (negative = left); y: height; z: nearer (+) or further (-) ---------- */
 var PANELS = [
-  { ang: 0, y: -20, w: PHONE ? 360 : 660, h: PHONE ? 520 : 420, d: .1, kind: 'hero',
-    html: '<div class="in"><div class="top"><span class="small">Independent product designer, Lagos</span><span class="avail"><i></i>Available for select projects</span></div>' +
+  /* the intro card: the chrome bust (bust.js) at the top, then who I am, all centred */
+  { ang: 0, y: PHONE ? 35 : 15, w: PHONE ? 360 : 600, h: PHONE ? 700 : 740, d: .1, kind: 'hero',
+    html: '<div class="in hero-in"><div class="bust bust-card" data-bust data-src="img/bust-3.glb?v=2" data-paint="img/bust-paint-3.jpg" data-frame="196,830,62,950" data-strength=".6" data-hair="205,335,690,425" role="img" aria-label="Chrome bust of Triumph Ohwojeheri"></div>' +
+          '<span class="small">Independent product designer, Lagos</span>' +
           '<div class="h1">Complex ideas.<br><em>Thoughtfully</em> simple.</div>' +
           '<div class="p">I’m Triumph. I turn complex problems into digital experiences that feel right. From Web3 to the everyday.</div>' +
-          '<div class="row"><span class="btn pri" data-go="62">View selected work</span><a class="btn" href="about.html">About me</a></div></div>' }
+          '<div class="row"><span class="btn pri" data-go="62">View selected work</span><a class="btn" href="about.html">About me</a></div>' +
+          '<span class="avail"><i></i>Available for select projects</span></div>' }
 ];
 /* the work wall: one project in front, its neighbours either side (see "the work slider" below) */
 var WORK = 62, NCASE = CASES.length;
@@ -315,7 +319,7 @@ var P = 900, FINE = matchMedia('(pointer:fine)').matches, REDUCE = matchMedia('(
 function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
 function fit(){
   /* phones zoom in so windows stay readable; you turn more to see the walls */
-  P = PHONE ? R * Math.min((innerWidth - 22) / 360, (innerHeight - 150) / 680)
+  P = PHONE ? R * Math.min((innerWidth - 22) / 360, (innerHeight - 150) / 780)
     : innerWidth < 700 ? Math.min(innerWidth * 1.4, innerHeight * .75) : Math.max(360, Math.min(900, innerWidth * .62, innerHeight * .9));
   stage.style.perspective = P + 'px';
 }
@@ -432,13 +436,11 @@ els.forEach(function(el){
 
 var orn = document.getElementById('orn'), brand = document.querySelector('.brand'), toplinks = document.getElementById('toplinks');
 [orn, brand, toplinks].forEach(function(n){ n.addEventListener('pointerdown', function(e){ e.stopPropagation(); }); });
-var ornTabs = [].slice.call(orn.querySelectorAll('button')), ornHeld = null;
+var ornTabs = [].slice.call(orn.querySelectorAll('button[data-go]')), ornHeld = null;
 /* the pill springs to the wall you pick and stays there while the room turns; dragging it turns the room as it passes each wall */
 function pickWall(b){ if (!b) return; turnTo(+b.getAttribute('data-go')); ornHeld = { tab: b, yawT: yawT }; tabBar.set(b); mark(b); }
-var tabBar = springNav(orn, { tabs: 'button', onOver: pickWall, onPick: pickWall });
-var modesw = document.getElementById('modesw');
-springNav(modesw, { tabs: 'a', hover: true, onPick: function(t){ if (t) t.click(); } }).set(modesw.querySelector('.on'));
-orn.addEventListener('click', function(e){ pickWall(e.target.closest('button')); });
+var tabBar = springNav(orn, { tabs: 'button[data-go]', onOver: pickWall, onPick: pickWall });
+orn.addEventListener('click', function(e){ pickWall(e.target.closest('button[data-go]')); });
 brand.addEventListener('click', function(e){ e.preventDefault(); turnTo(0); });
 function turnTo(a){ yawT += adiff(a, yawT); pitchT = 0; }   /* the short way round */
 function mark(t){ ornTabs.forEach(function(b){ b.classList.toggle('on', b === t); }); }
@@ -675,6 +677,8 @@ function frame(t){
 }
 placePage();
 requestAnimationFrame(frame);
+/* the bust above the intro card (three.js comes from the import map in the head) */
+var bs = document.createElement('script'); bs.type = 'module'; bs.src = 'bust.js?v=19'; document.body.appendChild(bs);
 })();
 </script>
 <script src="details.js?v=meter2"></script>
