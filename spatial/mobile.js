@@ -46,14 +46,14 @@ m.innerHTML = navHTML('') +
       '</dl>' +
     '</div>' +
   '</section>' +
-  '<section class="m-sec" id="work"><h2 class="m-h2">Selected work</h2><div class="m-cards">' +
-    CASES.map(function(c, i){ return cardHTML(c, i); }).join('') + '</div></section>' +
-  '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2">Playground</h2><span>Swipe</span></div><div class="m-track">' +
-    loops.map(function(g){
-      return '<figure class="m-tile"><div class="tm-media" style="background:' + g.bg + '"><video muted loop playsinline preload="none" poster="loops/' + g.loop + '.jpg" src="loops/' + g.loop + '.mp4"></video></div>' +
+  '<section class="m-sec" id="work"><h2 class="m-h2 mask"><span class="ln"><span>Selected work</span></span></h2><div class="m-cards">' +
+    CASES.map(function(c, i){ return cardHTML(c, i).replace('<article class="pcard">', '<article class="pcard rv">'); }).join('') + '</div></section>' +
+  '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2 mask"><span class="ln"><span>Playground</span></span></h2><span>Swipe</span></div><div class="m-track">' +
+    loops.map(function(g, i){
+      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '"><div class="tm-media" style="background:' + g.bg + '"><video muted loop playsinline preload="none" poster="loops/' + g.loop + '.jpg" src="loops/' + g.loop + '.mp4"></video></div>' +
              '<figcaption><b>' + esc(g.t) + '</b><span>' + esc(g.by) + '</span></figcaption></figure>';
     }).join('') + '</div></section>' +
-  '<section class="m-sec" id="about"><h2 class="m-h2">About</h2><div class="m-about">' +
+  '<section class="m-sec" id="about"><h2 class="m-h2 mask"><span class="ln"><span>About</span></span></h2><div class="m-about rv">' +
     '<div class="fan open"><figure class="fp fp-l"><img src="' + th('photo-3.jpg') + '" alt=""></figure><figure class="fp fp-r"><img src="' + th('photo-8.jpg') + '" alt=""></figure>' +
       '<figure class="fp fp-c"><img src="' + th('photo-4.jpg') + '" alt="Triumph Ohwojeheri"></figure></div>' +
     '<div class="m-sum"><div class="m-h3">Curious by nature.<br>Intentional by design.</div>' +
@@ -70,21 +70,25 @@ m.addEventListener('click', function(e){
   if (go) location.href = go.getAttribute('href');
 });
 
-/* loops play only while most of them is on screen */
+/* loops play while a good part of them is on screen.
+   Phones in Low Power Mode or saving data refuse to start videos on their own, even muted ones, until you touch the page,
+   so every tap or swipe also starts whichever loops are in view (the poster shows until then) */
 var vids = [].slice.call(m.querySelectorAll('.m-track video'));
+function playLoop(v){ v.muted = true; v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+function inView(v){ var r = v.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; }
 if ('IntersectionObserver' in window) {
   var io = new IntersectionObserver(function(es){ es.forEach(function(e){
-    var v = e.target;
-    if (e.intersectionRatio > .6) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function(){}); } else v.pause();
-  }); }, { threshold: [0, .6, 1] });
+    if (e.intersectionRatio > .35) playLoop(e.target); else e.target.pause();
+  }); }, { threshold: [0, .35, .7] });
   vids.forEach(function(v){ io.observe(v); });
-}
+} else vids.forEach(playLoop);
+['touchend', 'pointerup'].forEach(function(ev){ addEventListener(ev, function(){ vids.forEach(function(v){ if (v.paused && inView(v)) playLoop(v); }); }, { passive: true }); });
 
 /* after the intro: the shared page motion (reveals, the statement, the footer, the top bar's pill) */
 function start(){
   ['site.js?v=scrub1'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
   /* the chrome bust, in 3D (three.js comes from the import map in the page's head); its space stays empty until it fades in */
-  var b = document.createElement('script'); b.type = 'module'; b.src = 'bust.js?v=19'; document.body.appendChild(b);
+  var b = document.createElement('script'); b.type = 'module'; b.src = 'bust.js?v=20'; document.body.appendChild(b);
 }
 if (window.runIntro) runIntro(start); else start();
 })();

@@ -5,6 +5,8 @@
    · data-yaw: which way it faces when you're not pointing at it (radians; negative turns it to its right, toward the page's text)
    · it turns its head toward the cursor anywhere on the page, and eases back when the cursor leaves
    · on a phone it follows your finger across it, and sways a little on its own
+   · it is soft, like a balloon: poke it and it dents where you pressed and wobbles back; press and hold and it puffs up,
+     trembling; let go and it springs back with a squash and a bounce
    · if WebGL or the model can't load, whatever sits underneath (the dust portrait) stays */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -58,7 +60,15 @@ async function start(box){
   const paintSrc = box.getAttribute('data-paint');
   const paint = paintSrc ? await new THREE.TextureLoader().loadAsync(paintSrc) : null;
   if (paint) { paint.colorSpace = THREE.SRGBColorSpace; paint.anisotropy = 4; chrome.map = paint; }
-  if (paint) chrome.onBeforeCompile = sh => {
+  /* the balloon: every point can move out along its normal, all together (puff) or around where you poked (poke) */
+  const SOFT = { uPuff: { value: 0 }, uPoke: { value: 0 }, uHit: { value: new THREE.Vector3(0, 0, 9) }, uR2: { value: 1 } };
+  chrome.onBeforeCompile = sh => {
+    Object.assign(sh.uniforms, SOFT);
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform float uPuff;\nuniform float uPoke;\nuniform vec3 uHit;\nuniform float uR2;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+        vec3 toHit = position - uHit;
+        transformed += objectNormal * ( uPuff + uPoke * exp( -dot( toHit, toHit ) / uR2 ) );`);
+    if (!paint) return;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float front;\nattribute float hair;\nvarying float vFront;\nvarying float vHair;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFront = front;\nvHair = hair;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFront;\nvarying float vHair;')
@@ -102,8 +112,10 @@ async function start(box){
     g.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); g.setAttribute('front', new THREE.BufferAttribute(fr, 1)); g.setAttribute('hair', new THREE.BufferAttribute(hr, 1));
   });
   model.position.sub(mid);
-  const pivot = new THREE.Group(); pivot.add(model); pivot.scale.setScalar(1.72 / Math.max(size.x, size.y, size.z)); pivot.position.y = -.06;
+  const D = Math.max(size.x, size.y, size.z), S = 1.72 / D;
+  const pivot = new THREE.Group(); pivot.add(model); pivot.scale.setScalar(S); pivot.position.y = -.06;
   scene.add(pivot);
+  SOFT.uR2.value = Math.pow(D * .2, 2);
 
   box.appendChild(renderer.domElement);
   box.classList.add('on');   /* hides the dust portrait underneath */
@@ -124,16 +136,53 @@ async function start(box){
   }, { passive: true });
   box.addEventListener('touchend', () => { aim.x = aim.y = 0; });
 
+  /* the balloon's springs: poke (a dent that wobbles out), puff (inflating while held), squash (the whole bust, on release) */
+  const poke = { x: 0, v: 0 }, puff = { x: 0, v: 0, t: 0 }, squash = { x: 0, v: 0 };
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let held = false, heldAt = 0;
+  box.addEventListener('pointerdown', e => {
+    e.stopPropagation();   /* in the room, a press on the bust is not a drag of the room */
+    const r = box.getBoundingClientRect();
+    ndc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObject(model, true)[0];
+    if (!hit) return;
+    SOFT.uHit.value.copy(hit.object.worldToLocal(hit.point.clone()));
+    poke.v -= 9;                     /* the dent */
+    held = true; heldAt = performance.now(); puff.t = 1;
+    box.classList.add('pressing');
+    try { box.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  function release(){
+    if (!held) return;
+    held = false; puff.t = 0; box.classList.remove('pressing');
+    /* a long hold lets go with a bigger bounce */
+    squash.v += 2 + Math.min(1.5, (performance.now() - heldAt) / 800) * 3;
+  }
+  box.addEventListener('pointerup', release); box.addEventListener('pointercancel', release);
+  function spring(s, target, k, c, dt){ s.v += (-k * (s.x - target) - c * s.v) * dt; s.x += s.v * dt; }
+
   let shown = true;
   if ('IntersectionObserver' in window) new IntersectionObserver(es => { shown = es[0].isIntersecting; }).observe(box);
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock(); clock.start();
   renderer.setAnimationLoop(() => {
     if (!shown) return;
-    const t = clock.getElapsedTime(), k = REDUCE ? 1 : .06;
+    const dt = Math.min(.033, clock.getDelta()), t = clock.elapsedTime, k = REDUCE ? 1 : .06;
+    for (let i = 0; i < 2; i++) {
+      spring(poke, 0, 160, 7, dt / 2);
+      spring(puff, held && performance.now() - heldAt > 160 ? 1 : 0, 55, held ? 9 : 4.5, dt / 2);   /* a soft overshoot when it deflates */
+      spring(squash, 0, 140, 6, dt / 2);
+    }
+    const tremble = held ? Math.sin(t * 38) * .06 * puff.x : 0;
+    SOFT.uPoke.value = poke.x * D * .016;
+    SOFT.uPuff.value = (puff.x + tremble) * D * .045;
+    const q = squash.x * .07;
+    pivot.scale.set(S * (1 - q * .5 + puff.x * .04), S * (1 + q + puff.x * .05), S * (1 - q * .5 + puff.x * .04));
     now.x += (aim.x - now.x) * k; now.y += (aim.y - now.y) * k;
     const sway = REDUCE ? 0 : Math.sin(t * .5) * .06;
     pivot.rotation.y = YAW + now.x * .75 + sway;       /* up to about 43° to either side */
     pivot.rotation.x = now.y * .22;
+    pivot.position.y = -.06 + Math.max(0, q) * .25 + puff.x * .05;   /* it hops a little as it springs back, and floats up while puffed */
     renderer.render(scene, camera);
   });
 }

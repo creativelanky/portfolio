@@ -9,7 +9,7 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=round1">
+<link rel="stylesheet" href="space.css?v=play1">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="cases.js?v=modes1"></script>
 <script src="nav.js?v=details"></script>
@@ -59,7 +59,7 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
 </div>
 <div class="gaze" id="gaze"></div>
 <script src="intro.js?v=3"></script>
-<script src="mobile.js?v=31"></script>
+<script src="mobile.js?v=33"></script>
 
 <script>
 (function(){
@@ -303,12 +303,14 @@ function nearPlay(){ return Math.abs(adiff(yaw, PLAY)) < 24; }
 var fan = document.getElementById('fan'), fanOpen = null;
 function syncFan(){ var on = !intro && Math.abs(adiff(yaw, -58)) < 32; if (on !== fanOpen) { fanOpen = on; fan.classList.toggle('open', on); } }
 var loopsOn = null;
+/* a phone in Low Power Mode won't start videos on its own: any touch on the room tries again */
+addEventListener('touchend', function(){ if (loopsOn) syncLoops(true); }, { passive: true });
 function syncLoops(force){
   var on = !intro && !portalOpen && Math.abs(adiff(yaw, PLAY)) < 70;
   if (on === loopsOn && !force) return; loopsOn = on;
   playEls.forEach(function(e){
     var v = e.querySelector('video'); if (!v) return;
-    if (on && PANELS[e._i].page === page) { v.preload = 'auto'; var pr = v.play(); if (pr && pr.catch) pr.catch(function(){}); }
+    if (on && PANELS[e._i].page === page) { v.muted = true; v.preload = 'auto'; var pr = v.play(); if (pr && pr.catch) pr.catch(function(){}); }
     else v.pause();
   });
 }
@@ -678,7 +680,7 @@ function frame(t){
 placePage();
 requestAnimationFrame(frame);
 /* the bust above the intro card (three.js comes from the import map in the head) */
-var bs = document.createElement('script'); bs.type = 'module'; bs.src = 'bust.js?v=19'; document.body.appendChild(bs);
+var bs = document.createElement('script'); bs.type = 'module'; bs.src = 'bust.js?v=20'; document.body.appendChild(bs);
 })();
 </script>
 <script src="details.js?v=meter2"></script>
