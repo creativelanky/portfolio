@@ -10,7 +10,8 @@
 <script>if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add("embed");</script>
 <link rel="stylesheet" href="space.css?v=play1">
 <link rel="stylesheet" href="case.css?v=about3">
-<script src="cases.js?v=modes1"></script>
+<script src="/api/content"></script>
+<script src="cases.js?v=cms1"></script>
 <script src="nav.js?v=details"></script>
 </head>
 <body class="case">
@@ -22,8 +23,8 @@
 <script>
 (function(){
 "use strict";
-function src(f){ return '../' + encodeURI(f); }
-function web(f){ return 'img/' + encodeURI(f); }
+function src(f){ return asset(f, '../'); }
+function web(f){ return asset(f, 'img/'); }   /* uploads from the CMS are full links and used as they are */
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 var q = new URLSearchParams(location.search).get('p');
 var idx = Math.max(0, CASES.findIndex(function(c){ return c.slug === q; }));
@@ -47,7 +48,7 @@ var H = '<header class="head">' +
   '<h1 class="mask"><span class="ln"><span>' + c.name + '</span></span></h1>' +
   '<div class="head-grid"><p class="summary rv">' + c.summary + '</p>' +
   '<dl class="facts rv">' + c.meta.map(function(m){ return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('') + '</dl></div></header>' +
-  '<div class="hero-wrap"><div class="hero" id="hero"><figure class="fig"><div class="fwin"><img src="covers/' + c.slug + '.jpg" alt="' + esc(c.name) + ' cover"></div></figure></div></div>';
+  '<div class="hero-wrap"><div class="hero" id="hero"><figure class="fig"><div class="fwin"><img src="' + (c.cover ? asset(c.cover) : 'covers/' + c.slug + '.jpg') + '" alt="' + esc(c.name) + ' cover"></div></figure></div></div>';
 
 H += '<article class="article">';
 H += sec('context', 'Context', paras(c.context));

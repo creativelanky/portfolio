@@ -320,15 +320,61 @@ window.COVER = {
   "glitch-market": { base: "#0b0b0c", pos: "50% 50%" }
 };
 
+/* ---------- content from the CMS ----------
+   /api/content (loaded just before this file) sets window.CMS once anything has been saved in the admin.
+   Saved projects, playground and details replace the built-in ones above; until then the site shows those. */
+(function(){
+  var C = window.CMS || {};
+  if (Array.isArray(C.cases) && C.cases.length) window.CASES = C.cases;
+  if (Array.isArray(C.playground) && C.playground.length) window.PLAYGROUND = C.playground;
+  if (C.cover) Object.keys(C.cover).forEach(function(k){ window.COVER[k] = C.cover[k]; });
+  /* details shown around the site; the admin's Details tab edits these */
+  window.SITE = Object.assign({
+    email: "triumphohwojeheri@gmail.com",
+    avail: "Available for select projects",
+    calendly: "https://calendly.com/triumphohwojeheri/30min",
+    x: "https://twitter.com/amazinglanky", instagram: "https://instagram.com/amazinglanky",
+    dribbble: "https://dribbble.com/amazinglanky", linkedin: "https://linkedin.com/in/triumph-ohwojeheri",
+    lead: ""
+  }, C.site || {});
+})();
+/* a file path from the content: uploads are full links and used as they are; built-in files live in dir */
+window.asset = function(f, dir){ return /^(https?:)?\/\/|^\//.test(f || "") ? f : (dir || "") + encodeURI(f || ""); };
+/* the playground's media: a loop's video and still, or a shot */
+window.loopSrc = function(g){ return g.video || "loops/" + g.loop + ".mp4"; };
+window.loopPoster = function(g){ return g.poster || (g.loop ? "loops/" + g.loop + ".jpg" : ""); };
+
+/* ---------- details everywhere: email, availability and links, wherever the pages wrote the defaults ---------- */
+document.addEventListener("DOMContentLoaded", function(){
+  var S = window.SITE, D = { "twitter.com": S.x, "x.com": S.x, "instagram.com": S.instagram, "dribbble.com": S.dribbble, "linkedin.com": S.linkedin, "calendly.com": S.calendly };
+  [].forEach.call(document.querySelectorAll("a[href]"), function(a){
+    var h = a.getAttribute("href");
+    if (/^mailto:/.test(h)) { a.setAttribute("href", "mailto:" + S.email); if (/@/.test(a.textContent)) a.textContent = S.email; return; }
+    var m = h.match(/^https?:\/\/(?:www\.)?([^/]+)/);
+    if (m && D[m[1]]) a.setAttribute("href", D[m[1]]);
+  });
+  [].forEach.call(document.querySelectorAll("[data-copy]"), function(b){ b.setAttribute("data-copy", S.email); });
+  [].forEach.call(document.querySelectorAll(".avail, .sf-status"), function(el){ var t = el.lastChild; if (t && t.nodeType === 3) t.nodeValue = S.avail; });
+  var lead = document.querySelector(".m-ab .lead");
+  if (lead && S.lead) lead.textContent = S.lead;
+});
+
+/* ---------- visits, for the CMS's stats: one small beacon per page; never locally, inside the CMS, or in its previews ---------- */
+document.addEventListener("DOMContentLoaded", function(){
+  if (!navigator.sendBeacon || /^(localhost|127\.|\[::1\])/.test(location.hostname) || /^\/admin/.test(location.pathname)) return;
+  var mode = /\/spatial\/(index\.html)?$/.test(location.pathname) ? (window.SPATIAL ? "spatial" : "normal") : "";
+  try { navigator.sendBeacon("/api/track", new Blob([JSON.stringify({ p: location.pathname + location.search, r: document.referrer, m: mode })], { type: "text/plain" })); } catch (_) {}
+});
+
 /* The project card, shared by the room, its preview window and the case pages */
 window.cardHTML = function(c, i, opt){
   opt = opt || {};
   function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
-  var cv = window.COVER[c.slug] || {}, role = (c.meta.filter(function(m){ return m[0] === "Role"; })[0] || ["", ""])[1];
-  var facts = c.meta.filter(function(m){ return m[0] === "Platform" || m[0] === "Scope" || m[0] === "Timeline"; }).slice(0, 2);
-  var logo = c.logo ? '<img src="' + c.logo + '" alt="">' : "<b>" + c.mark + "</b>";
+  var cv = window.COVER[c.slug] || { base: c.base || '#111' }, role = ((c.meta || []).filter(function(m){ return m[0] === "Role"; })[0] || ["", ""])[1];
+  var facts = (c.meta || []).filter(function(m){ return m[0] === "Platform" || m[0] === "Scope" || m[0] === "Timeline"; }).slice(0, 2);
+  var logo = c.logo ? '<img src="' + asset(c.logo) + '" alt="">' : "<b>" + (c.mark || "") + "</b>";
   return '<article class="pcard">' +
-    '<div class="pc-v" style="--base:' + cv.base + '"><img src="covers/card/' + c.slug + '.jpg" alt="' + esc(c.name) + ' cover" draggable="false"></div>' +
+    '<div class="pc-v" style="--base:' + cv.base + '"><img src="' + (c.card || c.cover ? asset(c.card || c.cover) : 'covers/card/' + c.slug + '.jpg') + '" alt="' + esc(c.name) + ' cover" draggable="false"></div>' +
     '<div class="pc-b">' +
       '<div class="pc-org"><span class="pc-lg" style="background:' + c.logoBg + '">' + logo + '</span>' +
         '<div class="pc-who"><b>' + c.name + '</b><span>' + role + '</span></div><span class="pc-yr">' + c.year + '</span></div>' +

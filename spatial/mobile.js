@@ -13,8 +13,10 @@ var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'ca
 
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+/* the playground pieces marked "show on home" in the CMS; before anything is saved, these nine */
 var PICK = ['eikos-01-feed', '01-balance', '02-leave-types', 'eikos-03-buy', '03-network', '03-cee-books-leave', 'eikos-06-ask', '04-send', '05-sign-contract'];
-var loops = PICK.map(function(k){ return PLAYGROUND.filter(function(g){ return g.loop === k; })[0]; }).filter(Boolean);
+var loops = PLAYGROUND.filter(function(g){ return g.home; });
+if (!loops.length) loops = PICK.map(function(k){ return PLAYGROUND.filter(function(g){ return g.loop === k; })[0]; }).filter(Boolean);
 
 var m = document.createElement('main'); m.className = 'm';
 m.innerHTML = navHTML('') +
@@ -50,7 +52,7 @@ m.innerHTML = navHTML('') +
     CASES.map(function(c, i){ return cardHTML(c, i).replace('<article class="pcard">', '<article class="pcard rv">'); }).join('') + '</div></section>' +
   '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2 mask"><span class="ln"><span>Playground</span></span></h2><span>Swipe</span></div><div class="m-track">' +
     loops.map(function(g, i){
-      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '"><div class="tm-media" style="background:' + g.bg + '"><video muted loop playsinline preload="none" poster="loops/' + g.loop + '.jpg" src="loops/' + g.loop + '.mp4"></video></div>' +
+      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + '">' + (g.loop || g.video ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
              '<figcaption><b>' + esc(g.t) + '</b><span>' + esc(g.by) + '</span></figcaption></figure>';
     }).join('') + '</div></section>' +
   '<section class="m-sec" id="about"><h2 class="m-h2 mask"><span class="ln"><span>About</span></span></h2><div class="m-about rv">' +

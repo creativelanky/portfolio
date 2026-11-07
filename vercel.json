@@ -1,5 +1,11 @@
 {
   "redirects": [
     { "source": "/", "destination": "/spatial/", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/spatial/resume.pdf", "destination": "/api/resume" }
+  ],
+  "headers": [
+    { "source": "/admin/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }, { "key": "Cache-Control", "value": "no-store" }] }
   ]
 }

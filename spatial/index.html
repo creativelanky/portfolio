@@ -11,7 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="space.css?v=play1">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<script src="cases.js?v=modes1"></script>
+<script src="/api/content"></script>
+<script src="cases.js?v=cms1"></script>
 <script src="nav.js?v=details"></script>
 <script>
 /* two ways to see the site: normal mode, a page you scroll (mobile.js), and spatial mode, the room.
@@ -59,7 +60,7 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
 </div>
 <div class="gaze" id="gaze"></div>
 <script src="intro.js?v=3"></script>
-<script src="mobile.js?v=33"></script>
+<script src="mobile.js?v=34"></script>
 
 <script>
 (function(){
@@ -97,11 +98,11 @@ PANELS.push({ ang: WORK, y: PHONE ? 334 : 330, z: PHONE ? 0 : 200, w: 300, h: 60
 /* a page is two by two; on a phone, two stacked */
 var PLAY = 152, PER = PHONE ? 2 : 4, NPAGE = Math.ceil(PLAYGROUND.length / PER), PW = PHONE ? 360 : 440, PH = PHONE ? 290 : 362, PGAP = PHONE ? 16 : 26;
 PLAYGROUND.forEach(function(g, i){
-  var media = g.loop
-    ? '<video muted loop playsinline preload="none" poster="loops/' + g.loop + '.jpg" src="loops/' + g.loop + '.mp4"></video>'
-    : '<img src="' + th(g.shot) + '" alt="' + esc(g.t) + '" draggable="false">';
+  var isLoop = !!(g.loop || g.video), media = isLoop
+    ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>'
+    : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="' + esc(g.t) + '" draggable="false">';
   PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % PER) * .05, kind: 'play', stack: true, play: g, page: (i / PER) | 0, slot: i % PER,
-    html: '<figure class="tile"><div class="tm-media' + (g.loop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + '">' + media + '</div>' +
+    html: '<figure class="tile"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + '">' + media + '</div>' +
           '<figcaption><b>' + esc(g.t) + '</b><span>' + esc(g.by) + '</span></figcaption></figure>' });
 });
 PANELS.push({ ang: PLAY, y: PHONE ? 340 : 430, z: PHONE ? 0 : 60, w: PHONE ? 340 : 220, h: 56, d: .6, kind: 'ctrl',
@@ -465,7 +466,7 @@ function open(el){
   var g = p.play;
   dwin.className = 'dwin is-shot';
   dwin.innerHTML = '<button class="close" id="dclose" aria-label="Close">✕</button><div class="dshot">' +
-    (g.loop ? '<video autoplay muted loop playsinline poster="loops/' + g.loop + '.jpg" src="loops/' + g.loop + '.mp4"></video>' : '<img src="' + src(g.shot) + '" alt="' + esc(g.t) + '">') +
+    (g.loop || g.video ? '<video autoplay muted loop playsinline poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, '../') + '" alt="' + esc(g.t) + '">') +
     '</div><p class="dcap"><b>' + esc(g.t) + '</b> ' + esc(g.by) + '</p>';
   detail.style.pointerEvents = ''; detail.classList.add('open'); document.body.classList.add('focus-mode'); pushT = 1;
   var a = rectOf(el), b = dwin.getBoundingClientRect();

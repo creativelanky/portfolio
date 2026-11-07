@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Portfolio CMS</title>
+<link rel="icon" href="/Favicon.avif">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css?v=1">
+<!-- the site's current content: what's saved (if anything), on top of the built-in projects -->
+<script src="/api/content"></script>
+<script src="/spatial/cases.js?v=cms1"></script>
+</head>
+<body>
+
+<!-- sign in -->
+<section class="login" id="login" hidden>
+  <form class="login-card" id="loginForm">
+    <span class="tm">t.</span>
+    <h1>Portfolio CMS</h1>
+    <p>Sign in to edit your projects, playground and details, and to see who's visiting.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password" required>
+    <button class="btn pri" type="submit">Sign in</button>
+    <p class="err" id="loginErr"></p>
+  </form>
+</section>
+
+<!-- the app -->
+<div class="app" id="app" hidden>
+  <aside class="side">
+    <div class="brand"><span class="tm">t.</span><span>Portfolio CMS</span></div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="projects" class="on">Projects</button>
+      <button data-tab="playground">Playground</button>
+      <button data-tab="details">Details</button>
+      <button data-tab="resume">Resume</button>
+      <button data-tab="stats">Visitors</button>
+    </nav>
+    <div class="side-foot">
+      <a href="/spatial/?mode=normal" target="_blank" rel="noopener">View site ↗</a>
+      <button class="link" id="signOut">Sign out</button>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="bar">
+      <h2 id="title">Projects</h2>
+      <div class="bar-r">
+        <select id="history" title="Go back to an earlier save"><option value="">Earlier saves</option></select>
+        <span class="status" id="status"></span>
+        <button class="btn pri" id="save" disabled>Save changes</button>
+      </div>
+    </header>
+    <div class="view" id="view"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script type="module" src="admin.js?v=1"></script>
+</body>
+</html>

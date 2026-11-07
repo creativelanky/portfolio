@@ -1,0 +1,9 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "type": "module",
+  "description": "Triumph's portfolio: static pages in /spatial, a small CMS at /admin, and its API in /api",
+  "dependencies": {
+    "@vercel/blob": "2.8.1"
+  }
+}
