@@ -582,11 +582,11 @@ html{transition:background-color .3s}
 .xr{list-style:none;display:flex;flex-direction:column;gap:6px}
 .xr li{display:flex;align-items:center;gap:14px;padding:9px 0;transition:opacity .25s}
 .xr:hover li:not(:hover){opacity:.45}
-.xr .lg{width:38px;height:38px;border-radius:11px;overflow:hidden;flex:none;display:grid;place-items:center;color:#fff;font:400 18px/1 var(--display);box-shadow:inset 0 0 0 1px var(--hair)}
+.xr .lg{width:28px;height:28px;border-radius:8px;overflow:hidden;flex:none;display:grid;place-items:center;color:#fff;font:400 18px/1 var(--display);box-shadow:inset 0 0 0 1px var(--hair)}
 .xr .lg img{width:100%;height:100%;object-fit:cover}
 .xr-n{flex:1;min-width:0}
-.xr-n b{display:block;font:400 19px/1.2 var(--display);letter-spacing:-.02em}
-.xr-n span{display:block;margin-top:3px;font-size:13px;color:var(--dim)}
+.xr-n b{display:block;font:400 16px/1.25 var(--display);letter-spacing:-.015em}
+.xr-n span{display:block;margin-top:2px;font-size:12.5px;color:var(--dim)}
 .xr-y{font-size:13px;line-height:1.45;color:var(--dim);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
 .xp-r{display:flex;flex-direction:column;border-radius:16px;background:var(--panel);padding:32px 32px 28px}
 .lgrid{display:grid;grid-template-columns:repeat(5,44px);gap:12px}
@@ -626,8 +626,6 @@ html{transition:background-color .3s}
 .phone .xp-l{padding:22px 16px 8px}
 .phone .xp-r{padding:20px}
 .phone .xp-sk,.phone .xp-tools{display:none}
-.phone .lgrid{grid-template-columns:repeat(5,40px);gap:10px}
-.phone .lgi{width:40px;height:40px}
 .phone .ct-l{padding:22px 16px 16px}
 .phone .ct-l .row{margin-top:24px}
 .phone .ct-r{padding:20px}
@@ -681,3 +679,24 @@ html{transition:background-color .3s}
   .m .pc-r span,.phone .k-case .pc-r span{color:rgba(255,255,255,.55)}
   .m .pc-go,.phone .k-case .pc-go,.m .pcard:hover .pc-go,.phone .panel.hover .pc-go{background:#fff;color:#0b0b0c;border-color:#fff}
 }
+
+/* ---------- teams I've designed for: small chips in a still grid, a logo beside each name (home page and the room) ---------- */
+.tw{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tw-i{display:flex;align-items:center;gap:10px;min-width:0;padding:9px 12px 9px 9px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);
+  font:500 14px/1.2 var(--body);color:var(--ink);transition:transform .3s cubic-bezier(.34,1.5,.5,1), box-shadow .2s}
+.tw-i:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--line), 0 12px 24px -16px rgba(0,0,0,.35)}
+.tw-m{width:26px;height:26px;flex:none;border-radius:7px;overflow:hidden;display:grid;place-items:center;color:#fff;font:400 13px/1 var(--display);box-shadow:inset 0 0 0 1px var(--hair)}
+.tw-m img{width:100%;height:100%;object-fit:cover}
+.tw-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:900px){ .tw{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:560px){ .tw{grid-template-columns:repeat(2,minmax(0,1fr))} .tw-i{font-size:13px;padding:8px 10px 8px 8px} .tw-m{width:22px;height:22px;border-radius:6px} }
+/* in the room it sits in the grey half of the experience wall: white chips, each as wide as its name, wrapping, with room before the skills */
+.tw-room{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 24px}
+.tw-room .tw-i{background:var(--paper);padding:7px 8px 7px 7px;font-size:12.5px;gap:8px}
+.tw-room .tw-m{width:22px;height:22px;border-radius:6px}
+.phone .tw-room{gap:5px;margin:10px 0 0}
+.phone .tw-room .tw-i{padding:5px 8px 5px 5px;font-size:12px;gap:7px}
+.phone .tw-room .tw-m{width:18px;height:18px;border-radius:5px;font-size:10px}
+.phone .xr .lg{width:22px;height:22px;border-radius:6px}
+.phone .xr li{gap:10px;padding:6px 0}
+.phone .xr-n b{font-size:14px}

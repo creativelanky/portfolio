@@ -9,7 +9,7 @@ if (!window.MOBILE) return;
 ['stage', 'hint', 'toplinks', 'orn', 'detail', 'portal', 'gaze', 'intro'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
 var b = document.querySelector('.brand'); if (b) b.remove();
 document.body.className = 'mhome';
-var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=h12'; document.head.appendChild(css);
+var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=xp1'; document.head.appendChild(css);
 
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -27,12 +27,10 @@ function experienceHTML(){
   }).join('') + '</ul>';
 }
 
-/* everyone I've designed for, drifting past; the row is doubled so it loops without a seam */
+/* everyone I've designed for: a still grid of small chips, a logo beside each name, easy to scan */
 function logosHTML(){
-  var row = (window.CLIENTS || []).map(function(c){
-    return '<span class="lw-i"><span class="lw-m" style="background:' + (c.bg || '#111') + '">' + (c.logo ? '<img src="' + c.logo + '" alt="">' : esc(c.mark)) + '</span>' + esc(c.n) + '</span>';
-  }).join('');
-  return '<div class="lw rv" aria-label="Teams I’ve designed for: ' + esc((window.CLIENTS || []).map(function(c){ return c.n; }).join(', ')) + '"><div class="lw-t" aria-hidden="true">' + row + row + '</div></div>';
+  var CLIENTS = window.CLIENTS || [];
+  return '<div class="tw rv">' + CLIENTS.map(function(c){ return '<span class="tw-i"><span class="tw-m" style="background:' + (c.bg || '#111') + '">' + (c.logo ? '<img src="' + c.logo + '" alt="" draggable="false">' : esc(c.mark)) + '</span><span class="tw-n">' + esc(c.n) + '</span></span>'; }).join('') + '</div>';
 }
 
 /* what I do and what I do it with, kept short and unlabelled */
