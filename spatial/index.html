@@ -9,18 +9,18 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=h12">
+<link rel="stylesheet" href="space.css?v=h13">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="/api/content"></script>
-<script src="cases.js?v=h8"></script>
+<script src="cases.js?v=h13"></script>
 <script src="nav.js?v=nav1"></script>
 <script>
 /* two ways to see the site: normal mode, a page you scroll (mobile.js), and spatial mode, the room.
-   Normal is the default; ?mode=spatial or ?mode=normal switches, and the choice is remembered */
+   Every visit opens in normal mode, on any screen; only ?mode=spatial (the Spatial switch) opens the room */
 (function(){
-  var m = /[?&]mode=(spatial|normal)/.exec(location.search), mode = m && m[1];
-  try { if (mode) localStorage.setItem('mode', mode); else mode = localStorage.getItem('mode'); } catch (e) {}
-  window.SPATIAL = mode === 'spatial';
+  var m = /[?&]mode=(spatial|normal)/.exec(location.search);
+  try { localStorage.removeItem('mode'); } catch (e) {}   /* an earlier version remembered the room; it no longer does */
+  window.SPATIAL = !!m && m[1] === 'spatial';
 })();
 window.PHONE_ROOM = window.SPATIAL && matchMedia("(max-width: 760px)").matches;   /* the room, sized for a phone */
 window.MOBILE = !window.SPATIAL;   /* the normal page; the name is from when only phones got it */
@@ -65,7 +65,7 @@ try { if (!window.SPATIAL && localStorage.getItem("theme") === "dark") document.
   <button class="intro-skip" id="introSkip">Skip intro</button>
 </div>
 <div class="gaze" id="gaze"></div>
-<script src="mobile.js?v=39"></script>
+<script src="mobile.js?v=40"></script>
 
 <script>
 (function(){
@@ -111,7 +111,7 @@ PLAYGROUND.forEach(function(g, i){
     ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>'
     : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="' + esc(g.t) + '" draggable="false">';
   PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % PER) * .05, kind: 'play', stack: true, play: g, page: (i / PER) | 0, slot: i % PER,
-    html: '<figure class="tile" aria-label="' + esc(g.t) + '"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + '">' + media + '</div></figure>' });
+    html: '<figure class="tile" aria-label="' + esc(g.t) + '"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + (isLoop && loopPoster(g) ? ' url(' + loopPoster(g) + ') center / contain no-repeat' : '') + '">' + media + '</div></figure>' });
 });
 PANELS.push({ ang: PLAY, y: BELOW, z: PHONE ? 0 : 60, w: PHONE ? 340 : 300, h: 60, d: .6, kind: 'ctrl',
   html: '<div class="ctrl"><button data-pstep="-1" aria-label="Previous page">←</button><span class="dots" id="pdots">' +
@@ -292,6 +292,7 @@ placeSlides();
    One page of four stands in front of you; the others wait out of sight to either side and slide in, a tile at a time.
    Like the work slider, nothing rotates: tiles only change slot. Loops play only on the page in front of you. */
 var page = 0, playEls = els.filter(function(e){ return PANELS[e._i].kind === 'play'; }), pdots = document.getElementById('pdots');
+playEls.forEach(function(e){ var v = e.querySelector('video'); if (v) v.addEventListener('playing', function(){ v.classList.add('on'); }); });   /* the still shows until the loop really plays */
 var PLAY_Z = 40, AWAY_X = 1500, AWAY_Z = 600;
 function placePage(){
   playEls.forEach(function(e){
@@ -319,7 +320,7 @@ function syncLoops(force){
   if (on === loopsOn && !force) return; loopsOn = on;
   playEls.forEach(function(e){
     var v = e.querySelector('video'); if (!v) return;
-    if (on && PANELS[e._i].page === page) { v.muted = true; v.preload = 'auto'; var pr = v.play(); if (pr && pr.catch) pr.catch(function(){}); }
+    if (on && PANELS[e._i].page === page) { v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = 'auto'; var pr = v.play(); if (pr && pr.catch) pr.catch(function(){}); }
     else v.pause();
   });
 }
@@ -475,7 +476,7 @@ function open(el){
   dwin.className = 'dwin is-shot';
   dwin.innerHTML = '<button class="close" id="dclose" aria-label="Close">✕</button><div class="dshot">' +
     (g.loop || g.video ? '<video autoplay muted loop playsinline poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, '../') + '" alt="' + esc(g.t) + '">') +
-    '</div><p class="dcap"><b>' + esc(g.t) + '</b> ' + esc(g.by) + '</p>';
+    '</div>';
   detail.style.pointerEvents = ''; detail.classList.add('open'); document.body.classList.add('focus-mode'); pushT = 1;
   var a = rectOf(el), b = dwin.getBoundingClientRect();
   el.style.visibility = 'hidden';

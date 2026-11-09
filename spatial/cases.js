@@ -341,8 +341,10 @@ window.COVER = {
 /* a file path from the content: uploads are full links and used as they are; built-in files live in dir */
 window.asset = function(f, dir){ return /^(https?:)?\/\/|^\//.test(f || "") ? f : (dir || "") + encodeURI(f || ""); };
 /* the playground's media: a loop's video and still, or a shot */
-window.loopSrc = function(g){ return g.video || "loops/" + g.loop + ".mp4"; };
-window.loopPoster = function(g){ return g.poster || (g.loop ? "loops/" + g.loop + ".jpg" : ""); };
+/* ?v= changes whenever the files are re-exported, so browsers don't keep an old copy */
+var LOOPV = "?v=2";
+window.loopSrc = function(g){ return g.video || "loops/" + g.loop + ".mp4" + LOOPV; };
+window.loopPoster = function(g){ return g.poster || (g.loop ? "loops/" + g.loop + ".jpg" + LOOPV : ""); };
 
 /* ---------- details everywhere: email, availability and links, wherever the pages wrote the defaults ---------- */
 document.addEventListener("DOMContentLoaded", function(){

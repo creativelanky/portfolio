@@ -74,6 +74,22 @@ if (STMTS.length) { addEventListener('scroll', onScroll, { passive: true }); add
 var bar = document.querySelector('.navpill');
 if (bar && window.springNav) springNav(bar, { tabs: 'a.nt', hover: true, onPick: function(t){ if (t) t.click(); } }).set(bar.querySelector('a.on'));
 
+/* ---------- a hint under the Spatial switch: once per visit, a small note that the site can also be seen as a room ---------- */
+(function(){
+  var tg = bar && bar.querySelector('.modetg:not(.on)'); if (!tg) return;
+  var seen = false; try { seen = sessionStorage.getItem('spHint') === '1'; } catch (e) {}
+  if (seen) return;
+  var tip = document.createElement('span'); tip.className = 'sp-tip'; tip.setAttribute('role', 'status');
+  tip.innerHTML = '<b>View in Spatial mode</b><span>Click here to step into the room</span>';
+  tg.appendChild(tip);
+  function hide(){ tip.classList.remove('show'); try { sessionStorage.setItem('spHint', '1'); } catch (e) {} setTimeout(function(){ tip.remove(); }, 400); removeEventListener('scroll', onScroll); }
+  function onScroll(){ if (scrollY > innerHeight * .9) hide(); }
+  setTimeout(function(){ tip.classList.add('show'); }, 1400);
+  setTimeout(hide, 11000);
+  addEventListener('scroll', onScroll, { passive: true });
+  tg.addEventListener('click', hide);
+})();
+
 /* ---------- footer: copy the email ---------- */
 document.addEventListener('click', function(e){
   var b = e.target.closest('[data-copy]'); if (!b) return;

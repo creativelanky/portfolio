@@ -76,7 +76,7 @@ m.innerHTML = navHTML('home') +
     CASES.map(function(c, i){ return cardHTML(c, i).replace('<article class="pcard">', '<article class="pcard rv">'); }).join('') + '</div></section>' +
   '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2 mask"><span class="ln"><span>Playground</span></span></h2><span>Swipe</span></div><div class="m-track">' +
     loops.map(function(g, i){
-      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '" aria-label="' + esc(g.t) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + '">' + (g.loop || g.video ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
+      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '" aria-label="' + esc(g.t) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + ((g.loop || g.video) && loopPoster(g) ? ' url(' + loopPoster(g) + ') center / cover no-repeat' : '') + '">' + (g.loop || g.video ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
              '</figure>';
     }).join('') + '</div></section>' +
   '<section class="m-sec" id="about"><h2 class="m-h2 mask"><span class="ln"><span>Work experience</span></span></h2>' + experienceHTML() + '</section>' +
@@ -96,7 +96,9 @@ m.addEventListener('click', function(e){
    Phones in Low Power Mode or saving data refuse to start videos on their own, even muted ones, until you touch the page,
    so every tap or swipe also starts whichever loops are in view (the poster shows until then) */
 var vids = [].slice.call(m.querySelectorAll('.m-track video'));
-function playLoop(v){ v.muted = true; v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+function playLoop(v){ v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+/* a loop shows once it is really playing; until then, or if a phone won't play it, the still painted behind it shows */
+vids.forEach(function(v){ v.addEventListener('playing', function(){ v.classList.add('on'); }); });
 function inView(v){ var r = v.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; }
 if ('IntersectionObserver' in window) {
   var io = new IntersectionObserver(function(es){ es.forEach(function(e){
@@ -108,7 +110,7 @@ if ('IntersectionObserver' in window) {
 
 /* the shared page motion (reveals, the statement, the footer, the top bar's pill) */
 (function start(){
-  ['site.js?v=h6'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
+  ['site.js?v=h13'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
   /* the chrome bust, in 3D (three.js comes from the import map in the page's head); its space stays empty until it fades in */
   var b = document.createElement('script'); b.type = 'module'; b.src = 'bust.js?v=20'; document.body.appendChild(b);
 })();
