@@ -76,7 +76,7 @@ m.innerHTML = navHTML('home') +
     CASES.map(function(c, i){ return cardHTML(c, i).replace('<article class="pcard">', '<article class="pcard rv">'); }).join('') + '</div></section>' +
   '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2 mask"><span class="ln"><span>Playground</span></span></h2><span>Swipe</span></div><div class="m-track">' +
     loops.map(function(g, i){
-      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '" aria-label="' + esc(g.t) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + ((g.loop || g.video) && loopPoster(g) ? ' url(' + loopPoster(g) + ') center / cover no-repeat' : '') + '">' + (g.loop || g.video ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
+      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '" aria-label="' + esc(g.t) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + ((g.loop || g.video) && loopPoster(g) ? ' url(' + loopPoster(g) + ') center / cover no-repeat' : '') + '">' + (g.loop || g.video ? '<video autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="metadata" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
              '</figure>';
     }).join('') + '</div></section>' +
   '<section class="m-sec" id="about"><h2 class="m-h2 mask"><span class="ln"><span>Work experience</span></span></h2>' + experienceHTML() + '</section>' +
@@ -92,21 +92,25 @@ m.addEventListener('click', function(e){
   if (go) location.href = go.getAttribute('href');
 });
 
-/* loops play while a good part of them is on screen.
-   Phones in Low Power Mode or saving data refuse to start videos on their own, even muted ones, until you touch the page,
-   so every tap or swipe also starts whichever loops are in view (the poster shows until then) */
+/* loops play while they're on screen.
+   Each one is an always-visible, muted, inline autoplay video: that is what iPhone Safari will start by itself, and it pauses it
+   off screen on its own. We also nudge play() as tiles come into view and finish revealing, and on every tap or swipe, because
+   phones in Low Power Mode or saving data hold even muted videos until you touch the page (the still shows until then). */
 var vids = [].slice.call(m.querySelectorAll('.m-track video'));
-function playLoop(v){ v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
-/* a loop shows once it is really playing; until then, or if a phone won't play it, the still painted behind it shows */
-vids.forEach(function(v){ v.addEventListener('playing', function(){ v.classList.add('on'); }); });
+function playLoop(v){ v.muted = true; v.defaultMuted = true; v.playsInline = true; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
 function inView(v){ var r = v.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; }
+function nudge(){ vids.forEach(function(v){ if (v.paused && inView(v)) playLoop(v); }); }
 if ('IntersectionObserver' in window) {
   var io = new IntersectionObserver(function(es){ es.forEach(function(e){
-    if (e.intersectionRatio > .35) playLoop(e.target); else e.target.pause();
-  }); }, { threshold: [0, .35, .7] });
+    if (e.intersectionRatio > .2) playLoop(e.target); else e.target.pause();
+  }); }, { threshold: [0, .2, .6] });
   vids.forEach(function(v){ io.observe(v); });
 } else vids.forEach(playLoop);
-['touchend', 'pointerup'].forEach(function(ev){ addEventListener(ev, function(){ vids.forEach(function(v){ if (v.paused && inView(v)) playLoop(v); }); }, { passive: true }); });
+/* a tile fades in as it's revealed; try again once it's fully shown, and whenever a video becomes ready */
+[].forEach.call(m.querySelectorAll('.m-tile'), function(t){ t.addEventListener('transitionend', function(e){ if (e.propertyName === 'opacity') nudge(); }); });
+vids.forEach(function(v){ v.addEventListener('canplay', function(){ if (v.paused && inView(v)) playLoop(v); }); });
+var swipe = m.querySelector('.m-track'); if (swipe) swipe.addEventListener('scroll', function(){ clearTimeout(swipe._t); swipe._t = setTimeout(nudge, 120); }, { passive: true });
+['touchend', 'pointerup', 'scrollend'].forEach(function(ev){ addEventListener(ev, nudge, { passive: true }); });
 
 /* the shared page motion (reveals, the statement, the footer, the top bar's pill) */
 (function start(){

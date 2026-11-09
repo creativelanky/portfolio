@@ -9,7 +9,7 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=h13">
+<link rel="stylesheet" href="space.css?v=h14">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="/api/content"></script>
 <script src="cases.js?v=h13"></script>
@@ -65,7 +65,7 @@ try { if (!window.SPATIAL && localStorage.getItem("theme") === "dark") document.
   <button class="intro-skip" id="introSkip">Skip intro</button>
 </div>
 <div class="gaze" id="gaze"></div>
-<script src="mobile.js?v=40"></script>
+<script src="mobile.js?v=41"></script>
 
 <script>
 (function(){
@@ -292,7 +292,6 @@ placeSlides();
    One page of four stands in front of you; the others wait out of sight to either side and slide in, a tile at a time.
    Like the work slider, nothing rotates: tiles only change slot. Loops play only on the page in front of you. */
 var page = 0, playEls = els.filter(function(e){ return PANELS[e._i].kind === 'play'; }), pdots = document.getElementById('pdots');
-playEls.forEach(function(e){ var v = e.querySelector('video'); if (v) v.addEventListener('playing', function(){ v.classList.add('on'); }); });   /* the still shows until the loop really plays */
 var PLAY_Z = 40, AWAY_X = 1500, AWAY_Z = 600;
 function placePage(){
   playEls.forEach(function(e){
