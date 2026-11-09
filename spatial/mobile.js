@@ -46,7 +46,7 @@ m.innerHTML = navHTML('home') +
   /* the first two sections of the about page: who I am with the portrait, then the statement and the numbers */
   '<header class="ab-hero m-ab">' +
     '<div>' +
-      '<p class="m-who"><img src="' + th('photo-4.jpg') + '" alt=""><span><b>Triumph Ohwojeheri</b>Product designer, Lagos</span></p>' +
+      '<p class="m-who"><img src="' + th('photo-3.jpg') + '" alt=""><span><b>Triumph Ohwojeheri</b>Product designer, Lagos</span></p>' +
       '<h1 class="mask"><span class="ln"><span>I design products</span></span><span class="ln"><span>that make <em>complex</em></span></span><span class="ln"><span>things feel simple.</span></span></h1>' +
       '<p class="lead rv">I’m Triumph, a product designer in Lagos with 4+ years of experience across fintech, Web3, DeFi, AI and SaaS. I work end to end, from research and user flows to high-fidelity UI, prototypes and design systems, and I’ve led zero-to-one design for trading, payments and decentralised apps. On the side, I vibe-code my designs to life.</p>' +
       companiesHTML() +
