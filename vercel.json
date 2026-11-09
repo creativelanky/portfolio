@@ -1,11 +1,40 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/spatial/", "permanent": false }
+    {
+      "source": "/",
+      "destination": "/spatial/",
+      "permanent": false
+    },
+    {
+      "source": "/spatial/about.html",
+      "destination": "/spatial/#about",
+      "permanent": false
+    },
+    {
+      "source": "/spatial/about",
+      "destination": "/spatial/#about",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/spatial/resume.pdf", "destination": "/api/resume" }
+    {
+      "source": "/spatial/resume.pdf",
+      "destination": "/api/resume"
+    }
   ],
   "headers": [
-    { "source": "/admin/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }, { "key": "Cache-Control", "value": "no-store" }] }
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
   ]
 }

@@ -9,11 +9,11 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=play1">
+<link rel="stylesheet" href="space.css?v=h11">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="/api/content"></script>
-<script src="cases.js?v=cms1"></script>
-<script src="nav.js?v=details"></script>
+<script src="cases.js?v=h8"></script>
+<script src="nav.js?v=nav1"></script>
 <script>
 /* two ways to see the site: normal mode, a page you scroll (mobile.js), and spatial mode, the room.
    Normal is the default; ?mode=spatial or ?mode=normal switches, and the choice is remembered */
@@ -25,6 +25,8 @@
 window.PHONE_ROOM = window.SPATIAL && matchMedia("(max-width: 760px)").matches;   /* the room, sized for a phone */
 window.MOBILE = !window.SPATIAL;   /* the normal page; the name is from when only phones got it */
 if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
+/* dark mode is for the scrolling site; the room keeps its own light */
+try { if (!window.SPATIAL && localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
 </script>
 </head>
 <body class="room intro">
@@ -32,15 +34,19 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
 
 <div class="hint" id="hint">Drag to look around. Click a window, or pinch on a trackpad, to bring it closer.</div>
 <script>if (window.PHONE_ROOM) document.getElementById('hint').textContent = 'Swipe to turn. Swipe up on work to flip projects.';</script>
-<a class="brand" href="#" aria-label="Triumph Ohwojeheri, home"><span class="tm">t.</span><span>Triumph<br>Ohwojeheri</span></a>
-<nav class="toplinks" id="toplinks"><a class="btn" href="about.html">About me</a><a class="btn pri" href="resume.pdf" target="_blank" rel="noopener">Resume</a></nav>
-<nav class="orn" id="orn" aria-label="Rooms">
-  <button data-go="-114">Contact</button>
-  <button data-go="-58">About</button>
-  <button data-go="0" class="on">Home</button>
-  <button data-go="62">Work</button>
-  <button data-go="152">Playground</button>
-  <button class="modetg" type="button" role="switch" aria-checked="true" aria-label="Spatial mode: see the site as a 3D room"><span>Spatial</span><i></i></button>
+<!-- the same white bar as the scrolling site: the walls as tabs (in the order they stand around you), socials, and the switch back -->
+<nav class="orn navpill" id="orn" aria-label="Rooms">
+  <button class="nt" data-go="-114" data-ic="contact"><span>Contact</span></button>
+  <button class="nt" data-go="-58" data-ic="me"><span>Experience</span></button>
+  <button class="nt on" data-go="0" data-ic="home"><span>Home</span></button>
+  <button class="nt" data-go="62" data-ic="work"><span>Work</span></button>
+  <button class="nt" data-go="152" data-ic="play"><span>Playground</span></button>
+  <i class="nsep" aria-hidden="true"></i>
+  <a class="ni" href="https://wa.me/2349013417032" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp" data-ic="whatsapp"></a>
+  <a class="ni" href="https://twitter.com/amazinglanky" target="_blank" rel="noopener" aria-label="X" title="X" data-ic="x"></a>
+  <a class="ni" href="mailto:triumphohwojeheri@gmail.com" aria-label="Email" title="Email" data-ic="mail"></a>
+  <i class="nsep" aria-hidden="true"></i>
+  <button class="ni modetg on" type="button" role="switch" aria-checked="true" aria-label="Spatial mode is on: back to the scrolling site" title="Back to the scrolling site" data-ic="cube"></button>
 </nav>
 
 <div class="detail" id="detail" role="dialog" aria-modal="true"><div class="dwin" id="dwin"></div></div>
@@ -59,8 +65,7 @@ if (window.PHONE_ROOM) document.documentElement.classList.add("phone");
   <button class="intro-skip" id="introSkip">Skip intro</button>
 </div>
 <div class="gaze" id="gaze"></div>
-<script src="intro.js?v=3"></script>
-<script src="mobile.js?v=34"></script>
+<script src="mobile.js?v=38"></script>
 
 <script>
 (function(){
@@ -76,57 +81,63 @@ var R = 1000, FLOOR = 520, CEIL = -760, RW = 2100, RP = 1420;
 var PHONE = !!window.PHONE_ROOM;
 
 /* ---------- what hangs where. ang: degrees around you (negative = left); y: height; z: nearer (+) or further (-) ---------- */
+/* every wall's main window is the same size (W × H) and stands at the same height (Y0), like windows in a headset */
+var W = PHONE ? 360 : 1000, H = PHONE ? 680 : 560, Y0 = PHONE ? -20 : -10, BELOW = Y0 + H / 2 + 44;
+function years(w){ var y = w.match(/\d{4}/g) || []; return y[0] === y[y.length - 1] ? y[0] : y[0] + ' – ' + y[y.length - 1]; }
 var PANELS = [
-  /* the intro card: the chrome bust (bust.js) at the top, then who I am, all centred */
-  { ang: 0, y: PHONE ? 35 : 15, w: PHONE ? 360 : 600, h: PHONE ? 700 : 740, d: .1, kind: 'hero',
-    html: '<div class="in hero-in"><div class="bust bust-card" data-bust data-src="img/bust-3.glb?v=2" data-paint="img/bust-paint-3.jpg" data-frame="196,830,62,950" data-strength=".6" data-hair="205,335,690,425" role="img" aria-label="Chrome bust of Triumph Ohwojeheri"></div>' +
-          '<span class="small">Independent product designer, Lagos</span>' +
-          '<div class="h1">Complex ideas.<br><em>Thoughtfully</em> simple.</div>' +
-          '<div class="p">I’m Triumph. I turn complex problems into digital experiences that feel right. From Web3 to the everyday.</div>' +
-          '<div class="row"><span class="btn pri" data-go="62">View selected work</span><a class="btn" href="about.html">About me</a></div>' +
-          '<span class="avail"><i></i>Available for select projects</span></div>' }
+  /* home: who I am beside the chrome bust (bust.js), the same story as the scrolling site's hero */
+  { ang: 0, y: Y0, w: W, h: H, d: .1, kind: 'hero',
+    html: '<div class="in hero-in"><div class="hero-l">' +
+          '<p class="m-who"><img src="' + th('photo-4.jpg') + '" alt="" draggable="false"><span><b>Triumph Ohwojeheri</b>Product designer, Lagos</span></p>' +
+          '<div class="h1">I design products<br>that make <em>complex</em><br>things feel simple.</div>' +
+          '<div class="p">A product designer with 4+ years across fintech, Web3, AI and SaaS. I work end to end, from research and flows to high-fidelity UI and design systems.</div>' +
+          companiesHTML() +
+          '<div class="row"><span class="btn pri" data-go="62">View work</span><span class="btn" data-go="-58">Experience</span></div></div>' +
+          '<div class="bust bust-card" data-bust data-src="img/bust-3.glb?v=2" data-paint="img/bust-paint-3.jpg" data-frame="196,830,62,950" data-strength=".6" data-hair="205,335,690,425" role="img" aria-label="Chrome bust of Triumph Ohwojeheri"></div></div>' }
 ];
 /* the work wall: one project in front, its neighbours either side (see "the work slider" below) */
 var WORK = 62, NCASE = CASES.length;
 CASES.forEach(function(c, i){
-  PANELS.push({ ang: WORK, y: PHONE ? -30 : -10, w: PHONE ? 360 : 1000, h: PHONE ? 640 : 504, d: .2, kind: 'case', ci: i, stack: true, html: cardHTML(c, i) });
+  PANELS.push({ ang: WORK, y: Y0, w: W, h: H, d: .2, kind: 'case', ci: i, stack: true, html: cardHTML(c, i) });
 });
-PANELS.push({ ang: WORK, y: PHONE ? 334 : 330, z: PHONE ? 0 : 200, w: 300, h: 60, d: .3, kind: 'ctrl',
+PANELS.push({ ang: WORK, y: BELOW, z: PHONE ? 0 : 200, w: 300, h: 60, d: .3, kind: 'ctrl',
   html: '<div class="ctrl"><button data-step="-1" aria-label="Previous project">←</button><span class="dots" id="dots">' +
         CASES.map(function(c, i){ return '<i data-pick="' + i + '"></i>'; }).join('') + '</span><button data-step="1" aria-label="Next project">→</button></div>' });
-/* the playground: four pieces at a time, two by two (see "the playground pages" below) */
-/* a page is two by two; on a phone, two stacked */
-var PLAY = 152, PER = PHONE ? 2 : 4, NPAGE = Math.ceil(PLAYGROUND.length / PER), PW = PHONE ? 360 : 440, PH = PHONE ? 290 : 362, PGAP = PHONE ? 16 : 26;
+/* the playground: a page of six, three by two, filling the same footprint as the other windows (on a phone, two stacked) */
+var PLAY = 152, COLS = PHONE ? 1 : 3, PER = PHONE ? 2 : 6, NPAGE = Math.ceil(PLAYGROUND.length / PER), PGAP = PHONE ? 16 : 20;
+var PW = (W - (COLS - 1) * PGAP) / COLS, PH = (H - (PER / COLS - 1) * PGAP) / (PER / COLS);
 PLAYGROUND.forEach(function(g, i){
   var isLoop = !!(g.loop || g.video), media = isLoop
     ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>'
     : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="' + esc(g.t) + '" draggable="false">';
   PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % PER) * .05, kind: 'play', stack: true, play: g, page: (i / PER) | 0, slot: i % PER,
-    html: '<figure class="tile"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + '">' + media + '</div>' +
-          '<figcaption><b>' + esc(g.t) + '</b><span>' + esc(g.by) + '</span></figcaption></figure>' });
+    html: '<figure class="tile" aria-label="' + esc(g.t) + '"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + '">' + media + '</div></figure>' });
 });
-PANELS.push({ ang: PLAY, y: PHONE ? 340 : 430, z: PHONE ? 0 : 60, w: PHONE ? 340 : 220, h: 56, d: .6, kind: 'ctrl',
+PANELS.push({ ang: PLAY, y: BELOW, z: PHONE ? 0 : 60, w: PHONE ? 340 : 300, h: 60, d: .6, kind: 'ctrl',
   html: '<div class="ctrl"><button data-pstep="-1" aria-label="Previous page">←</button><span class="dots" id="pdots">' +
         Array.apply(null, Array(NPAGE)).map(function(_, i){ return '<i data-ppick="' + i + '"></i>'; }).join('') + '</span><button data-pstep="1" aria-label="Next page">→</button></div>' });
 PANELS.push(
-  /* the about wall: one card, a summary beside a small arrangement of photos that fans out when you face it */
-  { ang: -58, y: PHONE ? -20 : -10, w: PHONE ? 360 : 900, h: PHONE ? 660 : 470, d: .3, kind: 'about', stack: true,
-    html: '<div class="about-sum"><div class="fan" id="fan">' +
-            '<figure class="fp fp-l"><img src="' + th('photo-3.jpg') + '" alt="" draggable="false"></figure>' +
-            '<figure class="fp fp-r"><img src="' + th('photo-8.jpg') + '" alt="" draggable="false"></figure>' +
-            '<figure class="fp fp-c"><img src="' + th('photo-4.jpg') + '" alt="Triumph Ohwojeheri" draggable="false"></figure></div>' +
-          '<div class="sum"><span class="eyebrow">About</span>' +
-            '<div class="h2">Curious by nature.<br>Intentional by design.</div>' +
-            '<div class="p">I’m Triumph, a product designer in Lagos with 4+ years across fintech, Web3, AI and SaaS. I work end to end, from research and flows to high-fidelity UI and design systems, and I’ve led zero-to-one design for trading, payments and decentralised apps.</div>' +
-            '<p class="sum-k">8 teams · 20+ projects · lately Glitch Markets, Human Tech, Space and Time</p>' +
-            '<div class="row"><a class="btn pri" href="about.html">My story and experience</a><a class="btn" href="resume.pdf" target="_blank" rel="noopener">Resume</a></div></div></div>' },
-  { ang: -114, y: -10, w: PHONE ? 360 : 480, h: PHONE ? 360 : 380, d: .45, kind: 'contact',
-    html: '<div class="in"><span class="small">Have something in mind?</span><div class="h1 md">Let’s make it<br>something good.</div>' +
-          '<a class="mail" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a>' +
-          '<div class="row"><a class="btn pri" href="mailto:triumphohwojeheri@gmail.com">Email me</a><a class="btn" href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call</a></div>' +
-          '<div class="socials"><a href="https://twitter.com/amazinglanky" target="_blank" rel="noopener">X</a><a href="https://instagram.com/amazinglanky" target="_blank" rel="noopener">Instagram</a><a href="https://dribbble.com/amazinglanky" target="_blank" rel="noopener">Dribbble</a><a href="https://linkedin.com/in/triumph-ohwojeheri" target="_blank" rel="noopener">LinkedIn</a><span class="clock" id="clock"></span></div></div>' }
+  /* the experience wall: where I've worked on the left; who I've designed for, what I do and what I use on the right */
+  { ang: -58, y: Y0, w: W, h: H, d: .3, kind: 'about', stack: true,
+    html: '<div class="in xp-in"><div class="xp-l"><span class="eyebrow">Experience</span><ul class="xr">' +
+            EXPERIENCE.map(function(x){
+              return '<li><span class="lg" style="background:' + x.bg + '">' + (x.logo ? '<img src="' + x.logo + '" alt="" draggable="false">' : esc(x.mark)) + '</span>' +
+                '<span class="xr-n"><b>' + esc(x.co) + '</b><span>' + esc(x.role) + '</span></span><span class="xr-y">' + years(x.when) + '</span></li>';
+            }).join('') + '</ul></div>' +
+          '<div class="xp-r"><span class="eyebrow">Teams I’ve designed for</span><div class="lgrid">' +
+            CLIENTS.map(function(c){ return '<span class="lgi" title="' + esc(c.n) + '" style="background:' + (c.bg || '#111') + '">' + (c.logo ? '<img src="' + c.logo + '" alt="' + esc(c.n) + '" draggable="false">' : esc(c.mark)) + '</span>'; }).join('') + '</div>' +
+            '<p class="xp-sk">' + SKILLS.join(' · ') + '</p>' + toolsHTML('xp-tools') + '</div></div>' },
+  /* the contact wall: the footer as a window */
+  { ang: -114, y: Y0, w: W, h: H, d: .45, kind: 'contact',
+    html: '<div class="in ct-in"><div class="ct-l"><span class="eyebrow">Get in touch</span><div class="h1">Let’s make it<br>something <em>good</em>.</div>' +
+            '<a class="mail" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a>' +
+            '<div class="row"><a class="btn pri" href="mailto:triumphohwojeheri@gmail.com">Email me</a><a class="btn" href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call</a></div></div>' +
+          '<div class="ct-r"><span class="avail"><i></i>Available for select projects</span>' + aiNoteHTML('ct-ai') +
+            '<div class="ct-bot">' + footIconsHTML('ct-icons') + '<span class="clock" id="clock"></span></div></div></div>' }
 );
-var LABELS = [{ t: 'Selected work', ang: 62, y: -500 }, { t: 'Playground', ang: 152, y: -500 }, { t: 'About', ang: -58, y: -320 }, { t: 'Contact', ang: -114, y: -250 }];
+/* every wall's name sits the same distance above its window */
+var LABELS = [{ t: 'Selected work', ang: 62, z: PHONE ? 0 : 220 }, { t: 'Playground', ang: 152, z: PHONE ? 0 : 40 }, { t: 'Experience', ang: -58 }, { t: 'Contact', ang: -114 }];
+LABELS.forEach(function(l){ l.y = Y0 - H / 2 - 52; });
 
 /* ---------- build ---------- */
 var stage = document.getElementById('stage'), world = document.getElementById('world');
@@ -150,7 +161,7 @@ var els = PANELS.map(function(p, i){
 });
 if (!PHONE) LABELS.forEach(function(l){
   var e = document.createElement('div'); e.className = 'label'; e.textContent = l.t;
-  e.style.transform = 'rotateY(' + (-l.ang) + 'deg) translate3d(-50%,' + l.y + 'px,' + (-R) + 'px)';
+  e.style.transform = 'rotateY(' + (-l.ang) + 'deg) translate3d(-50%,' + l.y + 'px,' + (-(R - (l.z || 0))) + 'px)';   /* level with its window */
   world.appendChild(e);
 });
 
@@ -286,8 +297,8 @@ function placePage(){
   playEls.forEach(function(e){
     var p = PANELS[e._i], o = ((p.page - page) % NPAGE + NPAGE * 1.5) % NPAGE - NPAGE / 2;
     o = o === 0 ? 0 : o < 0 ? -1 : 1;
-    var col = PHONE ? -1 : p.slot % 2, row = PHONE ? p.slot : p.slot >> 1;
-    var x = (col < 0 ? 0 : (col ? 1 : -1) * (PW + PGAP) / 2) + o * AWAY_X, y = (row ? 1 : -1) * (PH + PGAP) / 2 - (PHONE ? 30 : 20), z = R - (PHONE ? 0 : PLAY_Z) + Math.abs(o) * AWAY_Z;
+    var col = p.slot % COLS, row = (p.slot / COLS) | 0, rows = PER / COLS;
+    var x = (col - (COLS - 1) / 2) * (PW + PGAP) + o * AWAY_X, y = Y0 + (row - (rows - 1) / 2) * (PH + PGAP), z = R - (PHONE ? 0 : PLAY_Z) + Math.abs(o) * AWAY_Z;
     e.dataset.slot = o === 0 ? 'front' : 'away';
     e.style.transitionDelay = o === 0 ? p.slot * 45 + 'ms, 0s' : '';   /* tiles arrive one after another; leaving keeps the stylesheet's delay for visibility */
     e.style.transform = 'rotateY(' + (-PLAY) + 'deg) translate3d(' + x + 'px,' + y + 'px,' + (-z) + 'px)';
@@ -300,9 +311,6 @@ var pageLock = 0;
 function stepPage(d){ var now = performance.now(); if (now - pageLock < 420) return; pageLock = now; setPage(page + d); }
 function nearPlay(){ return Math.abs(adiff(yaw, PLAY)) < 24; }
 
-/* ---------- the about wall: the photos fan out while you face it ---------- */
-var fan = document.getElementById('fan'), fanOpen = null;
-function syncFan(){ var on = !intro && Math.abs(adiff(yaw, -58)) < 32; if (on !== fanOpen) { fanOpen = on; fan.classList.toggle('open', on); } }
 var loopsOn = null;
 /* a phone in Low Power Mode won't start videos on its own: any touch on the room tries again */
 addEventListener('touchend', function(){ if (loopsOn) syncLoops(true); }, { passive: true });
@@ -437,14 +445,14 @@ els.forEach(function(el){
   });
 });
 
-var orn = document.getElementById('orn'), brand = document.querySelector('.brand'), toplinks = document.getElementById('toplinks');
-[orn, brand, toplinks].forEach(function(n){ n.addEventListener('pointerdown', function(e){ e.stopPropagation(); }); });
+var orn = document.getElementById('orn');
+[].forEach.call(orn.querySelectorAll('[data-ic]'), function(b){ b.insertAdjacentHTML('afterbegin', NAV_ICONS[b.getAttribute('data-ic')]); });
+orn.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
 var ornTabs = [].slice.call(orn.querySelectorAll('button[data-go]')), ornHeld = null;
 /* the pill springs to the wall you pick and stays there while the room turns; dragging it turns the room as it passes each wall */
 function pickWall(b){ if (!b) return; turnTo(+b.getAttribute('data-go')); ornHeld = { tab: b, yawT: yawT }; tabBar.set(b); mark(b); }
 var tabBar = springNav(orn, { tabs: 'button[data-go]', onOver: pickWall, onPick: pickWall });
 orn.addEventListener('click', function(e){ pickWall(e.target.closest('button[data-go]')); });
-brand.addEventListener('click', function(e){ e.preventDefault(); turnTo(0); });
 function turnTo(a){ yawT += adiff(a, yawT); pitchT = 0; }   /* the short way round */
 function mark(t){ ornTabs.forEach(function(b){ b.classList.toggle('on', b === t); }); }
 function syncOrn(){
@@ -556,7 +564,7 @@ function tick(){ if (clock) clock.textContent = 'Lagos ' + new Intl.DateTimeForm
 tick(); setInterval(tick, 30000);
 
 /* ---------- intro: the name as particles; scrolling dissolves it, shows the room from above, then brings you down into it ---------- */
-var intro = !REDUCE && ROOMS[location.hash.slice(1)] == null && !OPEN_AT_LOAD;
+var intro = false;   /* the particle name is retired: the room opens straight away */
 var introEl = document.getElementById('intro'), icv = document.getElementById('introCv'), ictx = icv.getContext('2d');
 var introSub = document.getElementById('introSub'), introCue = document.getElementById('introCue');
 var ip = 0, ipT = 0, lastScroll = 0, lastT = 0, PTS = [], IW = 0, IH = 0, IDPR = Math.min(2, devicePixelRatio || 1), pstep = 4, ink = '#fff';
@@ -672,7 +680,7 @@ function frame(t){
   yaw += (yawT + (FINE ? hx * 6 : 0) - yaw) * .17; pitch += (pitchT - (FINE ? hy * 4 : 0) - pitch) * .17; push += (pushT - push) * .2;
   cam.x += ((FINE ? hx * 150 : 0) - cam.x) * .08; cam.y += ((FINE ? hy * 70 : 0) - cam.y) * .08;
   setCamera(cam.x, cam.y, -pitch, yaw, P - push * 260);
-  syncOrn(); syncLoops(); syncFan();
+  syncOrn(); syncLoops();
   if (window.meter) { var hd = ((yaw % 360) + 540) % 360 - 180, wall = ornTabs.filter(function(b){ return b.classList.contains('on'); })[0];
     meter((hd + 180) / 360, (wall ? wall.textContent + '  ' : '') + Math.round((hd + 360) % 360) + '°'); }
   if (!hintGone && Math.abs(yawT) > 15) { hintGone = true; hint.style.opacity = 0; }
@@ -684,6 +692,6 @@ requestAnimationFrame(frame);
 var bs = document.createElement('script'); bs.type = 'module'; bs.src = 'bust.js?v=20'; document.body.appendChild(bs);
 })();
 </script>
-<script src="details.js?v=meter2"></script>
+<script src="details.js?v=h11"></script>
 </body>
 </html>

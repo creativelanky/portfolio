@@ -9,7 +9,8 @@ var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* ---------- reveal on entry ---------- */
 function watch(){
   var els = [].slice.call(document.querySelectorAll('.rv:not(.shown), .mask:not(.shown), .countup:not(.shown):not([data-after])'));
-  if (REDUCE || !('IntersectionObserver' in window)) { els.forEach(function(el){ el.classList.add('shown'); if (el.classList.contains('countup')) count(el); }); return; }
+  /* with Reduce Motion on, things still fade in as you reach them (the stylesheet drops the movement) */
+  if (!('IntersectionObserver' in window)) { els.forEach(function(el){ el.classList.add('shown'); if (el.classList.contains('countup')) count(el); }); return; }
   var io = new IntersectionObserver(function(es){ es.forEach(function(e){
     if (!e.isIntersecting) return;
     e.target.classList.add('shown'); io.unobserve(e.target);
@@ -71,7 +72,7 @@ if (STMTS.length) { addEventListener('scroll', onScroll, { passive: true }); add
 
 /* ---------- the top bar: the pill follows the cursor, rests on this page, and can be dragged onto another ---------- */
 var bar = document.querySelector('.navpill');
-if (bar && window.springNav) springNav(bar, { tabs: 'a:not(.tm)', hover: true, onPick: function(t){ if (t) t.click(); } }).set(bar.querySelector('a.on'));
+if (bar && window.springNav) springNav(bar, { tabs: 'a.nt', hover: true, onPick: function(t){ if (t) t.click(); } }).set(bar.querySelector('a.on'));
 
 /* ---------- footer: copy the email ---------- */
 document.addEventListener('click', function(e){

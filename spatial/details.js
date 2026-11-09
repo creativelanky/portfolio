@@ -38,7 +38,10 @@ if (document.querySelector('[data-lagos]')) { lagos(); setInterval(lagos, 20000)
    The room reports your heading with meter(fraction, label); a page reports how far you've scrolled. */
 var mcv = document.createElement('canvas'); mcv.className = 'meter'; mcv.setAttribute('aria-hidden', 'true'); document.body.appendChild(mcv);
 var mx = mcv.getContext('2d'), MW = 0, MDPR = Math.min(2, devicePixelRatio || 1), mPos = -1, mShown = -1, mLabel = '', mRaf = 0;
-var INK = 'rgba(24,24,27,', ACC = [91, 63, 214];
+var INK, ACC;
+/* light: dark ticks and a purple marker; dark: a black strip with white ticks and a white marker */
+function mcolours(){ var dark = document.documentElement.getAttribute('data-theme') === 'dark'; INK = dark ? 'rgba(255,255,255,' : 'rgba(24,24,27,'; ACC = dark ? [255, 255, 255] : [91, 63, 214]; }
+mcolours();
 function msize(){ MW = innerWidth; mcv.width = MW * MDPR; mcv.height = 30 * MDPR; mx.setTransform(MDPR, 0, 0, MDPR, 0, 0); mShown = -1; mdraw(); }
 function mdraw(){
   mRaf = 0;
@@ -46,6 +49,7 @@ function mdraw(){
   /* the marker eases toward where it should be */
   mShown = mShown < 0 || REDUCE || Math.abs(mPos - mShown) > .5 ? mPos : mShown + (mPos - mShown) * .25;   /* turning past the back wall wraps round */
   if (Math.abs(mPos - mShown) * MW < .2) mShown = mPos; else mRaf = requestAnimationFrame(mdraw);
+  mcolours();
   var x0 = mShown * MW, GAP = 8, n = Math.ceil(MW / GAP);
   mx.clearRect(0, 0, MW, 30);
   for (var i = 0; i <= n; i++) {
@@ -70,6 +74,8 @@ window.meter = function(f, label){
   if (!mRaf) mRaf = requestAnimationFrame(mdraw);
 };
 msize(); addEventListener('resize', msize);
+/* redraw straight away when the theme switches */
+new MutationObserver(function(){ mShown = -1; if (!mRaf) mRaf = requestAnimationFrame(mdraw); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ mShown = -1; mdraw(); });
 /* on a page, the meter is how far you've read */
 if (!document.querySelector('.stage')) {

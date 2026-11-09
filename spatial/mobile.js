@@ -1,15 +1,15 @@
 /* The home page in normal mode (the default, on every screen; spatial mode is the room).
    One scroll: who I am, the work, a row of loops, a short about and the footer. Case studies open as normal pages.
-   It opens with the name in particles (intro.js), and the Spatial toggle in the nav steps into the room instead. */
+   The Spatial switch in the nav steps into the room instead. */
 (function(){
 "use strict";
 if (!window.MOBILE) return;
 
 /* take the room out, so nothing of it loads or runs */
-['stage', 'hint', 'toplinks', 'orn', 'detail', 'portal', 'gaze'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
+['stage', 'hint', 'toplinks', 'orn', 'detail', 'portal', 'gaze', 'intro'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
 var b = document.querySelector('.brand'); if (b) b.remove();
 document.body.className = 'mhome';
-var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=about3'; document.head.appendChild(css);
+var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=h11'; document.head.appendChild(css);
 
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -18,14 +18,39 @@ var PICK = ['eikos-01-feed', '01-balance', '02-leave-types', 'eikos-03-buy', '03
 var loops = PLAYGROUND.filter(function(g){ return g.home; });
 if (!loops.length) loops = PICK.map(function(k){ return PLAYGROUND.filter(function(g){ return g.loop === k; })[0]; }).filter(Boolean);
 
+/* where I've worked: the list that used to live on the about page */
+function experienceHTML(){
+  return '<ul class="xp m-xp">' + (window.EXPERIENCE || []).map(function(x){
+    return '<li class="rv"><span class="lg" style="background:' + x.bg + '">' + (x.logo ? '<img src="' + x.logo + '" alt="">' : esc(x.mark)) + '</span>' +
+      '<h3>' + esc(x.co) + ' <span>· ' + esc(x.role) + '</span>' + (x.was ? '<small>formerly ' + esc(x.was) + '</small>' : '') + '</h3>' +
+      '<span class="when">' + esc(x.when) + '<br>' + esc(x.where) + '</span>' +
+      '<p>' + esc(x.d) + (x.link ? ' <a href="case.html?p=' + x.link + '">Read the case study →</a>' : '') + '</p></li>';
+  }).join('') + '</ul>';
+}
+
+/* everyone I've designed for, drifting past; the row is doubled so it loops without a seam */
+function logosHTML(){
+  var row = (window.CLIENTS || []).map(function(c){
+    return '<span class="lw-i"><span class="lw-m" style="background:' + (c.bg || '#111') + '">' + (c.logo ? '<img src="' + c.logo + '" alt="">' : esc(c.mark)) + '</span>' + esc(c.n) + '</span>';
+  }).join('');
+  return '<div class="lw rv" aria-label="Teams I’ve designed for: ' + esc((window.CLIENTS || []).map(function(c){ return c.n; }).join(', ')) + '"><div class="lw-t" aria-hidden="true">' + row + row + '</div></div>';
+}
+
+/* what I do and what I do it with, kept short and unlabelled */
+function skillsHTML(){
+  return '<div class="sk rv"><p class="sk-l">' + SKILLS.map(function(k){ return '<span>' + k + '</span>'; }).join('') + '</p>' +
+    '<div class="sk-row">' + toolsHTML('sk-tools') + aiNoteHTML('sk-ai') + '</div></div>';
+}
+
 var m = document.createElement('main'); m.className = 'm';
-m.innerHTML = navHTML('') +
+m.innerHTML = navHTML('home') +
   /* the first two sections of the about page: who I am with the portrait, then the statement and the numbers */
   '<header class="ab-hero m-ab">' +
     '<div>' +
       '<p class="m-who"><img src="' + th('photo-4.jpg') + '" alt=""><span><b>Triumph Ohwojeheri</b>Product designer, Lagos</span></p>' +
       '<h1 class="mask"><span class="ln"><span>I design products</span></span><span class="ln"><span>that make <em>complex</em></span></span><span class="ln"><span>things feel simple.</span></span></h1>' +
       '<p class="lead rv">I’m Triumph, a product designer in Lagos with 4+ years of experience across fintech, Web3, DeFi, AI and SaaS. I work end to end, from research and user flows to high-fidelity UI, prototypes and design systems, and I’ve led zero-to-one design for trading, payments and decentralised apps. On the side, I vibe-code my designs to life.</p>' +
+      companiesHTML() +
       '<div class="m-row rv"><a class="btn pri" href="#work">View work</a><a class="btn" href="mailto:triumphohwojeheri@gmail.com">Email me</a></div>' +
       '<p class="avail m-avail"><i></i>Available for select projects</p>' +
     '</div>' +
@@ -52,16 +77,12 @@ m.innerHTML = navHTML('') +
     CASES.map(function(c, i){ return cardHTML(c, i).replace('<article class="pcard">', '<article class="pcard rv">'); }).join('') + '</div></section>' +
   '<section class="m-sec" id="playground"><div class="m-head"><h2 class="m-h2 mask"><span class="ln"><span>Playground</span></span></h2><span>Swipe</span></div><div class="m-track">' +
     loops.map(function(g, i){
-      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + '">' + (g.loop || g.video ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
-             '<figcaption><b>' + esc(g.t) + '</b><span>' + esc(g.by) + '</span></figcaption></figure>';
+      return '<figure class="m-tile rv" style="--i:' + (i % 3) + '" aria-label="' + esc(g.t) + '"><div class="tm-media" style="background:' + (g.bg || 'var(--panel)') + '">' + (g.loop || g.video ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>' : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="">') + '</div>' +
+             '</figure>';
     }).join('') + '</div></section>' +
-  '<section class="m-sec" id="about"><h2 class="m-h2 mask"><span class="ln"><span>About</span></span></h2><div class="m-about rv">' +
-    '<div class="fan open"><figure class="fp fp-l"><img src="' + th('photo-3.jpg') + '" alt=""></figure><figure class="fp fp-r"><img src="' + th('photo-8.jpg') + '" alt=""></figure>' +
-      '<figure class="fp fp-c"><img src="' + th('photo-4.jpg') + '" alt="Triumph Ohwojeheri"></figure></div>' +
-    '<div class="m-sum"><div class="m-h3">Curious by nature.<br>Intentional by design.</div>' +
-      '<p class="m-p">A product designer in Lagos with 4+ years across fintech, Web3, AI and SaaS. I work end to end, from research and flows to high-fidelity UI and design systems.</p>' +
-      '<div class="m-row"><a class="btn pri" href="about.html">My story</a><a class="btn" href="resume.pdf" target="_blank" rel="noopener">Resume</a></div></div>' +
-  '</div></section>' +
+  '<section class="m-sec" id="about"><h2 class="m-h2 mask"><span class="ln"><span>Work experience</span></span></h2>' + experienceHTML() + '</section>' +
+  '<section class="m-sec m-logos"><h2 class="m-h2 mask"><span class="ln"><span>Teams I’ve designed for</span></span></h2>' + logosHTML() + '</section>' +
+  '<section class="m-sec m-skills">' + skillsHTML() + '</section>' +
   footerHTML();
 document.body.insertBefore(m, document.body.firstChild);
 
@@ -86,11 +107,10 @@ if ('IntersectionObserver' in window) {
 } else vids.forEach(playLoop);
 ['touchend', 'pointerup'].forEach(function(ev){ addEventListener(ev, function(){ vids.forEach(function(v){ if (v.paused && inView(v)) playLoop(v); }); }, { passive: true }); });
 
-/* after the intro: the shared page motion (reveals, the statement, the footer, the top bar's pill) */
-function start(){
-  ['site.js?v=scrub1'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
+/* the shared page motion (reveals, the statement, the footer, the top bar's pill) */
+(function start(){
+  ['site.js?v=h6'].forEach(function(src){ var s = document.createElement('script'); s.src = src; s.async = false; document.body.appendChild(s); });
   /* the chrome bust, in 3D (three.js comes from the import map in the page's head); its space stays empty until it fades in */
   var b = document.createElement('script'); b.type = 'module'; b.src = 'bust.js?v=20'; document.body.appendChild(b);
-}
-if (window.runIntro) runIntro(start); else start();
+})();
 })();

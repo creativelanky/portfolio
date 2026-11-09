@@ -96,7 +96,7 @@ window.CASES = [
 {
   slug: "terrace", name: "Terrace", category: "Web3 / Gaming", year: "2025",
   tagline: "A little anticipation. A big reveal.",
-  headline: "A rewards campaign that turns onboarding into a game", flag: "Shipped in 6 weeks", logo: "", logoBg: "#0b0f08", mark: "t",
+  headline: "A rewards campaign that turns onboarding into a game", flag: "Shipped in 6 weeks", logo: "logos/terrace.jpg", logoBg: "#000", mark: "",
   summary: "A loot box campaign for Terrace, a crypto exchange. Users earn mystery boxes of $TRC for signing up, trading, referring friends and verifying their identity. I also designed the token launchpad.",
   meta: [["Role", "Lead product designer"], ["Year", "2025"], ["Platform", "Web and mobile"], ["Timeline", "6 weeks"]],
   context: [
@@ -385,13 +385,93 @@ window.cardHTML = function(c, i, opt){
     '</div></article>';
 };
 
-/* Shared top navigation and footer for the case and about pages */
-window.navHTML = function(on){
-  return '<nav class="navpill" aria-label="Main"><a class="tm" href="index.html" aria-label="Home">t.</a>' +
-    '<a href="index.html#work"' + (on === "work" ? ' class="on"' : '') + '>Work</a><a href="about.html"' + (on === "about" ? ' class="on"' : '') + '>About</a>' +
-    '<a href="mailto:triumphohwojeheri@gmail.com">Contact</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a>' +
-    '<button class="modetg" type="button" role="switch" aria-checked="false" aria-label="Spatial mode: see the site as a 3D room"><span>Spatial</span><i></i></button></nav>';
+/* Where I've worked, from the resume: the about page's experience list and the row of company circles on the home page */
+window.EXPERIENCE = [
+  { co: 'Glitch Markets', role: 'UX/UI designer', when: 'Sept 2025 – Mar 2026', where: 'New York · remote', logo: 'logos/glitch-market.jpg', bg: '#0e0e0f', link: 'glitch-market', hero: 3,
+    d: 'Led zero-to-one design for the whole trading app, from concept to high-fidelity prototypes. Ran fast design sprints and was the only designer on the team, so research and product direction ran through me.' },
+  { co: 'Human Tech', was: 'Holonym Foundation', role: 'Visual designer', when: 'June 2024 – Feb 2025', where: 'Paris · remote', logo: 'logos/human-tech.jpg', bg: '#1f2a66', hero: 2,
+    d: 'Designed Quests and Perks for Silk Wallet, and the Silk Points loyalty programme. Contributed to the Holonym-to-Human Tech rebrand, and made assets for blogs, social and pitch decks.' },
+  { co: 'Space and Time', role: 'Product designer, part-time', when: 'Feb 2024 – Jan 2025', where: 'United States · remote', logo: 'logos/space-and-time.jpg', bg: '#000', link: 'dreamspace', hero: 1,
+    d: 'Led end-to-end design of MakeInfinite, a dApp that combines zero-knowledge proofs, on-chain data and AI tools. Designed UI systems for Space and Tokens and Blaze, and go-to-market design assets.' },
+  { co: 'NerfBot', role: 'Lead product designer', when: 'Mar 2023 – July 2023', where: 'California · remote', logo: 'logos/nerfbot.jpg', bg: '#000',
+    d: 'Created user flows, high-fidelity wireframes and prototypes to communicate the product to partners, and fixed UX issues with developers and researchers.' },
+  { co: 'Core DAO', was: 'Crest Protocol', role: 'Lead product designer', when: 'Jan 2023 – June 2023', where: 'Remote', logo: 'logos/core-dao.jpg', bg: '#141414',
+    d: 'Led design from research to delivery, and validated new features through user research and usability testing.' }
+];
+/* the logo wall: everyone I've designed for (a mark stands in where there's no logo file yet) */
+window.CLIENTS = [
+  { n: 'Glitch Markets', logo: 'logos/glitch-market.jpg' }, { n: 'Human Tech', logo: 'logos/human-tech.jpg' },
+  { n: 'Space and Time', logo: 'logos/space-and-time.jpg' }, { n: 'Dreamspace', logo: 'logos/dreamspace.jpg' },
+  { n: 'Core DAO', logo: 'logos/core-dao.jpg' }, { n: 'Silk', mark: 'S', bg: '#18181b' }, { n: 'Bitazza', logo: 'logos/bitazza.jpg' },
+  { n: 'Kryptos', logo: 'logos/kryptos.jpg' }, { n: 'Lumoswap', logo: 'logos/lumoswap.jpg' }, { n: 'Terrace', logo: 'logos/terrace.jpg' },
+  { n: 'Washpadi', logo: 'logos/washpadi.jpg' }, { n: 'Oaksjet', mark: 'O', bg: '#1b2550' }, { n: 'NerfBot', logo: 'logos/nerfbot.jpg' }
+];
+
+/* Shared top navigation and footer for the home, case and about pages.
+   A white bar: three tabs with icons (the grey pill springs between them, nav.js), then socials, then the theme and Spatial switches */
+var NI = function(d, fill){ return '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" ' + (fill ? 'fill="currentColor"' : 'fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"') + '>' + d + '</svg>'; };
+var NAV_ICONS = {
+  home: NI('<path d="M4 10.2 12 4l8 6.2V19a2 2 0 0 1-2 2h-3v-6.5H9V21H6a2 2 0 0 1-2-2z"/>'),
+  work: NI('<rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 4.5H6.6a2.1 2.1 0 0 0-2.1 2.1v8.9"/>'),
+  me: NI('<circle cx="12" cy="12" r="8.6"/><path d="M8.6 14.2a4.3 4.3 0 0 0 6.8 0"/><path d="M9.3 9.6h.01M14.7 9.6h.01" stroke-width="2.6"/>'),
+  whatsapp: NI('<path d="M4.2 19.8l1.1-3.7a8.4 8.4 0 1 1 3.2 3z"/><path d="M9.2 8.3c-.4 2.9 3.1 6.7 6.4 6.5l.9-1.5-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z" stroke-width="1.5"/>'),
+  x: NI('<path d="M17.4 3.5h3l-6.6 7.6 7.8 9.4h-6.1l-4.8-5.9-5.4 5.9H2.3l7-7.9L1.9 3.5h6.2l4.3 5.4zm-1 15.2h1.7L7.6 5.2H5.8z"/>', true),
+  mail: NI('<rect x="3.2" y="5.2" width="17.6" height="13.6" rx="3"/><path d="m4.2 7.2 7.8 6 7.8-6"/>'),
+  sun: NI('<circle cx="12" cy="12" r="3.6"/><path d="M12 2.8v2M12 19.2v2M2.8 12h2M19.2 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4"/>'),
+  moon: NI('<path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1z"/>'),
+  contact: NI('<path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.5L3.5 20.5l1.1-4.3A8.5 8.5 0 1 1 20.5 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01" stroke-width="2.6"/>'),
+  play: NI('<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="3.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="3.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>'),
+  cube: NI('<path d="M12 3.2 19.8 7.6v8.8L12 20.8l-7.8-4.4V7.6z"/><path d="m4.4 7.7 7.6 4.3 7.6-4.3M12 12v8.6"/>')
 };
+/* shared pieces for the home page (mobile.js) and the room (index.html) */
+function escH(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+/* a few of the teams I've worked with: overlapping circles; hovering (or tapping) one shows the company, my role and when */
+window.companiesHTML = function(){
+  var xp = window.EXPERIENCE.filter(function(x){ return x.hero; }).sort(function(a, b){ return a.hero - b.hero; });
+  return '<div class="cos rv"><span class="cos-l">Worked with</span><span class="cos-g" role="list" aria-label="Teams I’ve worked with">' + xp.map(function(x, i){
+    return '<button class="co" type="button" role="listitem" style="--c:' + x.bg + ';--z:' + (xp.length - i) + '" aria-label="' + escH(x.co + ', ' + x.role + ', ' + x.when) + '">' +
+      '<span class="co-f">' + (x.logo ? '<img src="' + x.logo + '" alt="">' : escH(x.mark)) + '</span>' +
+      '<span class="co-tip" aria-hidden="true"><b>' + escH(x.co) + '</b><span>' + escH(x.role) + '</span><small>' + escH(x.when) + ' · ' + escH(x.where) + '</small></span></button>';
+  }).join('') + '</span></div>';
+};
+window.SKILLS = ['Research', 'Interaction design', 'UI and brand', 'Design systems', 'Prototyping'];
+var TOOLS = [
+  ['Claude', '<g stroke="#D97757" stroke-width="2.3" stroke-linecap="round">' + [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(function(a, i){ var r = a * Math.PI / 180, l = i % 2 ? 7.2 : 9.4; return '<path d="M' + (12 + Math.cos(r) * 2.6).toFixed(1) + ' ' + (12 + Math.sin(r) * 2.6).toFixed(1) + 'L' + (12 + Math.cos(r) * l).toFixed(1) + ' ' + (12 + Math.sin(r) * l).toFixed(1) + '"/>'; }).join('') + '</g>'],
+  ['Figma', '<path d="M9 2h3v6.6H9a3.3 3.3 0 0 1 0-6.6z" fill="#F24E1E"/><path d="M12 2h3a3.3 3.3 0 0 1 0 6.6h-3z" fill="#FF7262"/><path d="M9 8.6h3v6.6H9a3.3 3.3 0 0 1 0-6.6z" fill="#A259FF"/><circle cx="15" cy="11.9" r="3.3" fill="#1ABCFE"/><path d="M9 15.2h3v3.3a3.3 3.3 0 1 1-3-3.3z" fill="#0ACF83"/>'],
+  ['Framer', '<path d="M6 2.5h12v6.4h-6zM6 8.9h6l6 6.3h-6v6.3l-6-6.3z" fill="currentColor"/>'],
+  ['Miro', '<rect x="2" y="2" width="20" height="20" rx="5" fill="#FFD02F"/><path d="M15.4 6h-2l1.7 3-3.8-3H9.4l1.9 3.8L7.4 6H5.5l2.4 5.4L5.5 18h1.9l3.9-8.2L9.4 18h1.9l3.6-9.1-1.6 9.1h1.9l3.3-12z" fill="#050038"/>'],
+  ['Adobe', '<path d="M14.2 3H21v18zM9.8 3H3v18zM12 9.4 16.4 21h-2.9l-1.3-3.4H9z" fill="#FA0F00"/>']
+];
+window.toolsHTML = function(cls){
+  return '<div class="' + cls + '">' + TOOLS.map(function(t){ return '<span class="sk-t"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">' + t[1] + '</svg>' + t[0] + '</span>'; }).join('') + '</div>';
+};
+window.aiNoteHTML = function(cls){
+  return '<p class="' + cls + '"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 5.1 2.4 6.9 7.5 7.5-5.1.6-6.9 2.4-7.5 7.5-.6-5.1-2.4-6.9-7.5-7.5 5.1-.6 6.9-2.4 7.5-7.5zM19 15.5c.3 2.2 1 3 3 3.2-2 .3-2.7 1-3 3.3-.3-2.3-1-3-3-3.3 2-.2 2.7-1 3-3.2z" fill="currentColor"/></svg>' +
+    '<span>AI is part of how I work. I research, explore and prototype with Claude, and vibe-code my designs into working builds, so ideas get tested in days rather than weeks.</span></p>';
+};
+window.footIconsHTML = function(cls){
+  return '<span class="' + cls + '">' + FOOT_LINKS.map(function(l){ return '<a href="' + l[1] + '" target="_blank" rel="noopener" aria-label="' + l[0] + '" data-tip="' + l[0] + '">' + l[2] + '</a>'; }).join('') + '</span>';
+};
+
+window.navHTML = function(on){
+  if (on === 'about') on = 'me';
+  var tab =function(key, href, label){ return '<a class="nt' + (on === key ? ' on' : '') + '" href="' + href + '"' + (on === key ? ' aria-current="page"' : '') + '>' + NAV_ICONS[key] + '<span>' + label + '</span></a>'; };
+  var icon = function(key, href, label){ return '<a class="ni" href="' + href + '"' + (/^http/.test(href) ? ' target="_blank" rel="noopener"' : '') + ' aria-label="' + label + '" title="' + label + '">' + NAV_ICONS[key] + '</a>'; };
+  return '<nav class="navpill" aria-label="Main">' +
+    tab('home', 'index.html', 'Home') + tab('work', 'index.html#work', 'Projects') + tab('me', 'index.html#about', 'Me') +
+    '<i class="nsep" aria-hidden="true"></i>' +
+    icon('whatsapp', 'https://wa.me/2349013417032', 'WhatsApp') + icon('x', 'https://twitter.com/amazinglanky', 'X') + icon('mail', 'mailto:triumphohwojeheri@gmail.com', 'Email') +
+    '<i class="nsep" aria-hidden="true"></i>' +
+    '<button class="ni themetg" type="button" aria-label="Switch light or dark mode" title="Light or dark">' + NAV_ICONS.sun.replace('<svg', '<svg class="i-sun"') + NAV_ICONS.moon.replace('<svg', '<svg class="i-moon"') + '</button>' +
+    '<button class="ni modetg" type="button" role="switch" aria-checked="false" aria-label="Spatial mode: see the site as a 3D room" title="Spatial mode">' + NAV_ICONS.cube + '</button></nav>';
+};
+/* light or dark: remembered per visitor (the page's head applies it before anything draws) */
+document.addEventListener('click', function(e){
+  if (!(e.target.closest && e.target.closest('.themetg'))) return;
+  var root = document.documentElement, dark = root.getAttribute('data-theme') !== 'dark';
+  if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+  try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (_) {}
+});
 /* the Spatial toggle (in the nav here, and in the room's top corner): flips between the scrolling site and the 3D room */
 document.addEventListener('click', function(e){
   var t = e.target.closest && e.target.closest('.modetg'); if (!t) return;
@@ -399,13 +479,21 @@ document.addEventListener('click', function(e){
   t.setAttribute('aria-checked', on);
   setTimeout(function(){ location.href = 'index.html?mode=' + (on ? 'spatial#home' : 'normal'); }, 260);   /* let the knob slide first */
 });
+/* the footer's links, as icons */
+var FOOT_LINKS = [
+  ['Book a call', 'https://calendly.com/triumphohwojeheri/30min', NI('<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4" stroke-width="1.9"/>')],
+  ['Resume', 'resume.pdf', NI('<path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3.5V8h4.5M9 13h6M9 16.5h4"/>')],
+  ['LinkedIn', 'https://linkedin.com/in/triumph-ohwojeheri', NI('<path d="M6.2 9.3h-3V21h3zM4.7 3a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6zM21 21h-3v-6c0-1.6-.6-2.7-2-2.7a2.2 2.2 0 0 0-2.1 1.5 3 3 0 0 0-.1 1V21h-3V9.3h2.9v1.6a3.2 3.2 0 0 1 2.9-1.6c2.1 0 3.4 1.4 3.4 4.3z"/>', true)],
+  ['X', 'https://twitter.com/amazinglanky', NAV_ICONS.x],
+  ['Dribbble', 'https://dribbble.com/amazinglanky', NI('<circle cx="12" cy="12" r="9"/><path d="M8.7 3.7c3.6 4.4 5.8 9.7 6.6 16.7M3.1 10.4c6 .2 10.6-1.2 14.8-4.8M5.4 18.3c3.4-4.2 8.4-5.6 15.5-3.8"/>')]
+];
 window.footerHTML = function(){
   /* dark, like Stanley's; the bottom row keeps Lagos time */
   return '<footer class="sfoot"><div class="sf-in">' +
     '<div class="sf-top rv"><span class="eyebrow">Get in touch</span><span class="sf-status"><i></i>Available for select projects</span></div>' +
     '<p class="sf-lead mask"><span class="ln"><span>Let’s make it something</span></span><span class="ln"><span><em>good</em>.</span></span></p>' +
     '<div class="sf-contact rv"><a class="sf-email" href="mailto:triumphohwojeheri@gmail.com">triumphohwojeheri@gmail.com</a><button class="sf-copy" data-copy="triumphohwojeheri@gmail.com">Copy</button>' +
-      '<span class="sf-links"><a href="https://calendly.com/triumphohwojeheri/30min" target="_blank" rel="noopener">Book a call ↗</a><a href="resume.pdf" target="_blank" rel="noopener">Resume ↗</a><a href="https://linkedin.com/in/triumph-ohwojeheri" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://twitter.com/amazinglanky" target="_blank" rel="noopener">X ↗</a><a href="https://dribbble.com/amazinglanky" target="_blank" rel="noopener">Dribbble ↗</a></span></div>' +
+      footIconsHTML('sf-links sf-icons') + '</div>' +
     '<div class="sf-bot"><span>© 2026 Triumph Ohwojeheri</span><span>Lagos, Nigeria <span class="lagos" data-lagos></span></span><a href="#" data-top>Back to top ↑</a></div>' +
   '</div></footer>';
 };
