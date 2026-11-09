@@ -9,7 +9,7 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=h11">
+<link rel="stylesheet" href="space.css?v=h12">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="/api/content"></script>
 <script src="cases.js?v=h8"></script>
@@ -65,7 +65,7 @@ try { if (!window.SPATIAL && localStorage.getItem("theme") === "dark") document.
   <button class="intro-skip" id="introSkip">Skip intro</button>
 </div>
 <div class="gaze" id="gaze"></div>
-<script src="mobile.js?v=38"></script>
+<script src="mobile.js?v=39"></script>
 
 <script>
 (function(){
@@ -122,7 +122,7 @@ PANELS.push(
     html: '<div class="in xp-in"><div class="xp-l"><span class="eyebrow">Experience</span><ul class="xr">' +
             EXPERIENCE.map(function(x){
               return '<li><span class="lg" style="background:' + x.bg + '">' + (x.logo ? '<img src="' + x.logo + '" alt="" draggable="false">' : esc(x.mark)) + '</span>' +
-                '<span class="xr-n"><b>' + esc(x.co) + '</b><span>' + esc(x.role) + '</span></span><span class="xr-y">' + years(x.when) + '</span></li>';
+                '<span class="xr-n"><b>' + esc(x.co) + '</b><span>' + esc(x.role) + '</span></span><span class="xr-y">' + years(x.when) + '<br>' + esc(x.where) + '</span></li>';
             }).join('') + '</ul></div>' +
           '<div class="xp-r"><span class="eyebrow">Teams I’ve designed for</span><div class="lgrid">' +
             CLIENTS.map(function(c){ return '<span class="lgi" title="' + esc(c.n) + '" style="background:' + (c.bg || '#111') + '">' + (c.logo ? '<img src="' + c.logo + '" alt="' + esc(c.n) + '" draggable="false">' : esc(c.mark)) + '</span>'; }).join('') + '</div>' +

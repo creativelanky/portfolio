@@ -122,16 +122,13 @@ figcaption b{color:var(--ink);font-weight:600}
 .ab-sec h2:not(.sname):not(.big){font:400 var(--t-h1)/1.1 var(--display);letter-spacing:-.03em;margin-bottom:22px;max-width:20ch}
 
 /* experience list, like Stanley's: logo, company and role, dates on the right */
-.xp{list-style:none;border-top:1px solid var(--line)}
-.xp li{display:grid;grid-template-columns:48px 1fr auto;gap:6px 18px;padding:24px 0;border-bottom:1px solid var(--line)}
-.xp .lg{grid-row:span 2;width:44px;height:44px;border-radius:8px;display:grid;place-items:center;font:400 20px/1 var(--display);color:#fff;overflow:hidden}
+.xp{list-style:none;display:flex;flex-direction:column;gap:10px}
+.xp li{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:4px 18px;padding:12px 0}
+.xp .lg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font:400 20px/1 var(--display);color:#fff;overflow:hidden}
 .xp .lg img{width:100%;height:100%;object-fit:cover}
 .xp h3{font:400 var(--t-h3)/1.25 var(--display);letter-spacing:-.02em}
 .xp h3 span{font:400 16px/1 var(--body);color:var(--sec)}
 .xp .when{font-size:14px;line-height:1.6;color:var(--dim);text-align:right;white-space:nowrap}
-.xp p{grid-column:2 / 4;font-size:15.5px;line-height:1.6;color:var(--sec);max-width:68ch}
-.xp p a{color:var(--ink);font-size:14px;white-space:nowrap}
-.xp p a:hover{text-decoration:underline}
 
 .skills{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px;background:var(--paper);border:1px solid var(--hair);border-radius:10px;box-shadow:var(--card-shadow)}
 .skills > div{background:var(--panel);border-radius:6px;padding:22px 24px}
@@ -159,7 +156,7 @@ figcaption b{color:var(--ink);font-weight:600}
   .ab-facts,.stats{grid-template-columns:1fr 1fr}
   .ab-facts div:nth-child(3){padding-left:0;border-left:none}
   .skills{grid-template-columns:1fr}
-  .xp li{grid-template-columns:48px 1fr}.xp .when{grid-column:2;text-align:left}.xp p{grid-column:1 / 3}
+  .xp li{grid-template-columns:44px 1fr;align-items:start}.xp .lg{grid-row:span 2}.xp .when{grid-column:2;text-align:left}
 }
 
 /* ---------- motion pieces (see site.js) ---------- */
@@ -276,8 +273,7 @@ html:not(.embed) .hero-wrap{max-width:100%}
   .ab-hero .lead{font-size:16px;line-height:1.7}
   .ab-facts dt{font-size:12.5px}
   .xp h3 span{font-size:14px}
-  .xp .when,.xp p a,.edu li span:last-child{font-size:12.5px}
-  .xp p{font-size:14px}
+  .xp .when,.edu li span:last-child{font-size:12.5px}
   .skills h3{font-size:13.5px}
   .chips span{font-size:11.5px}
   .stat dd{font-size:13.5px}

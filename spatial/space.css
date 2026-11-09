@@ -259,9 +259,9 @@ body.intro .orn,body.intro .brand,body.intro .hint,body.intro .toplinks{opacity:
 a:hover > .arr,.btn:hover > .arr{transform:translate(2px,-2px)}
 a[data-top]:hover > .arr{transform:translateY(-3px)}
 /* text links: the underline wipes away to the right on hover and draws back in from the left */
-.mail,.sf-email,.sign a,.xp p a,.body a{text-decoration:none;border-bottom:0;
+.mail,.sf-email,.sign a,.body a{text-decoration:none;border-bottom:0;
   background:linear-gradient(currentColor,currentColor) 0 100% / 100% 1px no-repeat;padding-bottom:2px;transition:background-size .55s cubic-bezier(.22,1,.36,1), color .2s}
-.mail:hover,.sf-email:hover,.sign a:hover,.xp p a:hover,.body a:hover{background-position:100% 100%;background-size:0 1px}
+.mail:hover,.sf-email:hover,.sign a:hover,.body a:hover{background-position:100% 100%;background-size:0 1px}
 /* in a row of links, the one you point at stays; the rest step back */
 .socials a,.sf-links a,.xp li,.points li,.stats .stat{transition:opacity .3s ease}
 .socials:hover a:not(:hover),.sf-links:hover a:not(:hover),.xp:hover li:not(:hover),.points:hover li:not(:hover){opacity:.4}
@@ -577,15 +577,15 @@ html{transition:background-color .3s}
 /* experience */
 .xp-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:12px;padding:12px}
 .xp-l{padding:32px 24px 24px 36px}
-.xr{list-style:none;border-top:1px solid var(--line)}
-.xr li{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);transition:opacity .25s}
+.xr{list-style:none;display:flex;flex-direction:column;gap:6px}
+.xr li{display:flex;align-items:center;gap:14px;padding:9px 0;transition:opacity .25s}
 .xr:hover li:not(:hover){opacity:.45}
 .xr .lg{width:38px;height:38px;border-radius:11px;overflow:hidden;flex:none;display:grid;place-items:center;color:#fff;font:400 18px/1 var(--display);box-shadow:inset 0 0 0 1px var(--hair)}
 .xr .lg img{width:100%;height:100%;object-fit:cover}
 .xr-n{flex:1;min-width:0}
 .xr-n b{display:block;font:400 19px/1.2 var(--display);letter-spacing:-.02em}
 .xr-n span{display:block;margin-top:3px;font-size:13px;color:var(--dim)}
-.xr-y{font-size:13px;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.xr-y{font-size:13px;line-height:1.45;color:var(--dim);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
 .xp-r{display:flex;flex-direction:column;border-radius:16px;background:var(--panel);padding:32px 32px 28px}
 .lgrid{display:grid;grid-template-columns:repeat(5,44px);gap:12px}
 .lgi{width:44px;height:44px;border-radius:12px;overflow:hidden;display:grid;place-items:center;color:#fff;font:400 18px/1 var(--display);

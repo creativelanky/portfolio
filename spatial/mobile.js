@@ -9,7 +9,7 @@ if (!window.MOBILE) return;
 ['stage', 'hint', 'toplinks', 'orn', 'detail', 'portal', 'gaze', 'intro'].forEach(function(id){ var n = document.getElementById(id); if (n) n.remove(); });
 var b = document.querySelector('.brand'); if (b) b.remove();
 document.body.className = 'mhome';
-var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=h11'; document.head.appendChild(css);
+var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'case.css?v=h12'; document.head.appendChild(css);
 
 function th(f){ return 'thumbs/' + encodeURI(f); }
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -18,13 +18,12 @@ var PICK = ['eikos-01-feed', '01-balance', '02-leave-types', 'eikos-03-buy', '03
 var loops = PLAYGROUND.filter(function(g){ return g.home; });
 if (!loops.length) loops = PICK.map(function(k){ return PLAYGROUND.filter(function(g){ return g.loop === k; })[0]; }).filter(Boolean);
 
-/* where I've worked: the list that used to live on the about page */
+/* where I've worked: logo, company, role, dates and where — nothing more */
 function experienceHTML(){
   return '<ul class="xp m-xp">' + (window.EXPERIENCE || []).map(function(x){
     return '<li class="rv"><span class="lg" style="background:' + x.bg + '">' + (x.logo ? '<img src="' + x.logo + '" alt="">' : esc(x.mark)) + '</span>' +
       '<h3>' + esc(x.co) + ' <span>· ' + esc(x.role) + '</span>' + (x.was ? '<small>formerly ' + esc(x.was) + '</small>' : '') + '</h3>' +
-      '<span class="when">' + esc(x.when) + '<br>' + esc(x.where) + '</span>' +
-      '<p>' + esc(x.d) + (x.link ? ' <a href="case.html?p=' + x.link + '">Read the case study →</a>' : '') + '</p></li>';
+      '<span class="when">' + esc(x.when) + '<br>' + esc(x.where) + '</span></li>';
   }).join('') + '</ul>';
 }
 
