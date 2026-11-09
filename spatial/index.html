@@ -9,7 +9,7 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=tabs3">
+<link rel="stylesheet" href="space.css?v=sets2">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="/api/content"></script>
 <script src="cases.js?v=tabs1"></script>
@@ -105,19 +105,31 @@ function pad2(n){ return (n < 10 ? '0' : '') + n; }
 PANELS.push({ ang: WORK, y: BELOW, z: PHONE ? 0 : 200, w: PHONE ? 340 : 900, h: 60, d: .3, kind: 'ctrl',
   html: '<div class="tabs3d" id="dots" aria-label="Projects">' +
         CASES.map(function(c, i){ return '<button data-pick="' + i + '">' + (PHONE ? pad2(i + 1) : esc(c.name)) + '</button>'; }).join('') + '</div>' });
-/* the playground: a page of six, three by two, filling the same footprint as the other windows (on a phone, two stacked) */
-var PLAY = 152, COLS = PHONE ? 1 : 3, PER = PHONE ? 2 : 6, NPAGE = Math.ceil(PLAYGROUND.length / PER), PGAP = PHONE ? 16 : 20;
+/* the playground: a page of six, three by two, filling the same footprint as the other windows (on a phone, two stacked).
+   Pieces come in sets, one per client (one-off shots gathered as "More"), and each set fills its own pages, so the bar
+   under the wall names a handful of sets instead of numbering a dozen pages */
+var PLAY = 152, COLS = PHONE ? 1 : 3, PER = PHONE ? 2 : 6, PGAP = PHONE ? 16 : 20;
 var PW = (W - (COLS - 1) * PGAP) / COLS, PH = (H - (PER / COLS - 1) * PGAP) / (PER / COLS);
-PLAYGROUND.forEach(function(g, i){
+var SETS = [], MORE = [], PAGES = [];
+PLAYGROUND.forEach(function(g){ var k = g.by || 'More', last = SETS[SETS.length - 1]; if (last && last.name === k) last.items.push(g); else SETS.push({ name: k, items: [g] }); });
+SETS = SETS.filter(function(st){ if (st.items.length >= 3) return true; MORE = MORE.concat(st.items); return false; });
+if (MORE.length) SETS.push({ name: 'More', items: MORE });
+SETS.forEach(function(st, si){
+  st.first = PAGES.length;
+  for (var j = 0; j < st.items.length; j += PER) PAGES.push({ set: si, items: st.items.slice(j, j + PER) });
+  st.count = PAGES.length - st.first;
+});
+var NPAGE = PAGES.length;
+PAGES.forEach(function(pg, pi){ pg.items.forEach(function(g, slot){
   var isLoop = !!(g.loop || g.video), media = isLoop
     ? '<video muted loop playsinline preload="none" poster="' + loopPoster(g) + '" src="' + loopSrc(g) + '"></video>'
     : '<img src="' + asset(g.shot, 'thumbs/') + '" alt="' + esc(g.t) + '" draggable="false">';
-  PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % PER) * .05, kind: 'play', stack: true, play: g, page: (i / PER) | 0, slot: i % PER,
+  PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + slot * .05, kind: 'play', stack: true, play: g, page: pi, slot: slot,
     html: '<figure class="tile" aria-label="' + esc(g.t) + '"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + (isLoop && loopPoster(g) ? ' url(' + loopPoster(g) + ') center / contain no-repeat' : '') + '">' + media + '</div></figure>' });
-});
+}); });
 PANELS.push({ ang: PLAY, y: BELOW, z: PHONE ? 0 : 60, w: PHONE ? 340 : 600, h: 60, d: .6, kind: 'ctrl',
-  html: '<div class="tabs3d" id="pdots" aria-label="Playground pages">' +
-        Array.apply(null, Array(NPAGE)).map(function(_, i){ return '<button data-ppick="' + i + '">' + pad2(i + 1) + '</button>'; }).join('') + '</div>' });
+  html: '<div class="tabs3d" id="pdots" aria-label="Playground sets">' +
+        SETS.map(function(st, si){ return '<button data-pset="' + si + '">' + esc(st.name) + '<span class="cnt"></span></button>'; }).join('') + '</div>' });
 PANELS.push(
   /* the experience wall: where I've worked on the left; who I've designed for, what I do and what I use on the right */
   { ang: -58, y: Y0, w: W, h: H, d: .3, kind: 'about', stack: true,
@@ -308,8 +320,13 @@ function placePage(){
     e.style.transitionDelay = o === 0 ? p.slot * 45 + 'ms, 0s' : '';   /* tiles arrive one after another; leaving keeps the stylesheet's delay for visibility */
     e.style.transform = 'rotateY(' + (-PLAY) + 'deg) translate3d(' + x + 'px,' + y + 'px,' + (-z) + 'px)';
   });
-  [].forEach.call(pdots.querySelectorAll('button'), function(d, i){ d.classList.toggle('on', i === page); });
-  pageBar.set(pdots.querySelectorAll('button')[page]);
+  /* the set you're in is the current tab; a set spanning several pages shows which one, like 2/3 */
+  var cur = PAGES[page].set, st = SETS[cur];
+  [].forEach.call(pdots.querySelectorAll('button'), function(d, i){
+    d.classList.toggle('on', i === cur);
+    d.lastChild.textContent = i === cur && st.count > 1 ? (page - st.first + 1) + '/' + st.count : '';
+  });
+  pageBar.set(pdots.querySelectorAll('button')[cur]); pageBar.go(pdots.querySelectorAll('button')[cur]);   /* go: the tab's width changes with its count */
   syncLoops(true);
 }
 function setPage(i){ page = ((i % NPAGE) + NPAGE) % NPAGE; placePage(); }
@@ -448,7 +465,8 @@ els.forEach(function(el){
     if (go) { turnTo(+go.getAttribute('data-go')); return; }
     var st = t.closest('[data-step]'), pk = t.closest('[data-pick]'), p = PANELS[el._i];
     if (st) { stepLock = 0; step(+st.getAttribute('data-step')); return; }
-    var ps = t.closest('[data-pstep]'), pp = t.closest('[data-ppick]');
+    var ps = t.closest('[data-pstep]'), pp = t.closest('[data-ppick]'), pset = t.closest('[data-pset]');
+    if (pset) { setPage(SETS[+pset.getAttribute('data-pset')].first); return; }
     if (ps) { pageLock = 0; stepPage(+ps.getAttribute('data-pstep')); return; }
     if (pp) { setPage(+pp.getAttribute('data-ppick')); return; }
     if (pk) { setCurrent(+pk.getAttribute('data-pick')); return; }
