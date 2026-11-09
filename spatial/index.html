@@ -9,10 +9,10 @@
 <link rel="icon" href="../Favicon.avif">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="space.css?v=h15">
+<link rel="stylesheet" href="space.css?v=tabs3">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script src="/api/content"></script>
-<script src="cases.js?v=h13"></script>
+<script src="cases.js?v=tabs1"></script>
 <script src="nav.js?v=nav1"></script>
 <script>
 /* two ways to see the site: normal mode, a page you scroll (mobile.js), and spatial mode, the room.
@@ -100,9 +100,11 @@ var WORK = 62, NCASE = CASES.length;
 CASES.forEach(function(c, i){
   PANELS.push({ ang: WORK, y: Y0, w: W, h: H, d: .2, kind: 'case', ci: i, stack: true, html: cardHTML(c, i) });
 });
-PANELS.push({ ang: WORK, y: BELOW, z: PHONE ? 0 : 200, w: 300, h: 60, d: .3, kind: 'ctrl',
-  html: '<div class="ctrl"><button data-step="-1" aria-label="Previous project">←</button><span class="dots" id="dots">' +
-        CASES.map(function(c, i){ return '<i data-pick="' + i + '"></i>'; }).join('') + '</span><button data-step="1" aria-label="Next project">→</button></div>' });
+/* under the work: a tab for each project, like the nav (numbers on a phone, where names don't fit) */
+function pad2(n){ return (n < 10 ? '0' : '') + n; }
+PANELS.push({ ang: WORK, y: BELOW, z: PHONE ? 0 : 200, w: PHONE ? 340 : 900, h: 60, d: .3, kind: 'ctrl',
+  html: '<div class="tabs3d" id="dots" aria-label="Projects">' +
+        CASES.map(function(c, i){ return '<button data-pick="' + i + '">' + (PHONE ? pad2(i + 1) : esc(c.name)) + '</button>'; }).join('') + '</div>' });
 /* the playground: a page of six, three by two, filling the same footprint as the other windows (on a phone, two stacked) */
 var PLAY = 152, COLS = PHONE ? 1 : 3, PER = PHONE ? 2 : 6, NPAGE = Math.ceil(PLAYGROUND.length / PER), PGAP = PHONE ? 16 : 20;
 var PW = (W - (COLS - 1) * PGAP) / COLS, PH = (H - (PER / COLS - 1) * PGAP) / (PER / COLS);
@@ -113,9 +115,9 @@ PLAYGROUND.forEach(function(g, i){
   PANELS.push({ ang: PLAY, y: 0, w: PW, h: PH, d: .5 + (i % PER) * .05, kind: 'play', stack: true, play: g, page: (i / PER) | 0, slot: i % PER,
     html: '<figure class="tile" aria-label="' + esc(g.t) + '"><div class="tm-media' + (isLoop ? ' is-loop' : '') + '" style="background:' + (g.bg || 'var(--panel)') + (isLoop && loopPoster(g) ? ' url(' + loopPoster(g) + ') center / contain no-repeat' : '') + '">' + media + '</div></figure>' });
 });
-PANELS.push({ ang: PLAY, y: BELOW, z: PHONE ? 0 : 60, w: PHONE ? 340 : 300, h: 60, d: .6, kind: 'ctrl',
-  html: '<div class="ctrl"><button data-pstep="-1" aria-label="Previous page">←</button><span class="dots" id="pdots">' +
-        Array.apply(null, Array(NPAGE)).map(function(_, i){ return '<i data-ppick="' + i + '"></i>'; }).join('') + '</span><button data-pstep="1" aria-label="Next page">→</button></div>' });
+PANELS.push({ ang: PLAY, y: BELOW, z: PHONE ? 0 : 60, w: PHONE ? 340 : 600, h: 60, d: .6, kind: 'ctrl',
+  html: '<div class="tabs3d" id="pdots" aria-label="Playground pages">' +
+        Array.apply(null, Array(NPAGE)).map(function(_, i){ return '<button data-ppick="' + i + '">' + pad2(i + 1) + '</button>'; }).join('') + '</div>' });
 PANELS.push(
   /* the experience wall: where I've worked on the left; who I've designed for, what I do and what I use on the right */
   { ang: -58, y: Y0, w: W, h: H, d: .3, kind: 'about', stack: true,
@@ -268,6 +270,7 @@ addEventListener('resize', function(){ sizeRoom(); lastWT = ''; });
    Every card stays parallel to the wall (nothing rotates), and each one only ever gets a new slot, which the browser
    animates by itself. Parallel planes sliding are the steadiest thing 3D CSS can do, so nothing flickers. */
 var current = 0, slideEls = els.filter(function(e){ return PANELS[e._i].kind === 'case'; }), dots = document.getElementById('dots');
+var workBar = springNav(dots, { tabs: 'button', hover: true });   /* the grey pill rests on the current project */
 var FRONT = PHONE ? 0 : 220, SIDE_X = PHONE ? 440 : 860, SIDE_Z = PHONE ? 520 : 760, FAR_X = PHONE ? 900 : 1500;   /* front card nearer than the wall; side cards out and back */
 SHADOWS.push({ ang: WORK, r: R - FRONT - 30, w: 1100, d: 260, a: 1 });
 function adiff(a, b){ return ((a - b) % 360 + 540) % 360 - 180; }   /* shortest signed angle from b to a */
@@ -280,7 +283,8 @@ function placeSlides(){
     e.dataset.slot = a === 0 ? 'front' : a === 1 ? 'side' : 'away';
     e.style.transform = 'rotateY(' + (-WORK) + 'deg) translate3d(' + x + 'px,-10px,' + (-z) + 'px)';
   });
-  [].forEach.call(dots.children, function(d, i){ d.classList.toggle('on', i === current); });
+  [].forEach.call(dots.querySelectorAll('button'), function(d, i){ d.classList.toggle('on', i === current); });
+  workBar.set(dots.querySelectorAll('button')[current]);
 }
 function setCurrent(i){ current = ((i % NCASE) + NCASE) % NCASE; placeSlides(); }
 var stepLock = 0, wheelAcc = 0, wheelIdle;
@@ -292,6 +296,7 @@ placeSlides();
    One page of four stands in front of you; the others wait out of sight to either side and slide in, a tile at a time.
    Like the work slider, nothing rotates: tiles only change slot. Loops play only on the page in front of you. */
 var page = 0, playEls = els.filter(function(e){ return PANELS[e._i].kind === 'play'; }), pdots = document.getElementById('pdots');
+var pageBar = springNav(pdots, { tabs: 'button', hover: true });
 var PLAY_Z = 40, AWAY_X = 1500, AWAY_Z = 600;
 function placePage(){
   playEls.forEach(function(e){
@@ -303,7 +308,8 @@ function placePage(){
     e.style.transitionDelay = o === 0 ? p.slot * 45 + 'ms, 0s' : '';   /* tiles arrive one after another; leaving keeps the stylesheet's delay for visibility */
     e.style.transform = 'rotateY(' + (-PLAY) + 'deg) translate3d(' + x + 'px,' + y + 'px,' + (-z) + 'px)';
   });
-  [].forEach.call(pdots.children, function(d, i){ d.classList.toggle('on', i === page); });
+  [].forEach.call(pdots.querySelectorAll('button'), function(d, i){ d.classList.toggle('on', i === page); });
+  pageBar.set(pdots.querySelectorAll('button')[page]);
   syncLoops(true);
 }
 function setPage(i){ page = ((i % NPAGE) + NPAGE) % NPAGE; placePage(); }
@@ -431,12 +437,18 @@ els.forEach(function(el){
   });
   el.addEventListener('click', function(e){
     if (moved > 6) { e.preventDefault(); return; }
-    if (e.target.closest('a[href]')) return;
-    var go = e.target.closest('[data-go]');
+    var t = e.target;
+    /* in the 3D room a click can land on the window behind a bar's buttons: take the button under the pointer instead */
+    if (!t.closest('button, a[href]')) [].forEach.call(el.querySelectorAll('button'), function(b){
+      var r = b.getBoundingClientRect();
+      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) t = b;
+    });
+    if (t.closest('a[href]')) return;
+    var go = t.closest('[data-go]');
     if (go) { turnTo(+go.getAttribute('data-go')); return; }
-    var st = e.target.closest('[data-step]'), pk = e.target.closest('[data-pick]'), p = PANELS[el._i];
+    var st = t.closest('[data-step]'), pk = t.closest('[data-pick]'), p = PANELS[el._i];
     if (st) { stepLock = 0; step(+st.getAttribute('data-step')); return; }
-    var ps = e.target.closest('[data-pstep]'), pp = e.target.closest('[data-ppick]');
+    var ps = t.closest('[data-pstep]'), pp = t.closest('[data-ppick]');
     if (ps) { pageLock = 0; stepPage(+ps.getAttribute('data-pstep')); return; }
     if (pp) { setPage(+pp.getAttribute('data-ppick')); return; }
     if (pk) { setCurrent(+pk.getAttribute('data-pick')); return; }

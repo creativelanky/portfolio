@@ -383,7 +383,7 @@ window.cardHTML = function(c, i, opt){
       '<h3 class="pc-h">' + c.headline + '</h3>' +
       '<p class="pc-d">' + c.summary + '</p>' +
       '<div class="pc-f"><div class="pc-r">' + facts.map(function(f){ return '<div><b>' + f[1] + '</b><span>' + f[0] + '</span></div>'; }).join("") + '</div>' +
-        (opt.extra || "") + '<a class="pc-go" href="case.html?p=' + c.slug + '" aria-label="Read the ' + esc(c.name) + ' case study">→</a></div>' +
+        (opt.extra || "") + '<a class="pc-go" href="case.html?p=' + c.slug + '" aria-label="Read the ' + esc(c.name) + ' case study">View case study</a></div>' +
     '</div></article>';
 };
 
